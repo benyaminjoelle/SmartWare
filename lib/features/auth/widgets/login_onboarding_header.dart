@@ -23,12 +23,13 @@ class LoginOnboardingHeader extends StatelessWidget {
           ).copyWith(color: colors.primary),
         ),
 
-        const SizedBox(height: 6),
+        const SizedBox(height: 10),
 
         Text(
           "Welcome Back!",
-          style: theme.textTheme.bodyMedium?.copyWith(
+          style: theme.textTheme.bodyLarge?.copyWith(
             color: colors.onSurface.withOpacity(0.6),
+            fontSize: 20,
           ),
         ),
       ],
