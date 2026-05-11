@@ -1,24 +1,54 @@
 const Map<String, String> en = {
-  "Your choice for a smart warehouse":"Your choice for a smart warehouse",
-  'Login': 'Login',
-  'Create account': 'Create account',
-"Smart Inventory": "Smart Inventory",
-  "Track stock in real-time with zero effort.":
-      "Track stock in real-time with zero effort.",
+  //A
+  //B
+    "By continuing, you agree to our Terms of Service and Privacy Policy.":"By continuing, you agree to our Terms of Service and Privacy Policy.",
 
-  "Live Analytics": "Live Analytics",
-  "Understand your warehouse like a living system.":
-      "Understand your warehouse like a living system.",
+  //C
+    'Create account': 'Create account',
 
-  "Fast Logistics": "Fast Logistics",
-  "Optimize shipping routes automatically.":
-      "Optimize shipping routes automatically.",
+  //D
+  //E
+  //F
+    "Fast Logistics": "Fast Logistics",
+  //G
+  //H
+  //I
+  //J
+  //K
+  //L
+    'Login': 'Login',
+    "Live Analytics": "Live Analytics",
 
-  "Secure System": "Secure System",
-  "Your data protected with layered security.":
-      "Your data protected with layered security.",
+  //M
+  //N
+  //O
+    "Optimize shipping routes automatically.":"Optimize shipping routes automatically.",
+
+  //P
+  //Q
+  //R
+  //S
+    "Secure System": "Secure System",
+    "Smart Inventory": "Smart Inventory",
+
+
+  //T
+    'terms': 'By continuing, you agree to our Terms and Privacy Policy.',
+    "Track stock in real-time with zero effort.":"Track stock in real-time with zero effort.",
+
+  //U
+    "Understand your warehouse like a living system.": "Understand your warehouse like a living system.",
+  //V
+  //W
+  //X
+  //Y
+    "Your data protected with layered security.":"Your data protected with layered security.",
+    "Your choice for a smart warehouse":"Your choice for a smart warehouse",
+
+  //Z
   
-  'terms': 'By continuing, you agree to our Terms and Privacy Policy.',
-  "By continuing, you agree to our Terms of Service and Privacy Policy.":"By continuing, you agree to our Terms of Service and Privacy Policy.",
-
+  
+  
+  
+ 
 };
