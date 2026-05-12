@@ -26,7 +26,7 @@ class LoginOnboardingHeader extends StatelessWidget {
         const SizedBox(height: 10),
 
         Text(
-          "Welcome Back!",
+          "Welcome Back!".tr,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: colors.onSurface.withOpacity(0.6),
             fontSize: 20,

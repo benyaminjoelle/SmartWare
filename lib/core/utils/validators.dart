@@ -49,7 +49,7 @@ class Validators {
   }
   static String? emailValidation(String? value) {
   if (value == null || value.trim().isEmpty) {
-    return 'Please enter your email'.tr;
+    return 'Please Enter your Email'.tr;
   }
 
   // 2. Define the Email Regex pattern
@@ -58,7 +58,7 @@ class Validators {
 
   // 3. Validate the format
   if (!emailRegExp.hasMatch(value)) {
-    return 'Please enter a valid email address'.tr;
+    return 'Please Enter a valid Email address'.tr;
   }
 
   // 4. Return null if validation passes

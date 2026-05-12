@@ -6,8 +6,10 @@ const Map<String, String> ar = {
    'Create account': 'إنشاء حساب',
   //D
   //E
-   'Email':'البريد الالكتروني',
+   'Email Address':'البريد الالكتروني',
+   'Enter your password':'ادخل كلمة المرور',
   //F
+   'Forgot Password?':'هل نسيت كلمة المرور؟',
    "Fast Logistics": "لوجستيات سريعة",
   //G
   //H
@@ -28,13 +30,16 @@ const Map<String, String> ar = {
    "Optimize shipping routes automatically.":"تحسين مسارات الشحن تلقائيًا.",
 
   //P
-   'Passwords do not match':'',
-   'Password must be at least 8 characters long':'كلمة السر يجب ألا تقل عن 8 محارف',
-   'Please confirm your password':'',
-   'Please enter a valid email address':'',
+   'Password': 'كلمة المرور',
+   'Passwords do not match':'كلمات المرور غير متطابقة',
+   'Password must be at least 8 characters long':'كلمة المرور يجب ألا تقل عن 8 محارف',
+   'Please confirm your password':'يرجى تأكيد كلمة المرور',
+   'Please Enter a valid Email address':'يرجى إدخال بريد إلكتروني صالح',
    'Please Enter Phone Number': 'يرجى إدخال رقم الهاتف',
-   'Please Enter The Password':'يرجى ادخال كلمة السر',
+   'Please Enter The Password':'يرجى ادخال كلمة المرور',
    'Please Enter Your Name':'يرجى ادخال الاسم',
+   'Please Enter your Email':'يرجى ادخال البريد الالكتروني',
+   'Please Enter your phone number':'يرجى ادخال رقم الهاتف',
    'Please upload your ID photo':'يرجى ادخال صورة الهوية ',
    'Phone number must contain only digits':'يجب أن ',
    'Phone number must start with 09':'يجب أن يبدأ الرقم ب 09',
@@ -53,6 +58,7 @@ const Map<String, String> ar = {
    "Understand your warehouse like a living system.":"افهم مستودعك كنظام حي يتفاعل معك.",
   //V
   //W
+   "Welcome Back!": "مرحبًا بعودتك!",
   //X
   //Y
    'You must be at least 18 years old':'يجب أن يكون عمرك 18 عامًا على الأقل',
