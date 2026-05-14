@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:storex/core/routes/app_routes.dart';
 import 'package:storex/core/utils/validators.dart';
 import 'package:storex/features/auth/widgets/login_onboarding_header.dart';
 import 'package:storex/widgets/custom_textfield.dart';
@@ -23,6 +24,7 @@ class UnifiedLogin extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        // resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
             // 1. Background Image Layer
@@ -43,9 +45,9 @@ class UnifiedLogin extends StatelessWidget {
 
             // 2. Content Layer
             SafeArea(
-              child: Center(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 70),
                     child: ClipRRect(
@@ -78,7 +80,9 @@ class UnifiedLogin extends StatelessWidget {
                               CustomTextField(
                                 label: 'Password'.tr,
                                 suffix: TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Get.toNamed(AppRoutes.forgotPassword);
+                                  },
                                   child: Text(
                                     'Forgot Password?'.tr,
                                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -97,7 +101,7 @@ class UnifiedLogin extends StatelessWidget {
                               PrimaryButton(
                                 text: "Login".tr,
                                 onPressed: () {
-                                  // Handle login logic
+                                
                                 },
                               ),
                             ],
