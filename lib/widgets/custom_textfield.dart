@@ -6,7 +6,6 @@ class CustomTextField extends StatelessWidget {
   final String hint;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
-  final IconData? prefixIcon;
   final Widget? suffixIcon;
   final bool isPassword;
   final TextInputType keyboardType;
@@ -20,7 +19,6 @@ class CustomTextField extends StatelessWidget {
     this.hint = '',
     this.controller,
     this.validator,
-    this.prefixIcon,
     this.suffixIcon,
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
@@ -40,52 +38,104 @@ class CustomTextField extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+                color: colors.onSurface,
+                letterSpacing: 0.2,
+              ),
             ),
             if (suffix != null) suffix!,
           ],
         ),
-          
-        
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          validator: validator,
-          obscureText: isPassword,
-          keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          onChanged: onChanged,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          decoration: InputDecoration(
-            hintText: hint, hintStyle: TextStyle(color: colors.onSurfaceVariant.withValues(alpha: 0.5)),
-            prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: colors.primary) : null,
-            suffixIcon: suffixIcon,
-            filled: true,
-            fillColor: colors.surfaceContainerHighest.withValues(alpha: 0.3),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+
+        const SizedBox(height: 10),
+
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: colors.shadow.withValues(alpha: 0.05),
+                blurRadius: 14,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: TextFormField(
+            controller: controller,
+            validator: validator,
+            obscureText: isPassword,
+            keyboardType: keyboardType,
+            textInputAction: textInputAction,
+            onChanged: onChanged,
+
+            // ✅ Removed immediate validation
+            autovalidateMode: AutovalidateMode.disabled,
+
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color: colors.onSurface,
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: colors.onSurfaceVariant.withValues(alpha: 0.5), width: 1),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: colors.primary, width: 2),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: colors.error, width: 1),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: colors.error, width: 2),
+
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: TextStyle(
+                color: colors.onSurfaceVariant.withValues(alpha: 0.6),
+                fontWeight: FontWeight.w400,
+              ),
+
+              suffixIcon: suffixIcon,
+
+              filled: true,
+              fillColor: colors.surfaceContainerHighest.withValues(alpha: 0.18),
+
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 18,
+              ),
+
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide.none,
+              ),
+
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(
+                  color: colors.outline.withValues(alpha: 0.15),
+                  width: 1.2,
+                ),
+              ),
+
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(
+                  color: colors.primary,
+                  width: 1.8,
+                ),
+              ),
+
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(
+                  color: colors.error,
+                  width: 1.2,
+                ),
+              ),
+
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(
+                  color: colors.error,
+                  width: 1.8,
+                ),
+              ),
             ),
           ),
         ),
-  ],
-  );
+      ],
+    );
   }
 }

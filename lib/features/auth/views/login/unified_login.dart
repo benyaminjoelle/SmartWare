@@ -75,7 +75,7 @@ class UnifiedLogin extends StatelessWidget {
               CustomTextField(
                 label: 'Email Address'.tr,
                 hint: 'name@example.com',
-                prefixIcon: Icons.email_outlined,
+               // prefixIcon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) => Validators.emailValidation(value),
               ),
@@ -90,7 +90,7 @@ class UnifiedLogin extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                                 ),)),
                 hint: 'Enter your password'.tr, 
-                prefixIcon: Icons.lock_outline,
+              //  prefixIcon: Icons.lock_outline,
                 isPassword: true,
                 textInputAction: TextInputAction.done,
                 validator: (value) => Validators.passwordValidation(value),
