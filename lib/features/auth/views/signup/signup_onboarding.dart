@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:storex/core/routes/app_routes.dart';
 import 'package:storex/features/auth/controllers/signup_onboarding_controller.dart';
 
 import 'package:storex/features/auth/widgets/role_data.dart';
@@ -89,19 +90,18 @@ class SignupOnboarding extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 /// 🧾 LOGIN TEXT
-                Center(
-                  child: TextButton(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Already have an account?".tr),
+                  TextButton(
                     onPressed: () {
-                      Get.back();
+                      Get.toNamed(AppRoutes.login);
                     },
-                    child: Text(
-                      "Already have an account? Login",
-                      style: TextStyle(
-                        color: colors.onSurface.withOpacity(0.7),
-                      ),
-                    ),
+                    child: Text('Login'.tr),
                   ),
-                ),
+                ],
+              ),
               ],
             ),
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:storex/widgets/back_button.dart';
 
 class SignupOnboardingHeader extends StatelessWidget {
   const SignupOnboardingHeader({super.key});
@@ -17,28 +18,8 @@ class SignupOnboardingHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        /// 🔙 Back button
-        Align(
-          alignment: Alignment.centerLeft,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () => Get.back(),
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: colors.outline.withOpacity(0.15),
-                ),
-              ),
-              child: Icon(
-                Icons.arrow_back_ios_new,
-                size: 18,
-                color: colors.onSurface,
-              ),
-            ),
-          ),
-        ),
+     
+        CustomBackButton(),
 
         const SizedBox(height: 12),
 

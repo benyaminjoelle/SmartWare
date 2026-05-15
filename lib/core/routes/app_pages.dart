@@ -3,8 +3,6 @@ import 'package:storex/core/routes/app_routes.dart';
 import 'package:storex/features/auth/bindings/forgot_pass_binding.dart';
 import 'package:storex/features/auth/bindings/login_binding.dart';
 import 'package:storex/features/auth/bindings/singup_onboarding_binding.dart';
-
-import 'package:storex/features/auth/views/login/unified_login.dart';
 import 'package:storex/features/auth/views/signup/signup_onboarding.dart';
 import 'package:storex/features/auth/views/login/forgot_password.dart';
 import 'package:storex/features/auth/views/login/login_onboarding.dart';
@@ -20,7 +18,7 @@ class AppPages {
       binding: OnboardingBinding(),
     ),
     GetPage(
-      name: AppRoutes.unifiedLogin,
+      name: AppRoutes.login,
       page: () => Login(),
       binding: LoginBinding(),
     ),

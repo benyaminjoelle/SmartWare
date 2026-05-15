@@ -86,7 +86,7 @@ class OnboardingView extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             PrimaryButton(
-                              onPressed: () => Get.toNamed('/unifiedLogin'),
+                              onPressed: () => Get.toNamed('/login'),
                               text: 'Login'.tr,
                             ),
 
