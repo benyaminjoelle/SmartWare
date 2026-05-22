@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:storex/features/auth/controllers/client_signup_controller.dart';
-import 'package:storex/features/auth/views/signup/client/account_info_view.dart';
+import 'package:storex/features/auth/views/signup/client/company_info_view.dart';
 import 'package:storex/features/auth/views/signup/client/client_basici_info_view.dart';
 import 'package:storex/features/auth/views/signup/client/documents_view.dart';
 import 'package:storex/features/auth/widgets/signup_progressbar.dart';
@@ -39,9 +39,7 @@ class ClientSignupShell extends StatelessWidget {
                   const SizedBox(height: 10),
                   const SizedBox(height: 28),
 
-                  /// progress
-                  const SignupProgressBar(),
-
+                 
                   const SizedBox(height: 28),
 
                   /// pages
@@ -51,7 +49,7 @@ class ClientSignupShell extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       children: const [
                         ClientBasicInfoView(),
-                        AccountInfoView(),
+                        CompanyInfoView(),
                         DocumentsView(),
                       ],
                     ),

@@ -33,7 +33,7 @@ if (selected == null) {
 
     switch (selected) {
       case AccountType.client:
-        Get.toNamed('/clientShell');
+        Get.toNamed('/signup');
         break;
 
       case AccountType.warehouseOwner:
