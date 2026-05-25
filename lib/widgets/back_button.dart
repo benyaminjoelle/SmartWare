@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CustomBackButton extends StatelessWidget {
-  const CustomBackButton({super.key});
+  final VoidCallback? onPressed;
+
+  const CustomBackButton({
+    super.key,
+    this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -10,19 +15,19 @@ class CustomBackButton extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: EdgeInsets.only(
+      padding: EdgeInsetsDirectional.only(
         top: media.padding.top + 5,
-        left: 10,
+        start: 10,
       ),
       child: Align(
-        alignment: Alignment.topLeft,
+        alignment: AlignmentDirectional.topStart,
         child: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
             color: theme.colorScheme.onSurface,
             size: 23,
           ),
-          onPressed: () => Get.back(),
+          onPressed: onPressed ?? () => Get.back(),
         ),
       ),
     );

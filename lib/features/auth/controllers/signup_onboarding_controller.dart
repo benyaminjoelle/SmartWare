@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:storex/core/constants/app_colors.dart';
 import 'package:storex/features/auth/widgets/role_data.dart';
-import 'package:storex/features/onboarding/widgets/app_snackbar.dart';
+import 'package:storex/widgets/app_snackbar.dart';
 
 class SignupOnboardingController extends GetxController {
   
@@ -23,8 +23,8 @@ class SignupOnboardingController extends GetxController {
     final selected = selectedType.value;
 if (selected == null) {
   AppSnackbar.show(
-    title: "Selection Required",
-    message: "Please choose an account type",
+    title: "Selection Required".tr,
+    message: "Please choose an account type".tr,
     icon: Icons.warning_amber_rounded,
     iconColor:AppColors.error
   );
@@ -33,7 +33,7 @@ if (selected == null) {
 
     switch (selected) {
       case AccountType.client:
-        Get.toNamed('/client-signup');
+        Get.toNamed('/clientShell');
         break;
 
       case AccountType.warehouseOwner:

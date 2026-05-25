@@ -127,7 +127,7 @@ class Login extends StatelessWidget {
                             onPressed: () {
                               Get.toNamed(AppRoutes.signupOnboarding);
                             },
-                            child: Text('Sign Up'.tr),
+                            child: Text('Sign Up'.tr),//lsa ma ttrjmet
                           ),
                         ],
                       ),

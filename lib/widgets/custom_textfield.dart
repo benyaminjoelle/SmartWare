@@ -74,7 +74,7 @@ class CustomTextField extends StatelessWidget {
           keyboardType: keyboardType,
           textInputAction: textInputAction,
           onChanged: onChanged,
-          autovalidateMode: AutovalidateMode.disabled,
+      
 
           style: textTheme.bodyLarge?.copyWith(
             color: colors.onSurface,

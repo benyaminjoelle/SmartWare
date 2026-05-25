@@ -27,7 +27,7 @@ class ForgotPassController extends GetxController{
 
   void startResendTimer(){
     isResendEnabled.value = false;
-    secondsRemaining.value = 10; //reset for 60 after testing
+    secondsRemaining.value += 10; //reset for 60 after testing
     //cancel any timers if already running
     timer?.cancel();
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -61,7 +61,6 @@ class ForgotPassController extends GetxController{
       );
     }
   }
-
 
   //------------states -----------------
   var isLoading = false.obs;

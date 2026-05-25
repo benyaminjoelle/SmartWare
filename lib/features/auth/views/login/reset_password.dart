@@ -45,7 +45,7 @@ class ResetPassword extends StatelessWidget{
                         ),
                          SizedBox(height: media.size.height * 0.01),
                             Text(
-                              "Your password has been successfully reset.".tr,
+                              "Your account has been recovered successfully.".tr,
                               style: theme.textTheme.bodyMedium,
                             ),
                             SizedBox(height: media.size.height * 0.03),
@@ -66,9 +66,15 @@ class ResetPassword extends StatelessWidget{
                             controller.newPasswordController.text),
                             ),
                             SizedBox(height: media.size.height * 0.03),
-                           PrimaryButton(text: "Confirm Password", onPressed: (){
+                           PrimaryButton(text: "Confirm Password".tr, onPressed: (){
                                  if (controller.passwordKey.currentState!.validate()) {
                                    Get.offAllNamed('/login');
+                                   TopSnackbar.show(
+                                     title: "Success".tr,
+                                     message: "Your password has been reset successfully.".tr,
+                                     icon: Icons.check_circle_outline,
+                                     iconColor: theme.colorScheme.tertiary,
+                                   );
           
                                  } else {
                                    // controller.resetPassword();

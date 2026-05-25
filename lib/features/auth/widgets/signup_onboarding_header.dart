@@ -11,7 +11,6 @@ class SignupOnboardingHeader extends StatelessWidget {
     final textScaler = MediaQuery.textScalerOf(context);
 
     final titleSize = textScaler.scale(28).clamp(26.0, 44.0);
-    final subtitleSize = textScaler.scale(16).clamp(12.0, 22.0);
     final bodySize = textScaler.scale(12).clamp(10.0, 18.0);
 
     return Column(

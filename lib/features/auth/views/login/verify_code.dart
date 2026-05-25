@@ -56,7 +56,9 @@ class verifyCode extends StatelessWidget{
                        SizedBox(height: media.size.height * 0.01),
                           Text(
                             "Please enter the 4-digit code sent to your email.".tr,
-                            style: theme.textTheme.bodyMedium,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                            ),
                           ),
                           
                           SizedBox(height: media.size.height * 0.06),
@@ -72,7 +74,8 @@ class verifyCode extends StatelessWidget{
                                 return null;
                               },
                               onCompleted: (pin) {
-                                // Optional: automatically trigger verification when code is typed
+                                // Optionally, you can trigger verification immediately when the user completes entering the code
+                                controller.verifyCode();
                               },
                             ),
                           ),
@@ -109,8 +112,8 @@ class verifyCode extends StatelessWidget{
                           ),
                         
 
-                          SizedBox(height: media.size.height *0.18,),
-                          PrimaryButton(text: "Confirm Code", onPressed: (){
+                          SizedBox(height: media.size.height *0.09,),
+                          PrimaryButton(text: "Confirm Code".tr, onPressed: (){
                               // controller.verifyCode();
                               final errorMessage = Validators.validateCode(controller.codeController.text);
                               if (errorMessage != null) {
@@ -124,7 +127,6 @@ class verifyCode extends StatelessWidget{
                               else {
                                  Get.toNamed('/resetPassword');
                               }
-                              // Get.toNamed('/resetPassword');
                           })]),
                  
                     

@@ -46,21 +46,27 @@ class ForgotPassword extends StatelessWidget {
                       ),
                     ),
                 
-                    Text(
-                      "Forgot Password".tr,
-                      textAlign: TextAlign.start,
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                    Center(
+                      child: Text(
+                        "Forgot Password?".tr,
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     Text(
                       "Please enter the Email associated with your account.".tr,
                       textAlign: TextAlign.start,
-                      style: theme.textTheme.bodyMedium,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium!.color?.withOpacity(0.7)
+                      ),
                     ),
                     Text("We will send you an email with instructions to reset your password.".tr,
                       textAlign: TextAlign.start,
-                      style: theme.textTheme.bodyMedium,),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                      ),
+                      ),
                         
                       SizedBox(height: media.size.height * 0.03,),
                         
@@ -72,8 +78,8 @@ class ForgotPassword extends StatelessWidget {
                       validator: (value) => Validators.emailValidation(value),),
                       
                     // Spacer(),
-                    SizedBox(height: media.size.height * 0.18,),
-                    PrimaryButton(text: "Send Email", onPressed: () {
+                    SizedBox(height: media.size.height * 0.03,),
+                    PrimaryButton(text: "Send Email".tr, onPressed: () {
                        if (controller.formKey.currentState!.validate()){
                         //  controller.sendVerificationEmail();
                         Get.toNamed(AppRoutes.verifyCode);
@@ -81,7 +87,7 @@ class ForgotPassword extends StatelessWidget {
                     else{
                       TopSnackbar.show(
                         title: "Invalid Email".tr,
-                        message: "Please enter a valid email address.".tr,
+                        message: "Please Enter a valid email address.".tr,
                         icon: Icons.error_outline,
                         iconColor: theme.colorScheme.error,
                         );

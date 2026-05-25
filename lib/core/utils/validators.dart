@@ -47,6 +47,33 @@ class Validators {
 
     return null;
   }
+  static String? usernameValidation(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'Username is required'.tr;
+  }
+
+  final v = value.trim().toLowerCase();
+
+  if (v.length < 3) {
+    return 'Username too short'.tr;
+  }
+
+  if (v.length > 20) {
+    return 'Username too long'.tr;
+  }
+
+  // only letters, numbers, underscore
+  if (!RegExp(r'^[a-z0-9_]+$').hasMatch(v)) {
+    return 'Only a-z, 0-9, _ allowed'.tr;
+  }
+
+  // cannot start with number
+  if (RegExp(r'^[0-9]').hasMatch(v)) {
+    return 'Username cannot start with a number'.tr;
+  }
+
+  return null;
+}
   static String? emailValidation(String? value) {
   if (value == null || value.trim().isEmpty) {
     return 'Please Enter your Email'.tr;
@@ -58,7 +85,7 @@ class Validators {
 
   // 3. Validate the format
   if (!emailRegExp.hasMatch(value)) {
-    return 'Please Enter a valid Email address'.tr;
+    return "Please Enter a valid email address.".tr;
   }
 
   // 4. Return null if validation passes
