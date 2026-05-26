@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-enum AccountType { client, warehouseOwner }
+enum AccountType { client, warehouseOwner, warehouseStaff }
 
 class RoleModel {
   final String title;
@@ -30,6 +30,13 @@ List<RoleModel> getRoles(ColorScheme colors) {
       type: AccountType.client,
     ),
 
+    RoleModel(
+      title: "Warehouse Staff".tr,
+      description: "Assist with warehouse operations and inventory management".tr,
+      icon: Icons.person_outline,
+      color: colors.secondary,
+      type: AccountType.warehouseStaff,
+    ),
     RoleModel(
       title: "Warehouse Owner".tr,
       description:

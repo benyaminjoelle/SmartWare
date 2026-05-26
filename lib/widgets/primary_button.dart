@@ -21,8 +21,7 @@ class PrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
-    final isDarkMode = theme.brightness == Brightness.dark;
-
+    
 
     final effectiveOnPressed =
         (isDisabled || isLoading) ? null : onPressed;

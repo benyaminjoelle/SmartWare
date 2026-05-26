@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:storex/core/constants/app_colors.dart';
-
 import 'package:storex/widgets/app_dialog.dart';
 import 'package:storex/widgets/app_snackbar.dart';
 
-class ClientSignupController extends GetxController {
+class OwnerSignupController extends GetxController {
   /// =========================================================
   /// FORM KEY
   /// =========================================================
@@ -38,9 +36,7 @@ class ClientSignupController extends GetxController {
   /// BUSINESS INFO CONTROLLERS
   /// =========================================================
 
-  final businessNameController =
-      TextEditingController();
-
+ 
   /// =========================================================
   /// VERIFICATION CONTROLLERS
   /// =========================================================
@@ -56,8 +52,6 @@ class ClientSignupController extends GetxController {
   final isConfirmPasswordHidden = true.obs;
 
   final isLoading = false.obs;
-
-  ThemeData get theme => Get.theme;
 
   /// =========================================================
   /// VALIDATIONS
@@ -93,7 +87,7 @@ class ClientSignupController extends GetxController {
         title: "Invalid Data",
         message: "Please check your inputs",
         icon: Icons.warning_amber_rounded,
-        iconColor: theme.colorScheme.error,
+        iconColor: AppColors.error,
       );
 
       return;
@@ -113,7 +107,7 @@ class ClientSignupController extends GetxController {
       message:
           "Your progress will be lost if you leave now.",
       confirmText: "Exit",
-      confirmColor: theme.colorScheme.error,
+      confirmColor: Colors.red,
     );
 
     if (result == true) {
@@ -137,8 +131,7 @@ class ClientSignupController extends GetxController {
     passwordController.dispose();
     confirmPasswordController.dispose();
 
-    /// BUSINESS INFO
-    businessNameController.dispose();
+    
 
     /// VERIFICATION
     otpController.dispose();

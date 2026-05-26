@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:storex/features/auth/views/login/verify_Code.dart';
 import 'package:storex/features/onboarding/widgets/top_snackbar.dart';
 
+
 class ForgotPassController extends GetxController{
   //------------TextField Controllers-----------------
   final emailController = TextEditingController();
@@ -13,6 +14,8 @@ class ForgotPassController extends GetxController{
   final confirmPasswordController = TextEditingController();
   final passwordKey = GlobalKey<FormState>();
   final formKey = GlobalKey<FormState>();
+
+  ThemeData get theme => Get.theme;
 
   //-------Timer-----------
   Timer? timer;
@@ -50,14 +53,14 @@ class ForgotPassController extends GetxController{
         title: "Code Resent",
         message: "A new verification code has been sent to your email.",
         icon: Icons.check_circle_outline,
-        iconColor: Colors.green,
+        iconColor: theme.colorScheme.tertiary,
       );
     } catch (e) {
       TopSnackbar.show(
         title: "Error",
         message: "Failed to resend code. Please try again.",
         icon: Icons.error_outline,
-        iconColor: Colors.red,
+        iconColor: theme.colorScheme.error,
       );
     }
   }

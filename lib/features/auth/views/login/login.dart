@@ -1,12 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:storex/core/routes/app_routes.dart';
 import 'package:storex/core/utils/validators.dart';
 import 'package:storex/features/auth/controllers/login_controller.dart';
 import 'package:storex/features/auth/widgets/login_header.dart';
-
 import 'package:storex/widgets/back_button.dart';
 import 'package:storex/widgets/custom_textfield.dart';
 import 'package:storex/widgets/primary_button.dart';
@@ -17,10 +15,10 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
+   
     final controller = Get.find<LoginController>();
     final media = MediaQuery.of(context);
-    final validate = Validators();
+   
 
     // Re-enabling the image path logic for you
     // final String backgroundImage = isDarkMode 

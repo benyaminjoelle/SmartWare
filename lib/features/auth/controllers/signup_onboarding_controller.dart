@@ -33,11 +33,15 @@ if (selected == null) {
 
     switch (selected) {
       case AccountType.client:
-        Get.toNamed('/clientShell');
+        Get.toNamed('/clientSignup');
         break;
 
       case AccountType.warehouseOwner:
-        Get.toNamed('/warehouse-owner-signup');
+        Get.toNamed('/ownerSignup');
+        break;
+
+      case AccountType.warehouseStaff:
+       Get.toNamed('/workerSignup');
         break;
     }
   }
