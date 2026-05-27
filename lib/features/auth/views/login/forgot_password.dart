@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:storex/core/routes/app_routes.dart';
 import 'package:storex/core/utils/validators.dart';
 import 'package:storex/features/auth/controllers/forgot_pass_controller.dart';
-import 'package:storex/features/onboarding/widgets/top_snackbar.dart';
+import 'package:storex/widgets/app_snackbar.dart';
 import 'package:storex/widgets/back_button.dart';
 import 'package:storex/widgets/custom_textfield.dart';
 import 'package:storex/widgets/primary_button.dart';
@@ -85,7 +85,8 @@ class ForgotPassword extends StatelessWidget {
                         Get.toNamed(AppRoutes.verifyCode);
                     }
                     else{
-                      TopSnackbar.show(
+                      AppSnackbar.show(
+                        position: SnackPosition.TOP,
                         title: "Invalid Email".tr,
                         message: "Please Enter a valid email address.".tr,
                         icon: Icons.error_outline,

@@ -12,6 +12,7 @@ class WorkerSignupController extends GetxController {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final phoneController = TextEditingController();
+  final natinalIdController = TextEditingController();
   
   final isPasswordHidden = true.obs;
 

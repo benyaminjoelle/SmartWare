@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:storex/features/auth/views/login/verify_Code.dart';
-import 'package:storex/features/onboarding/widgets/top_snackbar.dart';
+import 'package:storex/widgets/app_snackbar.dart';
 
 
 class ForgotPassController extends GetxController{
@@ -49,14 +49,16 @@ class ForgotPassController extends GetxController{
       // 1. Trigger your backend resend API request here
       // await _authService.resendCode(emailController.text);
       startResendTimer();
-      TopSnackbar.show(
+      AppSnackbar.show(
+        position: SnackPosition.TOP,
         title: "Code Resent",
         message: "A new verification code has been sent to your email.",
         icon: Icons.check_circle_outline,
         iconColor: theme.colorScheme.tertiary,
       );
     } catch (e) {
-      TopSnackbar.show(
+      AppSnackbar.show(
+        position: SnackPosition.TOP,
         title: "Error",
         message: "Failed to resend code. Please try again.",
         icon: Icons.error_outline,

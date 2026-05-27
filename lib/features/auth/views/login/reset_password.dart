@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:storex/core/utils/validators.dart';
 import 'package:storex/features/auth/controllers/forgot_pass_controller.dart';
-import 'package:storex/features/onboarding/widgets/top_snackbar.dart';
+import 'package:storex/widgets/app_snackbar.dart';
 import 'package:storex/widgets/back_button.dart';
 import 'package:storex/widgets/custom_textfield.dart';
 import 'package:storex/widgets/primary_button.dart';
@@ -69,7 +69,8 @@ class ResetPassword extends StatelessWidget{
                            PrimaryButton(text: "Confirm Password".tr, onPressed: (){
                                  if (controller.passwordKey.currentState!.validate()) {
                                    Get.offAllNamed('/login');
-                                   TopSnackbar.show(
+                                   AppSnackbar.show(
+                                     position: SnackPosition.TOP,
                                      title: "Success".tr,
                                      message: "Your password has been reset successfully.".tr,
                                      icon: Icons.check_circle_outline,
@@ -78,7 +79,8 @@ class ResetPassword extends StatelessWidget{
           
                                  } else {
                                    // controller.resetPassword();
-                                   TopSnackbar.show(
+                                   AppSnackbar.show(
+                                     position: SnackPosition.TOP,
                                      title: "Error".tr,
                                      message: "Please ensure your password meets the requirements and both fields match.".tr,
                                      icon: Icons.error_outline,

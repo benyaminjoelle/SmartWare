@@ -5,7 +5,7 @@ import 'package:pinput/pinput.dart';
 import 'package:storex/core/utils/validators.dart';
 import 'package:storex/features/auth/controllers/forgot_pass_controller.dart';
 import 'package:storex/features/auth/widgets/custom_pin_theme.dart';
-import 'package:storex/features/onboarding/widgets/top_snackbar.dart';
+import 'package:storex/widgets/app_snackbar.dart';
 import 'package:storex/widgets/back_button.dart';
 import 'package:storex/widgets/primary_button.dart';
 
@@ -117,7 +117,8 @@ class verifyCode extends StatelessWidget{
                               // controller.verifyCode();
                               final errorMessage = Validators.validateCode(controller.codeController.text);
                               if (errorMessage != null) {
-                               TopSnackbar.show(
+                               AppSnackbar.show(
+                                  position: SnackPosition.TOP,
                                   title: "Invalid Code".tr,
                                   message: errorMessage,
                                   icon: Icons.error_outline,

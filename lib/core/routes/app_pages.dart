@@ -9,7 +9,7 @@ import 'package:storex/features/auth/bindings/worker_signup_binding.dart';
 import 'package:storex/features/auth/views/login/reset_password.dart';
 
 import 'package:storex/features/auth/views/signup/client/client_signup_view.dart';
-import 'package:storex/features/auth/views/signup/manager/worker/manager/worker_signup.dart';
+import 'package:storex/features/auth/views/signup/worker/worker_signup.dart';
 import 'package:storex/features/auth/views/signup/owner/owner_signup_view.dart';
 import 'package:storex/features/auth/views/signup/signup_onboarding.dart';
 import 'package:storex/features/auth/views/login/forgot_password.dart';

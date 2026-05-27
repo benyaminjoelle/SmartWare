@@ -108,15 +108,15 @@ class WorkerSignupView extends StatelessWidget {
                                   SizedBox(height: media.size.height * 0.03),
 
                                   // /// BUSINESS NAME
-                                  // CustomTextField(
-                                  //   controller: controller.businessNameController,
-                                  //   label: "Business Name".tr,
-                                  //   hint: "Enter your business name".tr,
-                                  //   textInputAction: TextInputAction.next,
-                                  //   validator: Validators.nameValidation,
-                                  // ),
+                                  CustomTextField(
+                                    controller: controller.natinalIdController,
+                                    label: "National ID".tr,
+                                    hint: "Enter your national ID".tr,
+                                    textInputAction: TextInputAction.next,
+                                    validator: Validators.nameValidation,
+                                  ),
 
-                                  // SizedBox(height: media.size.height * 0.03),
+                                  SizedBox(height: media.size.height * 0.03),
 
                                   /// EMAIL
                                   CustomTextField(
