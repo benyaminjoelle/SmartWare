@@ -1,7 +1,8 @@
 const Map<String, String> ar = {
   //A
-  "Already have an account?":'لديك حساب مسبق؟',
+   "Already have an account?":'لديك حساب مسبق؟',
    "A new code has been sent successfully!": "تم إرسال رمز جديد بنجاح!",
+   "A new verification email has been sent.": "تم إرسال بريد إلكتروني جديد للتحقق.",
   //B
    "By continuing, you agree to our Terms of Service and Privacy Policy.":"بالمتابعة، أنت توافق على شروط الخدمة وسياسة الخصوصية.",
    "Business Email:":"البريد الإلكتروني الخاص بالعمل:",
@@ -26,7 +27,9 @@ const Map<String, String> ar = {
   //E
    "Email Address:":'البريد الالكتروني:',
    'Email Address / Phone number:':'البريد الالكتروني/رقم الهاتف',
-    "Email Updated": "تم تحديث البريد الإلكتروني",
+   "Email Sent": "تم إرسال البريد الإلكتروني",
+   "Email Updated": "تم تحديث البريد الإلكتروني",
+   "Email verified successfully": "تم التحقق من البريد الإلكتروني بنجاح",
    'Enter Email or Phone number':'ادخل البريد الالكتروني أو رقم الهاتف',
    "Enter your email address":'ادخل عنوان بريدك الإلكتروني',
    'Enter your password':'ادخل كلمة المرور',

@@ -1,7 +1,8 @@
 const Map<String, String> en = {
   //A
    "A new code has been sent successfully!": "A new code has been sent successfully!",
-  "Already have an account?":"Already have an account?",
+   "A new verification email has been sent.": "A new verification email has been sent.",
+   "Already have an account?":"Already have an account?",
   //B
     "By continuing, you agree to our Terms of Service and Privacy Policy.":"By continuing, you agree to our Terms of Service and Privacy Policy.",
 
@@ -20,7 +21,9 @@ const Map<String, String> en = {
   //E
     "Email Address:":"Email Address:",
     'Email Address / Phone number:':'Email Address/Phone number',
+    "Email Sent":"Email Sent",
     "Email Updated": "Email Updated",
+    "Email verified successfully":"Email verified successfully",
     'Enter Email or Phone number':'Enter Email or Phone number',
     "Enter your email address":"Enter your email address",
     'Enter your password':'Enter your password',

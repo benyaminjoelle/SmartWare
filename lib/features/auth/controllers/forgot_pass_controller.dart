@@ -80,8 +80,8 @@ Future<void> changeEmail(String newEmail) async {
 
     AppSnackbar.show(
       position: SnackPosition.TOP,
-      title: "Email Updated",
-      message: "Your email has been changed successfully.",
+      title: "Email Updated".tr,
+      message: "Your email has been changed successfully.".tr,
       icon: Icons.check_circle_outline,
       iconColor: Colors.green,
     );
@@ -112,9 +112,9 @@ Future<void> resendCode() async {
 
     AppSnackbar.show(
       position: SnackPosition.TOP,
-      title: "Email Sent",
+      title: "Email Sent".tr,
       message:
-          "A new verification email has been sent.",
+          "A new verification email has been sent.".tr,
       icon: Icons.check_circle_outline,
       iconColor: Colors.green,
     );
@@ -155,7 +155,7 @@ Future<void> resendCode() async {
       // On success, move to the OTP Screen
       Get.toNamed('/verifyCode');
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("Error".tr, e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -185,7 +185,7 @@ Future<void> resendCode() async {
       // Flow finished! Clear data and go back to Login Screen
       Get.offAllNamed('/login');
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("Error".tr, e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -224,8 +224,8 @@ Future<void> verifyEmail() async {
     );
 
     AppSnackbar.show(
-      title: "Success",
-      message: "Email verified successfully",
+      title: "Success".tr,
+      message: "Email verified successfully".tr,
       icon: Icons.check_circle_outline,
       iconColor: Colors.green,
     );
@@ -235,7 +235,7 @@ Future<void> verifyEmail() async {
     Get.offAllNamed('/ownerHome');
   } catch (e) {
     AppSnackbar.show(
-      title: "Verification Failed",
+      title: "Verification Failed".tr,
       message: e.toString(),
       icon: Icons.error_outline,
       iconColor: theme.colorScheme.error,
