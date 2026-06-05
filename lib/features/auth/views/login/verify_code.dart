@@ -53,14 +53,17 @@ class verifyCode extends StatelessWidget{
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Obx(() => Text(
-                            "${"We sent a verification link to".tr} ${controller.email.value}",
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
-                            ),
-                          )),
-                      
+                 Obx(  
+                      () => Text(
+                        'verification_link_sent'.trParams({
+                          'email': controller.email.value,
+                        }),
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                        ),
+                      ),
+                    ),
                       TextButton(
                         onPressed: () => EmailBottomSheet.show(context, controller, theme), // Open the change email bottom sheet
                         child: Text(
@@ -80,44 +83,14 @@ class verifyCode extends StatelessWidget{
                         ),
                       ),
                        SizedBox(height: media.size.height * 0.01),
-                          // Center(
-                          //   child: Text(
-                          //     "You have received a verification email, please check your spam folder.".tr,
-                          //     textAlign: TextAlign.center,
-                          //     style: theme.textTheme.bodyMedium?.copyWith(
-                          //       color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
-                          //     ),
-                          //   ),
-                          // ),
-                          
-                      //     SizedBox(height: media.size.height * 0.06),
-                          
-                          // 4. THE DIGIT RECTANGLES (Pinput Widget)
-                          // Center(
-                          //   child: CustomPinTheme(
-                          //     controller: controller.codeController,
-                          //     validator: (value) {
-                          //       if (value == null || value.length < 4) {
-                          //         return "Please enter the complete code".tr;
-                          //       }
-                          //       return null;
-                          //     },
-                          //     onCompleted: (pin) {
-                          //       // Optionally, you can trigger verification immediately when the user completes entering the code
-                          //       controller.verifyCode();
-                          //     },
-                          //   ),
-                          // ),
-                          // SizedBox(height: media.size.height *0.05,),
-                        
-
+                      
                           SizedBox(height: media.size.height *0.09,),
-                         PrimaryButton(
-  text: "I have verified".tr,
-  onPressed: () {
-    controller.verifyEmail();
-  },
-),
+                          PrimaryButton(
+                              text: "I have verified".tr,
+                              onPressed: () {
+                                controller.verifyEmail();
+                              },
+                            ),
                             Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -125,7 +98,7 @@ class verifyCode extends StatelessWidget{
                               
                                style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7)),
                                ),
-
+                            //the 
                             Obx((){
                                return controller.isResendEnabled.value ?
                                TextButton(
@@ -136,13 +109,19 @@ class verifyCode extends StatelessWidget{
                                     ),
                                     ),
                                     )
-                                    : Padding(
-                                      padding: EdgeInsets.symmetric(vertical: media.size.height * 0.01,),
-                                      child: Text("Resend email in ${controller.secondsRemaining.value}s".tr,
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7)),
+                                    :Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: media.size.height * 0.01,
                                       ),
-                                      );
+                                      child: Text(
+                                        'resend_email_in'.trParams({
+                                          'seconds': controller.secondsRemaining.value.toString(),
+                                        }),
+                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                                        ),
+                                      ),
+);
                             }
                              
                             ),

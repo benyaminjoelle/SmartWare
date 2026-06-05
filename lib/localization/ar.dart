@@ -1,6 +1,7 @@
 const Map<String, String> ar = {
   //A
   "Already have an account?":'لديك حساب مسبق؟',
+   "A new code has been sent successfully!": "تم إرسال رمز جديد بنجاح!",
   //B
    "By continuing, you agree to our Terms of Service and Privacy Policy.":"بالمتابعة، أنت توافق على شروط الخدمة وسياسة الخصوصية.",
    "Business Email:":"البريد الإلكتروني الخاص بالعمل:",
@@ -8,6 +9,7 @@ const Map<String, String> ar = {
    "Business Name:" :"اسم النشاط التجاري:",
   //C
    'Create Account': 'إنشاء حساب',
+   "Change Email Address": "تغيير عنوان البريد الإلكتروني",
    "Choose your account type to get started with StoreX":'اختر نوع الحساب للبدأ',
    "Client": "عميل",
    "Continue":'المتابعة',
@@ -20,10 +22,11 @@ const Map<String, String> ar = {
 
   //D
   "Don't have an account?":"لا تملك حسابا؟",
-  "Didnt receive the code? ":'لم تستلم الرمز؟ ',
+ "Didnt receive the email? ":'لم تستلم البريد الإلكتروني؟ ',
   //E
    "Email Address:":'البريد الالكتروني:',
    'Email Address / Phone number:':'البريد الالكتروني/رقم الهاتف',
+    "Email Updated": "تم تحديث البريد الإلكتروني",
    'Enter Email or Phone number':'ادخل البريد الالكتروني أو رقم الهاتف',
    "Enter your email address":'ادخل عنوان بريدك الإلكتروني',
    'Enter your password':'ادخل كلمة المرور',
@@ -33,6 +36,7 @@ const Map<String, String> ar = {
    "Enter your business email":"ادخل البريد الالكتروني الخاص بالعمل",
    "Enter your phone number":'ادخل رقم الهاتف الخاص بالعمل',
    "Enter your business name":"أدخل اسم النشاط التجاري",
+   "Enter your email":'ادخل بريدك الالكتروني',
    "Enter your first name":'ادخل اسمك الأول',
    "Enter your last name":'ادخل اسمك الأخير',
    "Exit signup?":'الخروج من انشاء الحساب؟',
@@ -46,6 +50,7 @@ const Map<String, String> ar = {
   //H
    'home': 'الرئيسية',
   //I
+   "I have verified": "لقد قمت بالتحقق",
    "Invalid Code": "رمز غير صالح",
    "Invalid Email": "بريد إلكتروني غير صالح",
    'Invalid number':'رقم غير صالح',
@@ -61,6 +66,7 @@ const Map<String, String> ar = {
    "Manage warehouses, storage, and incoming orders":
       "إدارة المستودعات والتخزين والطلبات الواردة",
   //N
+   "New Email Address": "عنوان البريد الإلكتروني الجديد",
    "New Password": "كلمة مرور جديدة",
    "Name must be at least 2 characters": "يجب أن يكون الاسم على الأقل 2 أحرف",
   //O
@@ -73,9 +79,9 @@ const Map<String, String> ar = {
    'Passwords do not match':'كلمات المرور غير متطابقة',
    'Password must be at least 8 characters long':'كلمة المرور يجب ألا تقل عن 8 محارف',
    'Please confirm your password':'يرجى تأكيد كلمة المرور',
+   "Please check your spam folder if you can't find it.":'يرجى التحقق من مجلد الرسائل غير المرغوب فيها إذا لم تتمكن من العثور عليه.',
    "Please ensure your password meets the requirements and both fields match.": 'يرجى التأكد من أن كلمة المرور تلبي المتطلبات وأن كلا الحقلين متطابقين.',
    "Please Enter a valid email address.":'يرجى إدخال بريد إلكتروني صالح.',
-
    'Please Enter Phone Number': 'يرجى إدخال رقم الهاتف',
    'Please Enter The Password':'يرجى ادخال كلمة المرور',
    "Please enter the complete code": 'يرجى إدخال الرمز الكامل',
@@ -92,14 +98,14 @@ const Map<String, String> ar = {
    "Please check your inputs":"الرجاء مراجعة مدخلاتك",
   //Q
   //R
-   "Resend Code": "إعادة إرسال الرمز",
-   "Resend Code in @seconds s": "إعادة إرسال الرمز خلال @seconds ثانية",
+   "Resend email": "إعادة إرسال البريد",
+   "Resend email in @seconds s": "إعادة إرسال البريد خلال @seconds ثانية",
    "Reset Password": "إعادة تعيين كلمة المرور",
    'Required':'مطلوب',
   //S
    "Success": "نجاح",
-   'Street name is too short':'',
-   'Street name is too long':'اسم الشارع طويل جدا',
+  //  'Street name is too short':'اسم الشارع قصير جدا',
+  //  'Street name is too long':'اسم الشارع طويل جدا',
    "Secure System": "نظام آمن",
    "Send Email": "إرسال البريد الإلكتروني",
    "Smart Inventory": "المخزون الذكي",
@@ -111,12 +117,17 @@ const Map<String, String> ar = {
    "Tell us about yourself and your business":'عرّفنا بك وبنشاطك التجاري',
   //U
    "Understand your warehouse like a living system.":"افهم مستودعك كنظام حي يتفاعل معك.",
+   "Update & Resend Code": "تحديث وإعادة إرسال الرمز",
   //V
-   "Verification Code": "رمز التحقق",
+   "Verify your Email": "تحقق من بريدك الإلكتروني",
+   "Verification Failed": "فشل التحقق",
   //W
    "Welcome Back!": "مرحبًا بعودتك!",
    "Warehouse Owner": "صاحب مستودع",
-   "We will send you an email with instructions to reset your password.": ".سنرسل لك بريدا مع التعليمات لتعيد تعيين كلمة المرور",
+   "We will send a new verification code to this email address.": "سوف نرسل رمز تحقق جديد إلى هذا البريد الإلكتروني.",
+   "We will send you an email with instructions to reset your password.": "سوف نرسل لك بريدًا إلكترونيًا يحتوي على تعليمات لإعادة تعيين كلمة المرور الخاصة بك.",
+   "Wrong email? Change it here": "البريد الإلكتروني خاطئ؟ قم بتغييره هنا",
+   "verification_link_sent": "لقد أرسلنا رابط التحقق إلى @email",
   //X
   //Y
    'You must be at least 18 years old':'يجب أن يكون عمرك 18 عامًا على الأقل',

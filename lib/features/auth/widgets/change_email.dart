@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:storex/features/auth/controllers/forgot_pass_controller.dart';
+import 'package:storex/widgets/custom_textfield.dart';
 import 'package:storex/widgets/primary_button.dart';
 import 'package:storex/widgets/app_snackbar.dart';
 
 class EmailBottomSheet {
   final controller = Get.find<ForgotPassController>();
-  // 1. Made this a static method so it can be called easily
+  //static method so it can be called easily
   static void show(BuildContext context, ForgotPassController controller, ThemeData theme) {
     controller.emailController.text = controller.email.value;
 
@@ -51,18 +52,25 @@ class EmailBottomSheet {
                 style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
               ),
               const SizedBox(height: 20),
-              TextField(
+              CustomTextField(
                 controller: controller.emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: "New Email Address".tr,
-                  hintText: "Enter your email".tr,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.email_outlined),
-                ),
+                label: "New Email Address".tr,
+                hint: "Enter your email".tr,
+                // prefixIcon: const Icon(Icons.email_outlined),
               ),
+              // TextField(
+              //   controller: controller.emailController,
+              //   keyboardType: TextInputType.emailAddress,
+              //   decoration: InputDecoration(
+              //     labelText: "New Email Address".tr,
+              //     hintText: "Enter your email".tr,
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(12),
+              //     ),
+              //     prefixIcon: const Icon(Icons.email_outlined),
+              //   ),
+              // ),
               const SizedBox(height: 25),
               PrimaryButton(
                 text: "Update & Resend Code".tr,
