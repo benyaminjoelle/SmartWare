@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:storex/features/client/home/client_home_view.dart';
+import 'package:storex/features/client/profile/views/client_profile_view.dart';
 import 'package:storex/features/client/root/controller/root_controller.dart';
 
 class ClientRootView extends GetView<RootController> {
@@ -17,7 +18,7 @@ class ClientRootView extends GetView<RootController> {
       const ClientHomeView(),
       const Scaffold(),
       const Scaffold(),
-      const Scaffold(),
+      const ClientProfileView(),
     ];
 
     return Scaffold(

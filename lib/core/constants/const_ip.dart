@@ -1,3 +1,3 @@
 class ConstIp {
-  String ip = '192.168.100.145';
+  String ip = '192.168.1.7';
 }
