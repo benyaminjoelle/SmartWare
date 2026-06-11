@@ -92,7 +92,8 @@ class SignupOnboarding extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         height: 52,
-                        child: PrimaryButton(
+                        child: 
+                        PrimaryButton(
                           onPressed: controller.continueSignup,
                           text: "Continue".tr,
                         ),

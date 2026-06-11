@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:storex/core/constants/const_ip.dart';
 import 'package:storex/core/network/api_error.dart';
 import 'package:storex/core/network/api_service.dart';
@@ -319,17 +320,16 @@ Future<UserModel> verifiedLogin({
   try {
     print('════════ VERIFIED LOGIN START ════════');
 
-    final requestData = {
-      'login': email,
-      'password': password,
-    };
+   final FormData formData = FormData.fromMap({
+    'login': email.trim(),
+    'password': password,
+   });
 
-    print('📤 Request Data:');
-    print(requestData);
+    print('📤 Request Data (Form Data): email = ${email.trim()}');
 
     final response = await _api.post(
-      'http://${ConstIp().ip}:8000/api/email/verified-login',
-      requestData,
+      '$baseUrl/api/email/verified-login',
+      formData,
     );
 
     print('📥 Raw Response:');
@@ -406,23 +406,22 @@ Future<UserModel> verifiedLogin({
     );
   }
 }
-///============================================================
+///==================== RESEND VERIFICATION LINK =======================
 Future<void> resendVerificationEmail({
   required String email,
 }) async {
   try {
     print('════════ RESEND EMAIL START ════════');
 
-    final requestData = {
-      'email': email,
-    };
+    final FormData formData = FormData.fromMap({
+      'email':email.trim(),
+    }); 
 
-    print('📤 Request Data:');
-    print(requestData);
+    print('📤 Request Data (Form Data): email = ${email.trim()}');
 
     final response = await _api.post(
-      'http://${ConstIp().ip}:8000/api/email/resend',
-      requestData,
+      '$baseUrl/api/email/resend',
+      formData,
     );
 
     print('📥 Response:');
@@ -461,16 +460,15 @@ Future<void> changeEmail({
   try {
     print('════════ CHANGE EMAIL START ════════');
 
-    final requestData = {
-      'email': email,
-    };
+    final FormData formData = FormData.fromMap({
+      'email': email.trim(),
+    });
 
-    print('📤 Request Data:');
-    print(requestData);
+    print('📤 Request Data (Form Data): email = ${email.trim()} to ID: $userId');
 
     final response = await _api.post(
       'http://${ConstIp().ip}:8000/api/email/change/$userId',
-      requestData,
+      formData,
     );
 
     print('📥 Response:');
@@ -493,4 +491,97 @@ Future<void> changeEmail({
   }
 }
 ///=============================================================
+
+
+
+
+///=================FORGOT PASSWORD======================
+///==================1st screen==================
+   Future<Map<String,dynamic>> sendPasswordResetEmail ({
+    required String email,
+   }) async {
+    try {
+      print('════════ FORGOT PASSWORD START ════════');
+
+      final FormData formData = FormData.fromMap({
+        'email': email.trim(),
+      });
+
+    print('📤 Requesting reset link for email: ${email.trim()}');
+
+    final response = await _api.post('$baseUrl/api/password/forgot', formData);
+
+    print('📥 Response: $response');
+
+    if (response is ApiError) throw response;
+
+      print('════════ FORGOT PASSWORD SUCCESS ════════');
+      return response;
+    } catch (e) {
+      print('════════ FORGOT PASSWORD ERROR ════════');
+      if (e is ApiError) rethrow;
+      throw ApiError(message: 'Failed to send password reset email');
+    }
+   }
+
+ 
+///=================2nd screen=====================
+  Future<Map<String,dynamic>> verifyResetToken({
+    required String token,
+    required String email,
+  }) async {
+    try{
+      print('════════ VERIFY RESET TOKEN START ════════');
+      print('📤 Query Params -> Email: $email | Token: $token');
+
+
+      final response = await _api.get(
+        '$baseUrl/api/password/reset',
+        queryParameters: {
+          'token': token,
+          'email': email.trim(),
+        },
+      );
+
+      print ('📥 Response: $response');
+
+      if (response is ApiError) throw response;
+
+      print('════════ VERIFY RESET TOKEN SUCCESS ════════');
+      return response;
+    } catch (e) {
+      print('════════ VERIFY RESET TOKEN ERROR ════════');
+      if (e is ApiError) rethrow;
+      throw ApiError(message: 'Link validation or reset request failed');
+    }
+  }
+  ///====================3rd screen=========================
+    Future<Map<String, dynamic>> changePassword ({
+    required String newPassword,
+    required String confirmPassword,
+   }) async {
+    try {
+      print('════════ CHANGE PASSWORD START ════════');
+
+      final FormData formData = FormData.fromMap({
+        'current_password': newPassword,
+        'new_password': confirmPassword,
+      });
+      print('📤 Submitting password alteration request...');
+
+      final response = await _api.post('$baseUrl/api/password/change',
+        formData,
+        );
+      print('📥 Response: $response');
+      if (response is ApiError) throw response;
+
+      print('════════ CHANGE PASSWORD SUCCESS ════════');
+      return response;
+
+    } catch (e) {
+      print('════════ CHANGE PASSWORD ERROR ════════');
+      if (e is ApiError) rethrow;
+      throw ApiError(message: 'Failed to alter account password');
+    }
+   }
 }

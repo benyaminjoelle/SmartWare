@@ -20,6 +20,7 @@ class ApiService {
         headers: {
           'Accept': 'application/json',
         },
+        responseType: ResponseType.json,
         // Allow Dio to handle 4xx manually
         validateStatus: (status) => status != null && status < 500,
       ),
@@ -49,12 +50,12 @@ class ApiService {
           handler.next(response);
         },
         onError: (DioException e, handler) {
-         print('TYPE: ${e.type}');
-  print('MESSAGE: ${e.message}');
-  print('ERROR: ${e.error}');
-  print('STATUS: ${e.response?.statusCode}');
-  print('DATA: ${e.response?.data}');
-  handler.next(e);
+        print('TYPE: ${e.type}');
+        print('MESSAGE: ${e.message}');
+        print('ERROR: ${e.error}');
+        print('STATUS: ${e.response?.statusCode}');
+        print('DATA: ${e.response?.data}');
+        handler.next(e);
         },
       ),
     );

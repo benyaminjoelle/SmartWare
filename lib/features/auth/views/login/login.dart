@@ -70,10 +70,10 @@ class Login extends StatelessWidget {
                       
                       // Email/Phone
                       CustomTextField(
-                        controller: controller.emailController,
+                        controller: controller.loginIdentifierController,
                         label: 'Email Address / Phone number:'.tr,
                         hint: 'Enter Email or Phone number'.tr,
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.text,
                         validator: (value) => Validators.emailOrPhoneValidation(value),
                   
                         // prefixIcon: Icon(

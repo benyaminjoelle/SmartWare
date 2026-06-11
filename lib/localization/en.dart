@@ -43,6 +43,7 @@ const Map<String, String> en = {
   //I
     "I have verified": "I have verified",
     "Invalid Code": "Invalid Code",
+    "Invalid Input":"Invalid Input",
     "Invalid Email":"Invalid Email",
   //J
   //K
@@ -69,6 +70,7 @@ const Map<String, String> en = {
    'Password must be at least 8 characters long':'Password must be at least 8 characters long',
    'Please confirm your password':'Please confirm your password',
    "Please check your spam folder if you can't find it.":"Please check your spam folder if you can't find it.",
+   "Please correct the errors in the form.":"Please correct the errors in the form.",
    "Please ensure your password meets the requirements and both fields match.":"Please ensure your password meets the requirements and both fields match.",
    'Please Enter Email or Phone number':'Please Enter Email or Phone number',
    'Please Enter a valid Email address':'Please Enter a valid Email address',
@@ -96,6 +98,7 @@ const Map<String, String> en = {
     "Success": "Success",
     "Secure System": "Secure System",
     "Send Email": "Send Email",
+    "Something went wrong":"Something went wrong",
     "Smart Inventory": "Smart Inventory",
     "Selection Required":"Selection Required",
     'Sign Up':'Sign Up',

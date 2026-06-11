@@ -78,7 +78,7 @@ class ResetPassword extends StatelessWidget{
                                    );
           
                                  } else {
-                                   // controller.resetPassword();
+                                   controller.updatePassword();
                                    AppSnackbar.show(
                                      position: SnackPosition.TOP,
                                      title: "Error".tr,

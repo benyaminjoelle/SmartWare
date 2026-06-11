@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:storex/core/network/api_error.dart';
 import 'package:storex/core/utils/pref_helper.dart';
 import 'package:storex/features/auth/models/auth_repo.dart';
 import 'package:storex/features/auth/models/user_model.dart';
@@ -11,9 +12,10 @@ class ForgotPassController extends GetxController {
   //------------TextField Controllers-----------------
   final emailController = TextEditingController();
   final codeController = TextEditingController();
-  final newPasswordController = TextEditingController();
 
+  final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+
   final editEmailController = TextEditingController();
 
   final passwordKey = GlobalKey<FormState>();
@@ -21,6 +23,7 @@ class ForgotPassController extends GetxController {
   var password = '';
 
   var email = "user@example.com".obs; 
+  var token = "";
 
   ThemeData get theme => Get.theme;
 
@@ -63,7 +66,7 @@ void onInit() {
       }
     });
   }
-  ///===================CHANGE EMAIL FUNCTION=================
+  ///=================CHANGE EMAIL FUNCTION=================
 Future<void> changeEmail(String newEmail) async {
   try {
     isLoading.value = true;
@@ -134,99 +137,53 @@ Future<void> resendCode() async {
   } finally {
     isLoading.value = false;
   }
+
 }
  
 
   //------------states -----------------
   var isLoading = false.obs;
 
-  // // --- Step 1: Send Email API ---
-  // Future<void> sendVerificationEmail() async {
-  //   try {
-  //     isLoading.value = true;
-  //     // Your API logic here using emailController.text
-  //     // On success, move to the OTP Screen
-  //     Get.toNamed('/verifyCode');
-  //   } catch (e) {
-  //     Get.snackbar("Error".tr, e.toString());
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
 
-
-  // ================HAD BDAL YLI FO2 2ZA MA BDEK YLI FO2 SHILI================
-  // --- Step 1: Send Password Recovery Link Link ---
-  // Future<void> sendForgotPasswordLink() async {
-  //   try {
-  //     isLoading.value = true;
-  //     email.value = emailController.text.trim();
-
-  //     // Call backend to fire password reset mail dispatch
-  //     // await _authRepo.sendPasswordResetEmail(email: email.value); NOT NEEDED AS THIS IS DONE IN THE BACKEND DURING THE CHANGE EMAIL API CALL
-
-  //     // Navigate to the link verification status view layer
-  //     Get.toNamed('/verifyEmail', arguments: {'email': email.value});
-  //   } catch (e) {
-  //     AppSnackbar.show(
-  //       title: "Error".tr, 
-  //       message: e.toString(), 
-  //       icon: Icons.error_outline,
-  //       iconColor: theme.colorScheme.error,
-  //     );
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
-
-//========HAD MA BDI YA KMAN================
-  // --- Step 2: Verify OTP API ---
-  // Future<void> verifyCode() async {
-  //   try {
-  //     isLoading.value = true;
-  //     // Your API logic here using codeController.text
-
-  //     // On success, move to Reset Password Screen
-  //     Get.toNamed('/resetPassword');
-  //   } catch (e) {
-  //     Get.snackbar("Error", e.toString());
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
-
-  // --- Step 3: Reset Password API ---
-  Future<void> updatePassword() async {
+  //============ Step 1: Send Password Recovery Link ===========
+  Future<void> sendForgotPasswordLink() async {
     try {
       isLoading.value = true;
-      // Your API logic here using newPasswordController.text
+      email.value = emailController.text.trim();
 
-      // Flow finished! Clear data and go back to Login Screen
-      Get.offAllNamed('/login');
+      // Call backend to fire password reset mail dispatch
+      await _authRepo.sendPasswordResetEmail(email: email.value);       // Navigate to the link verification status view layer
+      Get.toNamed('/verifyEmail', arguments: {'email': email.value});
     } catch (e) {
-      Get.snackbar("Error".tr, e.toString());
+      AppSnackbar.show(
+        title: "Error".tr, 
+        message: e.toString(), 
+        icon: Icons.error_outline,
+        iconColor: theme.colorScheme.error,
+      );
     } finally {
       isLoading.value = false;
     }
   }
-Future<void> verifyEmail() async {
+//========== Step 2: verify email ==============
+  Future<void> verifyEmail() async {
   try {
     isLoading.value = true;
 
-    final user = await _authRepo.verifiedLogin(
-      email: email.value,
-      password: password,
-    );
+    final String verificationToken = codeController.text.trim();
 
-    // Save token
-    if (user.token != null) {
-    await PrefHelper.saveToken(user.token!);}
-    // Save user info
-    await PrefHelper.saveUserId(user.id);
-    await PrefHelper.saveUserName('${user.firstName} ${user.lastName}',);
-    await PrefHelper.saveUserEmail(user.email,);
-    await PrefHelper.saveUserPhone(user.phoneNumber,);
-    await PrefHelper.saveBusinessName(user.businessName,);
+    if (verificationToken.isEmpty){
+      throw ApiError(message: 'please click the verification link that was sent to your Email'); //needs translating
+    }
+
+    final response = await _authRepo.verifyResetToken(
+      email: email.value,
+      token: verificationToken,
+    );
+    //saving the token for screen 3
+    token = verificationToken;
+
+    await PrefHelper.saveUserEmail(email.value);
 
     AppSnackbar.show(
       title: "Success".tr,
@@ -235,7 +192,7 @@ Future<void> verifyEmail() async {
       iconColor: Colors.green,
     );
 
-    print("✅ TOKEN = ${user.token}");
+    // print("✅ TOKEN = ${token}");
 
 
     Get.toNamed('/resetPassword');
@@ -252,6 +209,32 @@ Future<void> verifyEmail() async {
   }
  
 }
+
+  //=========== Step 3: Reset Password API ===============
+  Future<void> updatePassword() async {
+    try {
+      isLoading.value = true;
+
+      final String newPass = newPasswordController.text;
+      final String confirmPass = confirmPasswordController.text;
+    await _authRepo.changePassword(
+      newPassword: newPass,
+      confirmPassword: confirmPass
+      );
+
+      AppSnackbar.show(
+        title: "Success".tr,
+        message: "Password changed successfully!"
+      );
+      // Flow finished! Clear data and go back to Login Screen
+      Get.offAllNamed('/login');
+    } catch (e) {
+     AppSnackbar.show(title:"Error".tr, message: "Something went wrong");
+
+    } finally {
+      isLoading.value = false;
+    }
+  }
   @override
   void onClose() {
     emailController.dispose();

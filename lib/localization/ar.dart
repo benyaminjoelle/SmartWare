@@ -58,6 +58,7 @@ const Map<String, String> ar = {
    "I have verified": "لقد قمت بالتحقق",
    "Invalid Code": "رمز غير صالح",
    "Invalid Email": "بريد إلكتروني غير صالح",
+   "Invalid Input":'ادخال غير صالح',
    'Invalid number':'رقم غير صالح',
    'Invalid price': 'سعر غير صالح',
    "Invalid Data":'البيانات خاطئة',
@@ -87,6 +88,7 @@ const Map<String, String> ar = {
    'Password must be at least 8 characters long':'كلمة المرور يجب ألا تقل عن 8 محارف',
    'Please confirm your password':'يرجى تأكيد كلمة المرور',
    "Please check your spam folder if you can't find it.":'يرجى التحقق من مجلد الرسائل غير المرغوب فيها إذا لم تتمكن من العثور عليه.',
+   "Please correct the errors in the form.":'يرجى اصلاح الاخطاء في الادخالات',
    "Please ensure your password meets the requirements and both fields match.": 'يرجى التأكد من أن كلمة المرور تلبي المتطلبات وأن كلا الحقلين متطابقين.',
    'Please Enter Email or Phone number':'يرجى إدخال البريد الإلكتروني أو رقم الهاتف',
    "Please Enter a valid email address.":'يرجى إدخال بريد إلكتروني صالح.',
@@ -105,7 +107,7 @@ const Map<String, String> ar = {
    "Please check your inputs":"الرجاء مراجعة مدخلاتك",
   //Q
   //R
-  "Registration Error.": ".خطأ في التسجيل",
+  "Registration Error.": "خطأ في التسجيل",
    "Resend email": "إعادة إرسال البريد",
    "Resend email in @seconds s": "إعادة إرسال البريد خلال @seconds ثانية",
    "Reset Password": "إعادة تعيين كلمة المرور",
@@ -116,6 +118,7 @@ const Map<String, String> ar = {
   //  'Street name is too long':'اسم الشارع طويل جدا',
    "Secure System": "نظام آمن",
    "Send Email": "إرسال البريد الإلكتروني",
+   "Something went wrong": "حدث خطأ ما",
    "Smart Inventory": "المخزون الذكي",
    "Selection Required": "الاختيار مطلوب",
    'Sign Up': 'إنشاء حساب',
