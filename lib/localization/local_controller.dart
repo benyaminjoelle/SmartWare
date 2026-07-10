@@ -15,6 +15,7 @@ class LocaleController extends GetxController {
     Get.updateLocale(locale);
 
     await PrefHelper.saveLanguage(code);
+     currentLocale.refresh();
   }
 
   Future<void> toggleLanguage() async {

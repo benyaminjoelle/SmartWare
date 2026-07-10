@@ -13,4 +13,8 @@ class AppRoutes {
   static const clientHome = '/clientHome';
   static const resetPassword = '/resetPassword';
   static const userverification = '/userVerification';
+  static const clientProfile = '/clientProfile';
+  static const clientSettings = '/clientSettings';
+  static const clientSecurity = '/clientSecurity';
+  static const clientCompletion = '/clientCompletion';
 }

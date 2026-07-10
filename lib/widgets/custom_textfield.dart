@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
-  final String label;
+  final String? label;
   final Widget? suffix;
   final String hint;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
+  final Color? fillColor;
 
   final bool isPassword;
   final bool isObscure;
@@ -18,9 +19,12 @@ class CustomTextField extends StatelessWidget {
   final TextInputAction textInputAction;
   final void Function(String)? onChanged;
 
+  final bool isSearch; 
+
   const CustomTextField({
     super.key,
-    required this.label,
+    this.label,
+    this.isSearch = false,
     this.suffix,
     this.hint = '',
     this.controller,
@@ -33,6 +37,7 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.next,
     this.onChanged,
+    this.fillColor,
   });
 
   @override
@@ -43,18 +48,19 @@ class CustomTextField extends StatelessWidget {
 
     final size = MediaQuery.sizeOf(context);
 
-    final horizontalPadding = size.width * 0.045;
-    final verticalPadding = size.height * 0.02;
-    final borderRadius = size.width * 0.024;
+    final horizontalPadding = isSearch ? 20.0 : size.width * 0.045;
+    final verticalPadding = isSearch ? 12.0 : size.height * 0.02;
+    final borderRadius = isSearch ? 30.0 : size.width * 0.024;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if(label != null)
         Row(
           children: [
             Expanded(
               child: Text(
-                label,
+                label!,
                 style: textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: colors.onSurface,
@@ -100,7 +106,7 @@ class CustomTextField extends StatelessWidget {
                 : suffixIcon,
             prefixIcon: prefixIcon,
             filled: true,
-            fillColor: colors.surfaceContainerHighest.withOpacity(0.2),
+            fillColor: fillColor ?? colors.surfaceContainerHighest.withOpacity(0.2),
 
             contentPadding: EdgeInsets.symmetric(
               horizontal: horizontalPadding,
@@ -114,14 +120,14 @@ class CustomTextField extends StatelessWidget {
 
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(borderRadius),
-              borderSide: BorderSide(
+              borderSide: isSearch ? BorderSide.none : BorderSide(
                 color: colors.outline.withOpacity(0.15),
               ),
             ),
 
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(borderRadius),
-              borderSide: BorderSide(
+              borderSide: isSearch ? BorderSide.none: BorderSide(
                 color: colors.primary,
                 width: 1.5,
               ),

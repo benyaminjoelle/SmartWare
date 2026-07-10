@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:storex/core/constants/theme.dart';
-
 import 'package:storex/core/utils/pref_helper.dart';
 import 'package:storex/localization/app_translation.dart';
 
@@ -12,19 +11,36 @@ import 'core/routes/app_routes.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load saved language
   final lang = await PrefHelper.getLanguage();
+  final savedTheme = await PrefHelper.getTheme(); 
+  // savedTheme: "dark" | "light" | "system" | null
 
-  runApp(MyApp(initialLang: lang));
+  runApp(MyApp(
+    initialLang: lang,
+    savedTheme: savedTheme,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   final String initialLang;
+  final String? savedTheme;
 
   const MyApp({
     super.key,
     required this.initialLang,
+    required this.savedTheme,
   });
+
+  ThemeMode get themeMode {
+    switch (savedTheme) {
+      case "dark":
+        return ThemeMode.dark;
+      case "light":
+        return ThemeMode.light;
+      default:
+        return ThemeMode.system; // 🌗 your requirement
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +50,7 @@ class MyApp extends StatelessWidget {
       // THEMES
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: themeMode,
 
       // LOCALIZATION
       translations: AppTranslation(),
@@ -42,7 +58,7 @@ class MyApp extends StatelessWidget {
       fallbackLocale: const Locale('en'),
 
       // ROUTES
-      initialRoute: AppRoutes.onboarding,
+      initialRoute: AppRoutes.clientHome,
       getPages: AppPages.pages,
     );
   }

@@ -18,7 +18,15 @@ import 'package:storex/features/auth/views/login/forgot_password.dart';
 import 'package:storex/features/auth/views/login/verify_email.dart';
 
 import 'package:storex/features/auth/views/login/login.dart';
-import 'package:storex/features/client/home/client_home_view.dart';
+import 'package:storex/features/client/home/views/client_home_view.dart';
+import 'package:storex/features/client/profile/bindings/client_profile_binding.dart';
+import 'package:storex/features/client/profile/bindings/client_profile_completion_binding.dart';
+import 'package:storex/features/client/profile/bindings/client_security_binding.dart';
+import 'package:storex/features/client/profile/bindings/client_settings_binding.dart';
+import 'package:storex/features/client/profile/views/client_profile_completion.dart';
+import 'package:storex/features/client/profile/views/client_profile_view.dart';
+import 'package:storex/features/client/profile/views/client_security.dart';
+import 'package:storex/features/client/profile/views/client_settings.dart';
 import 'package:storex/features/client/root/binding/root_binding.dart';
 import 'package:storex/features/client/root/view/root_view.dart';
 import 'package:storex/features/onboarding/binding/carousel_binding.dart';
@@ -85,9 +93,33 @@ class AppPages {
      GetPage(
       name: AppRoutes.clientHome,
       page: () => ClientHomeView(),
-      //binding: ClientRootBinding(),
+      binding: ClientRootBinding(),
 
     ),
+    GetPage(
+      name: AppRoutes.clientProfile,
+      page: () => ClientProfileView(),
+      binding: ClientProfileBinding(),
+
+    ),
+    GetPage(
+      name: AppRoutes.clientSettings,
+      page: () => ClientSettings(),
+binding: ClientSettingsBinding()
+    ),
+     GetPage(
+      name: AppRoutes.clientSecurity,
+      page: () => ClientSecurity(),
+binding: ClientSecurityBinding()
+    ),
+     GetPage(
+      name: AppRoutes.clientCompletion,
+      page: () => ClientProfileCompletionView(),
+binding: ClientProfileCompletionBinding()
+    ),
+    GetPage(
+      name: AppRoutes.userverification,
+      page: () => UserVerification())
   
     
   

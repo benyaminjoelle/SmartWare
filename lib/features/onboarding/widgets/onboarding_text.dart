@@ -16,7 +16,7 @@ class OnboardingText extends StatelessWidget {
 mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "StoreX",
+          "SmartWare",
           style: TextStyle(
             fontFamily: 'Michroma',
             fontSize: titleSize,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:storex/features/auth/models/auth_repo.dart';
 import 'package:storex/features/auth/models/user_model.dart';
-import 'package:storex/features/auth/widgets/role_data.dart';
 import 'package:storex/widgets/app_snackbar.dart';
 
 class LoginController extends GetxController {

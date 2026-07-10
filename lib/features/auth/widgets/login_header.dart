@@ -15,7 +15,7 @@ class LoginHeader extends StatelessWidget {
         
               const SizedBox(height: 10),
         Text(
-          "StoreX",
+          "SmartWare",
           style: const TextStyle(
             fontFamily: 'Michroma',
             fontSize: 28,

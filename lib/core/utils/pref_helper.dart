@@ -11,7 +11,19 @@ class PrefHelper {
   static const String _userPhoneKey = 'user_phone';
   static const String _userPhotoKey = 'user_photo';
   static const String _businessNameKey = 'business_name';
+  static const String _themeKey = 'theme_mode';
 
+// null = system, true = dark, false = light
+
+static Future<void> saveTheme(String mode) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(_themeKey, mode);
+}
+
+static Future<String?> getTheme() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString(_themeKey);
+}
 //-------------------Auth Token------------------
  static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -95,9 +107,14 @@ static Future<String?> getUserPhoto() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString(_userPhotoKey);
 }
-static Future<void> saveUserPhoto(String url) async {
+static Future<void> saveUserPhoto(String path) async {
   final prefs = await SharedPreferences.getInstance();
-  await prefs.setString(_userPhotoKey, url);
+  await prefs.setString(_userPhotoKey,path);
+}
+static Future<void> deleteUserPhoto() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove(_userPhotoKey);
+
 }
 
 //------------------Clean User (logout)----------------

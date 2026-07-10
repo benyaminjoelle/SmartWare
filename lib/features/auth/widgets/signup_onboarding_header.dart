@@ -24,7 +24,7 @@ class SignupOnboardingHeader extends StatelessWidget {
 
         /// 🧠 Brand
         Text(
-          "StoreX",
+          "SmartWare",
           style: TextStyle(
             fontFamily: 'Michroma',
             fontSize: titleSize,
