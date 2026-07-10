@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/features/auth/models/user_model.dart';
-
-
+import 'package:smartware/features/auth/models/user_model.dart';
 
 class RoleModel {
   final String title;
@@ -33,15 +31,15 @@ List<RoleModel> getRoles(ColorScheme colors) {
 
     RoleModel(
       title: "Warehouse Staff".tr,
-      description: "Assist with warehouse operations and inventory management".tr,
+      description:
+          "Assist with warehouse operations and inventory management".tr,
       icon: Icons.person_outline,
       color: colors.secondary,
       type: UserRole.worker,
     ),
     RoleModel(
       title: "Warehouse Owner".tr,
-      description:
-          "Manage warehouses, storage, and incoming orders".tr,
+      description: "Manage warehouses, storage, and incoming orders".tr,
       icon: Icons.warehouse_outlined,
       color: colors.tertiary,
       type: UserRole.warehouseAdmin,

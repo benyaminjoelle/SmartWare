@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'glass_container.dart';
 
 class LogoutTile extends StatelessWidget {
@@ -44,7 +45,7 @@ class LogoutTile extends StatelessWidget {
 
                 Expanded(
                   child: Text(
-                    "Sign Out",
+                    "Sign Out".tr,
                     style: theme
                         .textTheme.bodyMedium
                         ?.copyWith(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/widgets/back_button.dart';
+import 'package:smartware/widgets/back_button.dart';
 
 class SignupOnboardingHeader extends StatelessWidget {
   const SignupOnboardingHeader({super.key});
@@ -17,14 +17,13 @@ class SignupOnboardingHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-     
         CustomBackButton(),
 
         const SizedBox(height: 12),
 
         /// 🧠 Brand
         Text(
-          "StoreX",
+          "smartware",
           style: TextStyle(
             fontFamily: 'Michroma',
             fontSize: titleSize,
@@ -35,10 +34,9 @@ class SignupOnboardingHeader extends StatelessWidget {
 
         const SizedBox(height: 16),
 
-
         /// 🌿 Subtitle
         Text(
-          "Choose your account type to get started with StoreX".tr,
+          "Choose your account type to get started with smartware".tr,
           style: TextStyle(
             fontSize: bodySize,
             color: colors.onSurface.withOpacity(0.6),

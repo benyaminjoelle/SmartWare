@@ -1,15 +1,14 @@
 import 'package:dio/dio.dart';
-import 'package:storex/core/constants/const_ip.dart';
-import 'package:storex/core/utils/pref_helper.dart';
+import 'package:smartware/core/constants/const_ip.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
 
 class DioClient {
   final Dio _dio = Dio(
     BaseOptions(
-
       baseUrl: 'http://${ConstIp().ip}:8000/api',
 
       headers: {
-      //  "Content-Type": "application/json",
+        //  "Content-Type": "application/json",
         "Accept": "application/json",
       },
     ),
@@ -24,7 +23,7 @@ class DioClient {
             options.headers['Authorization'] = 'Bearer $token';
           }
 
-          final lang = await PrefHelper.getLanguage() ;
+          final lang = await PrefHelper.getLanguage();
           options.headers['Accept-Language'] = lang;
 
           print('➡️ [DioClient] Request: ${options.method} ${options.uri}');

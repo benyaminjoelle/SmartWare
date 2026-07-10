@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/features/client/profile/steps/client_documentations.dart';
-import 'package:storex/features/client/profile/steps/client_location.dart';
-import 'package:storex/features/client/profile/steps/client_prefrences.dart';
-import 'package:storex/widgets/progressbar.dart';
+import 'package:smartware/features/client/profile/steps/client_documentations.dart';
+import 'package:smartware/features/client/profile/steps/client_location.dart';
+import 'package:smartware/features/client/profile/steps/client_prefrences.dart';
+import 'package:smartware/widgets/progressbar.dart';
 
 import '../controllers/client_profile_completion_controller.dart';
 import '../widgets/glass_container.dart';
-
-
 
 class ClientProfileCompletionView extends StatelessWidget {
   const ClientProfileCompletionView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller =
-        Get.put(ClientProfileCompletionController());
+    final controller = Get.put(ClientProfileCompletionController());
 
     final theme = Theme.of(context);
     final cs = theme.colorScheme;

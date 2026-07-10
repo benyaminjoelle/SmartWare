@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/core/utils/pref_helper.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
 
 class ClientSettingsController extends GetxController {
   final isDarkMode = false.obs;
   final isNotificationsEnabled = true.obs;
 
-
   @override
   void onInit() {
     super.onInit();
     _loadTheme();
-
   }
-
 
   Future<void> _loadTheme() async {
     final saved = await PrefHelper.getTheme();

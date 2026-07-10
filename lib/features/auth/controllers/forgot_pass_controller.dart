@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/core/utils/pref_helper.dart';
-import 'package:storex/features/auth/models/auth_repo.dart';
-import 'package:storex/features/auth/models/user_model.dart';
-import 'package:storex/widgets/app_snackbar.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
+import 'package:smartware/features/auth/models/auth_repo.dart';
+import 'package:smartware/features/auth/models/user_model.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
 
 class ForgotPassController extends GetxController {
   final AuthRepo _authRepo = AuthRepo();
@@ -20,7 +20,7 @@ class ForgotPassController extends GetxController {
   final formKey = GlobalKey<FormState>();
   var password = '';
 
-  var email = "user@example.com".obs; 
+  var email = "user@example.com".obs;
 
   ThemeData get theme => Get.theme;
 
@@ -30,24 +30,24 @@ class ForgotPassController extends GetxController {
   var isResendEnabled = true.obs;
 
   @override
-void onInit() {
-  super.onInit();
+  void onInit() {
+    super.onInit();
 
-  print("════════ VERIFY SCREEN ARGS ════════");
-  print(Get.arguments);
+    print("════════ VERIFY SCREEN ARGS ════════");
+    print(Get.arguments);
 
-  final args = Get.arguments;
+    final args = Get.arguments;
 
-  if (args != null) {
-    email.value = args['email'] ?? '';
-    password = args['password'] ?? '';
+    if (args != null) {
+      email.value = args['email'] ?? '';
+      password = args['password'] ?? '';
+    }
+
+    print("EMAIL = $email");
+    print("PASSWORD = $password");
+
+    startResendTimer();
   }
-
-  print("EMAIL = $email");
-  print("PASSWORD = $password");
-
-  startResendTimer();
-}
 
   void startResendTimer() {
     isResendEnabled.value = false;
@@ -63,79 +63,73 @@ void onInit() {
       }
     });
   }
+
   ///===================CHANGE EMAIL FUNCTION=================
-Future<void> changeEmail(String newEmail) async {
-  try {
-    isLoading.value = true;
+  Future<void> changeEmail(String newEmail) async {
+    try {
+      isLoading.value = true;
 
-    final userId = await PrefHelper.getUserId();
+      final userId = await PrefHelper.getUserId();
 
-    if (userId == null) {
-      throw Exception("User ID not found in local storage");
+      if (userId == null) {
+        throw Exception("User ID not found in local storage");
+      }
+
+      await _authRepo.changeEmail(userId: userId, email: newEmail);
+
+      email.value = newEmail;
+
+      await PrefHelper.saveUserEmail(newEmail);
+
+      AppSnackbar.show(
+        position: SnackPosition.TOP,
+        title: "Email Updated".tr,
+        message: "Your email has been changed successfully.".tr,
+        icon: Icons.check_circle_outline,
+        iconColor: Colors.green,
+      );
+    } catch (e) {
+      AppSnackbar.show(
+        position: SnackPosition.TOP,
+        title: "Error".tr,
+        message: e.toString(),
+        icon: Icons.error_outline,
+        iconColor: theme.colorScheme.error,
+      );
+    } finally {
+      isLoading.value = false;
     }
-
-    await _authRepo.changeEmail(
-      userId: userId,
-      email: newEmail,
-    );
-
-    email.value = newEmail;
-
-    await PrefHelper.saveUserEmail(newEmail);
-
-    AppSnackbar.show(
-      position: SnackPosition.TOP,
-      title: "Email Updated".tr,
-      message: "Your email has been changed successfully.".tr,
-      icon: Icons.check_circle_outline,
-      iconColor: Colors.green,
-    );
-
-  } catch (e) {
-    AppSnackbar.show(
-      position: SnackPosition.TOP,
-      title: "Error".tr,
-      message: e.toString(),
-      icon: Icons.error_outline,
-      iconColor: theme.colorScheme.error,
-    );
-  } finally {
-    isLoading.value = false;
   }
-}
-Future<void> resendCode() async {
-  if (!isResendEnabled.value) return;
 
-  try {
-    isLoading.value = true;
+  Future<void> resendCode() async {
+    if (!isResendEnabled.value) return;
 
-    await _authRepo.resendVerificationEmail(
-      email: email.value,
-    );
+    try {
+      isLoading.value = true;
 
-    startResendTimer();
+      await _authRepo.resendVerificationEmail(email: email.value);
 
-    AppSnackbar.show(
-      position: SnackPosition.TOP,
-      title: "Email Sent".tr,
-      message:
-          "A new verification email has been sent.".tr,
-      icon: Icons.check_circle_outline,
-      iconColor: Colors.green,
-    );
-  } catch (e) {
-    AppSnackbar.show(
-      position: SnackPosition.TOP,
-      title: "Error",
-      message: e.toString(),
-      icon: Icons.error_outline,
-      iconColor: theme.colorScheme.error,
-    );
-  } finally {
-    isLoading.value = false;
+      startResendTimer();
+
+      AppSnackbar.show(
+        position: SnackPosition.TOP,
+        title: "Email Sent".tr,
+        message: "A new verification email has been sent.".tr,
+        icon: Icons.check_circle_outline,
+        iconColor: Colors.green,
+      );
+    } catch (e) {
+      AppSnackbar.show(
+        position: SnackPosition.TOP,
+        title: "Error",
+        message: e.toString(),
+        icon: Icons.error_outline,
+        iconColor: theme.colorScheme.error,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
-}
- 
 
   //------------states -----------------
   var isLoading = false.obs;
@@ -154,7 +148,6 @@ Future<void> resendCode() async {
   //   }
   // }
 
-
   // ================HAD BDAL YLI FO2 2ZA MA BDEK YLI FO2 SHILI================
   // --- Step 1: Send Password Recovery Link Link ---
   // Future<void> sendForgotPasswordLink() async {
@@ -169,8 +162,8 @@ Future<void> resendCode() async {
   //     Get.toNamed('/verifyEmail', arguments: {'email': email.value});
   //   } catch (e) {
   //     AppSnackbar.show(
-  //       title: "Error".tr, 
-  //       message: e.toString(), 
+  //       title: "Error".tr,
+  //       message: e.toString(),
   //       icon: Icons.error_outline,
   //       iconColor: theme.colorScheme.error,
   //     );
@@ -179,7 +172,7 @@ Future<void> resendCode() async {
   //   }
   // }
 
-//========HAD MA BDI YA KMAN================
+  //========HAD MA BDI YA KMAN================
   // --- Step 2: Verify OTP API ---
   // Future<void> verifyCode() async {
   //   try {
@@ -209,49 +202,49 @@ Future<void> resendCode() async {
       isLoading.value = false;
     }
   }
-Future<void> verifyEmail() async {
-  try {
-    isLoading.value = true;
 
-    final user = await _authRepo.verifiedLogin(
-      email: email.value,
-      password: password,
-    );
+  Future<void> verifyEmail() async {
+    try {
+      isLoading.value = true;
 
-    // Save token
-    if (user.token != null) {
-    await PrefHelper.saveToken(user.token!);}
-    // Save user info
-    await PrefHelper.saveUserId(user.id);
-    await PrefHelper.saveUserName('${user.firstName} ${user.lastName}',);
-    await PrefHelper.saveUserEmail(user.email,);
-    await PrefHelper.saveUserPhone(user.phoneNumber,);
-    await PrefHelper.saveBusinessName(user.businessName,);
+      final user = await _authRepo.verifiedLogin(
+        email: email.value,
+        password: password,
+      );
 
-    AppSnackbar.show(
-      title: "Success".tr,
-      message: "Email verified successfully".tr,
-      icon: Icons.check_circle_outline,
-      iconColor: Colors.green,
-    );
+      // Save token
+      if (user.token != null) {
+        await PrefHelper.saveToken(user.token!);
+      }
+      // Save user info
+      await PrefHelper.saveUserId(user.id);
+      await PrefHelper.saveUserName('${user.firstName} ${user.lastName}');
+      await PrefHelper.saveUserEmail(user.email);
+      await PrefHelper.saveUserPhone(user.phoneNumber);
+      await PrefHelper.saveBusinessName(user.businessName);
 
-    print("✅ TOKEN = ${user.token}");
+      AppSnackbar.show(
+        title: "Success".tr,
+        message: "Email verified successfully".tr,
+        icon: Icons.check_circle_outline,
+        iconColor: Colors.green,
+      );
 
+      print("✅ TOKEN = ${user.token}");
 
-    Get.toNamed('/resetPassword');
-
-  } catch (e) {
-    AppSnackbar.show(
-      title: "Verification Failed".tr,
-      message: e.toString(),
-      icon: Icons.error_outline,
-      iconColor: theme.colorScheme.error,
-    );
-  } finally {
-    isLoading.value = false;
+      Get.toNamed('/resetPassword');
+    } catch (e) {
+      AppSnackbar.show(
+        title: "Verification Failed".tr,
+        message: e.toString(),
+        icon: Icons.error_outline,
+        iconColor: theme.colorScheme.error,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
- 
-}
+
   @override
   void onClose() {
     emailController.dispose();

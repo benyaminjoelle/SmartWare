@@ -12,10 +12,9 @@ class LoginHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        
-              const SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(
-          "StoreX",
+          "smartware",
           style: const TextStyle(
             fontFamily: 'Michroma',
             fontSize: 28,

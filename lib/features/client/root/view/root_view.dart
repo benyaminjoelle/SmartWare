@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/features/client/home/client_home_view.dart';
-import 'package:storex/features/client/profile/views/client_profile_view.dart';
-import 'package:storex/features/client/root/controller/root_controller.dart';
+import 'package:smartware/features/client/cart/views/client_cart_view.dart';
+import 'package:smartware/features/client/home/client_home_view.dart';
+import 'package:smartware/features/client/orders/views/client_orders_view.dart';
+import 'package:smartware/features/client/profile/views/client_profile_view.dart';
+import 'package:smartware/features/client/root/controller/root_controller.dart';
 
 class ClientRootView extends GetView<RootController> {
   const ClientRootView({super.key});
@@ -16,8 +18,9 @@ class ClientRootView extends GetView<RootController> {
 
     final pages = [
       const ClientHomeView(),
-      const Scaffold(),
-      const Scaffold(),
+
+      ClientCartView(),
+      ClientOrdersView(),
       const ClientProfileView(),
     ];
 
@@ -42,10 +45,7 @@ class ClientRootView extends GetView<RootController> {
           borderRadius: BorderRadius.circular(28),
 
           child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 15,
-              sigmaY: 15,
-            ),
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
 
             child: Container(
               height: media.size.height * 0.085,
@@ -71,98 +71,69 @@ class ClientRootView extends GetView<RootController> {
 
                       indicatorColor: Colors.transparent,
 
-                      overlayColor: WidgetStateProperty.all(
-                        Colors.transparent,
-                      ),
+                      overlayColor: WidgetStateProperty.all(Colors.transparent),
 
-                      labelTextStyle:
-                          WidgetStateProperty.resolveWith(
-                        (states) {
-                          if (states.contains(
-                            WidgetState.selected,
-                          )) {
-                            return TextStyle(
-                              color: theme.primary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12,
-                            );
-                          }
-
+                      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
                           return TextStyle(
-                            color: theme.onSurface.withValues(
-                              alpha: 0.6,
-                            ),
-                            fontWeight: FontWeight.w500,
+                            color: theme.primary,
+                            fontWeight: FontWeight.w600,
                             fontSize: 12,
                           );
-                        },
-                      ),
+                        }
 
-                      iconTheme:
-                          WidgetStateProperty.resolveWith(
-                        (states) {
-                          if (states.contains(
-                            WidgetState.selected,
-                          )) {
-                            return IconThemeData(
-                              color: theme.primary,
-                              size: 26,
-                            );
-                          }
+                        return TextStyle(
+                          color: theme.onSurface.withValues(alpha: 0.6),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                        );
+                      }),
 
-                          return IconThemeData(
-                            color: theme.onSurface.withValues(
-                              alpha: 0.6,
-                            ),
-                            size: 24,
-                          );
-                        },
-                      ),
+                      iconTheme: WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.selected)) {
+                          return IconThemeData(color: theme.primary, size: 26);
+                        }
+
+                        return IconThemeData(
+                          color: theme.onSurface.withValues(alpha: 0.6),
+                          size: 24,
+                        );
+                      }),
                     ),
 
                     child: NavigationBar(
-                      selectedIndex:
-                          controller.currentIndex.value,
+                      selectedIndex: controller.currentIndex.value,
 
-                      onDestinationSelected:
-                          controller.changePage,
+                      onDestinationSelected: controller.changePage,
 
                       height: media.size.height * 0.085,
 
                       labelBehavior:
-                          NavigationDestinationLabelBehavior
-                              .alwaysShow,
+                          NavigationDestinationLabelBehavior.alwaysShow,
 
                       destinations: [
                         _destination(
                           icon: Icons.home_outlined,
-                          selectedIcon:
-                              Icons.home_rounded,
-                          label: "Home",
+                          selectedIcon: Icons.home_rounded,
+                          label: "Home".tr,
                         ),
 
                         _destination(
-                          icon:
-                              Icons.shopping_bag_outlined,
-                          selectedIcon:
-                              Icons.shopping_bag_rounded,
-                          label: "Purchases",
+                          icon: Icons.shopping_cart_outlined,
+                          selectedIcon: Icons.shopping_cart_outlined,
+                          label: "Cart".tr,
                         ),
 
                         _destination(
-                          icon: Icons
-                              .notifications_none_rounded,
-                          selectedIcon:
-                              Icons.notifications_rounded,
-                          label: "Alerts",
+                          icon: Icons.local_shipping,
+                          selectedIcon: Icons.local_shipping,
+                          label: "Orders".tr,
                         ),
 
                         _destination(
-                          icon:
-                              Icons.person_outline_rounded,
-                          selectedIcon:
-                              Icons.person_rounded,
-                          label: "Profile",
+                          icon: Icons.person_outline_rounded,
+                          selectedIcon: Icons.person_rounded,
+                          label: "Profile".tr,
                         ),
                       ],
                     ),

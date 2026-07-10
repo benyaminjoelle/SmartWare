@@ -1,4 +1,4 @@
-name: storex
+name: smartware
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -51,7 +51,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/photos/storex_launcher.png"
+  image_path: "assets/photos/smartware_launcher.png"
   min_sdk_android: 21
 
   # The "flutter_lints" package below contains a set of recommended lints to

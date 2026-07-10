@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
-import 'package:storex/features/onboarding/controller/onboarding_carousel_controller.dart';
-
+import 'package:smartware/features/onboarding/controller/onboarding_carousel_controller.dart';
 
 class OnboardingBinding extends Bindings {
   @override

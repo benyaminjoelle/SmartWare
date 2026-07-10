@@ -1,21 +1,21 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/core/utils/pref_helper.dart';
-import 'package:storex/features/auth/models/auth_repo.dart';
-import 'package:storex/features/auth/models/user_model.dart';
-import 'package:storex/widgets/app_snackbar.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
+import 'package:smartware/features/auth/models/auth_repo.dart';
+import 'package:smartware/features/auth/models/user_model.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
 
 class UserVerificationController extends GetxController {
   ///===============REPOSITORY=================
   final AuthRepo _authRepo = AuthRepo();
 
-  ///===============OBSERVABLES=================  
+  ///===============OBSERVABLES=================
   final email = "".obs;
   String password = "";
   final isLoading = false.obs;
 
-///===============TIMER FOR RESEND=================
+  ///===============TIMER FOR RESEND=================
   Timer? _timer;
   final secondsRemaining = 60.obs;
   final isResendEnabled = true.obs;
@@ -26,18 +26,18 @@ class UserVerificationController extends GetxController {
   void onInit() {
     super.onInit();
 
-  print("════════ VERIFY SCREEN ARGS ════════");
-  print(Get.arguments);
-    
+    print("════════ VERIFY SCREEN ARGS ════════");
+    print(Get.arguments);
+
     // Safely collect plain string parameters
     final args = Get.arguments;
     if (args != null && args is Map) {
       email.value = args['email'] ?? '';
       password = args['password'] ?? '';
     }
-  print("EMAIL = $email");
-  print("PASSWORD = $password");
-    
+    print("EMAIL = $email");
+    print("PASSWORD = $password");
+
     startResendTimer();
   }
 
@@ -45,7 +45,7 @@ class UserVerificationController extends GetxController {
     isResendEnabled.value = false;
     secondsRemaining.value = 60; // Clean baseline reset
     _timer?.cancel();
-    
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (secondsRemaining.value > 0) {
         secondsRemaining.value--;
@@ -73,7 +73,12 @@ class UserVerificationController extends GetxController {
         iconColor: Colors.green,
       );
     } catch (e) {
-      AppSnackbar.show(title: "Error".tr, message: e.toString(), icon: Icons.error_outline, iconColor: theme.colorScheme.error);
+      AppSnackbar.show(
+        title: "Error".tr,
+        message: e.toString(),
+        icon: Icons.error_outline,
+        iconColor: theme.colorScheme.error,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -85,9 +90,19 @@ class UserVerificationController extends GetxController {
       isLoading.value = true;
       await _authRepo.resendVerificationEmail(email: email.value);
       startResendTimer();
-      AppSnackbar.show(title: "Email Sent".tr, message: "A new verification email has been sent.".tr, icon: Icons.check_circle_outline, iconColor: Colors.green);
+      AppSnackbar.show(
+        title: "Email Sent".tr,
+        message: "A new verification email has been sent.".tr,
+        icon: Icons.check_circle_outline,
+        iconColor: Colors.green,
+      );
     } catch (e) {
-      AppSnackbar.show(title: "Error", message: e.toString(), icon: Icons.error_outline, iconColor: theme.colorScheme.error);
+      AppSnackbar.show(
+        title: "Error",
+        message: e.toString(),
+        icon: Icons.error_outline,
+        iconColor: theme.colorScheme.error,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -96,7 +111,10 @@ class UserVerificationController extends GetxController {
   Future<void> verifyEmail() async {
     try {
       isLoading.value = true;
-      final user = await _authRepo.verifiedLogin(email: email.value, password: password);
+      final user = await _authRepo.verifiedLogin(
+        email: email.value,
+        password: password,
+      );
 
       if (user.token != null) await PrefHelper.saveToken(user.token!);
       await PrefHelper.saveUserId(user.id);
@@ -106,36 +124,36 @@ class UserVerificationController extends GetxController {
       await PrefHelper.saveBusinessName(user.businessName);
 
       AppSnackbar.show(
-      title: "Success".tr,
-      message: "Email verified successfully".tr,
-      icon: Icons.check_circle_outline,
-      iconColor: Colors.green,
-    );
-        print("✅ TOKEN = ${user.token}");
+        title: "Success".tr,
+        message: "Email verified successfully".tr,
+        icon: Icons.check_circle_outline,
+        iconColor: Colors.green,
+      );
+      print("✅ TOKEN = ${user.token}");
 
-///==================NAVIGATION BASED ON ROLE=================
-     switch (user.role) {
-      case UserRole.warehouseAdmin:
-        Get.offAllNamed('/ownerHome');
-        throw UnimplementedError();
-      case UserRole.worker:
-       
-        throw UnimplementedError();
-      case UserRole.client:
-        Get.offAllNamed('/clientHome');
-        throw UnimplementedError();
-    } 
-///===========================================================
-    }catch (e) {
-      AppSnackbar.show(title: "Verification Failed".tr,
-       message: e.toString(),
-       icon: Icons.error_outline,
-       iconColor: theme.colorScheme.error
-       );
+      ///==================NAVIGATION BASED ON ROLE=================
+      switch (user.role) {
+        case UserRole.warehouseAdmin:
+          Get.offAllNamed('/ownerHome');
+          throw UnimplementedError();
+        case UserRole.worker:
+          throw UnimplementedError();
+        case UserRole.client:
+          Get.offAllNamed('/clientHome');
+          throw UnimplementedError();
+      }
+
+      ///===========================================================
+    } catch (e) {
+      AppSnackbar.show(
+        title: "Verification Failed".tr,
+        message: e.toString(),
+        icon: Icons.error_outline,
+        iconColor: theme.colorScheme.error,
+      );
     } finally {
       isLoading.value = false;
     }
-   
   }
 
   @override

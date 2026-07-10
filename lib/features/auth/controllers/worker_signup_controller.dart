@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/core/constants/app_colors.dart';
-import 'package:storex/features/auth/models/auth_repo.dart';
-import 'package:storex/widgets/app_dialog.dart';
-import 'package:storex/widgets/app_snackbar.dart';
+import 'package:smartware/core/constants/app_colors.dart';
+import 'package:smartware/features/auth/models/auth_repo.dart';
+import 'package:smartware/widgets/app_dialog.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
 
 class WorkerSignupController extends GetxController {
   final AuthRepo _authRepo = AuthRepo();
@@ -18,7 +18,7 @@ class WorkerSignupController extends GetxController {
   final lastNameController = TextEditingController();
   final phoneController = TextEditingController();
   final natinalIdController = TextEditingController();
-  
+
   final isPasswordHidden = true.obs;
   final isConfirmPasswordHidden = true.obs;
   final isLoading = false.obs;
@@ -28,15 +28,17 @@ class WorkerSignupController extends GetxController {
   // =========================================================
   // PASSWORD VISIBILITY
   // =========================================================
-  void togglePasswordVisibility() => isPasswordHidden.value = !isPasswordHidden.value;
-  void toggleConfirmPasswordVisibility() => isConfirmPasswordHidden.value = !isConfirmPasswordHidden.value;
+  void togglePasswordVisibility() =>
+      isPasswordHidden.value = !isPasswordHidden.value;
+  void toggleConfirmPasswordVisibility() =>
+      isConfirmPasswordHidden.value = !isConfirmPasswordHidden.value;
 
   // =========================================================
   // VERIFICATION DATA & STATE
   // =========================================================
   final otpController = TextEditingController();
-  final registeredEmail = ''.obs; 
-  final isResendEnabled = true.obs; 
+  final registeredEmail = ''.obs;
+  final isResendEnabled = true.obs;
   final secondsRemaining = 60.obs;
   Timer? _timer;
 
@@ -84,7 +86,7 @@ class WorkerSignupController extends GetxController {
         iconColor: Colors.green,
       );
 
-      // Start the resend timer baseline countdown right away 
+      // Start the resend timer baseline countdown right away
       startResendTimer();
 
       Get.toNamed(
@@ -94,7 +96,7 @@ class WorkerSignupController extends GetxController {
           'password': passwordController.text, // Passed plain string value
           'isResendabled': isResendEnabled,
           'secondsRemaining': secondsRemaining,
-          'controller': this, 
+          'controller': this,
           'onVerify': () => verifyEmail(),
           'onResend': () => resendCode(),
         },
@@ -121,7 +123,11 @@ class WorkerSignupController extends GetxController {
       print("🔍 Verifying email status for: ${registeredEmail.value}");
       // Dynamic verification mapping goes here
     } catch (e) {
-      AppSnackbar.show(title: "Error".tr, message: e.toString(), iconColor: AppColors.error);
+      AppSnackbar.show(
+        title: "Error".tr,
+        message: e.toString(),
+        iconColor: AppColors.error,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -133,17 +139,21 @@ class WorkerSignupController extends GetxController {
     try {
       print("📩 Requesting code resend to: ${registeredEmail.value}");
       // await _authRepo.resendVerificationEmail(registeredEmail.value);
-      
+
       AppSnackbar.show(
         title: "Sent".tr,
         message: "A new verification link has been sent.".tr,
         icon: Icons.email_outlined,
         iconColor: AppColors.primary,
       );
-      
-      startResendTimer(); 
+
+      startResendTimer();
     } catch (e) {
-      AppSnackbar.show(title: "Error".tr, message: e.toString(), iconColor: AppColors.error);
+      AppSnackbar.show(
+        title: "Error".tr,
+        message: e.toString(),
+        iconColor: AppColors.error,
+      );
     }
   }
 
@@ -151,7 +161,7 @@ class WorkerSignupController extends GetxController {
     isResendEnabled.value = false;
     secondsRemaining.value = 60;
     _timer?.cancel();
-    
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (secondsRemaining.value > 0) {
         secondsRemaining.value--;

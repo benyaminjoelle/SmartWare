@@ -1,8 +1,8 @@
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 
-// import 'package:storex/features/auth/controllers/login_o_controller.dart';
-// import 'package:storex/features/auth/widgets/role_data.dart';
+// import 'package:smartware/features/auth/controllers/login_o_controller.dart';
+// import 'package:smartware/features/auth/widgets/role_data.dart';
 // import '../../widgets/role_card.dart';
 // import '../../widgets/login_onboarding_header.dart';
 
@@ -27,7 +27,7 @@
 //               // 🔙 Back button removed intentionally for cleaner UX (optional)
 //               const SizedBox(height: 10),
 
-//               // 🧠 Header (StoreX + text)
+//               // 🧠 Header (smartware + text)
 //               const LoginOnboardingHeader(),
 
 //               const SizedBox(height: 25),

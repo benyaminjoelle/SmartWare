@@ -1,4 +1,4 @@
-# storex
+# smartware
 
 A new Flutter project.
 

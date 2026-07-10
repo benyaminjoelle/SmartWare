@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void showPrivacyPolicy(BuildContext context) {
   final theme = Theme.of(context);
@@ -11,9 +12,7 @@ void showPrivacyPolicy(BuildContext context) {
     showDragHandle: true,
     backgroundColor: cs.surface,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(30),
-      ),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
     ),
     builder: (_) {
       return SafeArea(
@@ -36,7 +35,7 @@ void showPrivacyPolicy(BuildContext context) {
 
                 Center(
                   child: Text(
-                    "Privacy Policy",
+                    "Privacy Policy".tr,
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -46,7 +45,7 @@ void showPrivacyPolicy(BuildContext context) {
                 const SizedBox(height: 28),
 
                 Text(
-                  "Your Privacy Matters",
+                  "Your Privacy Matters".tr,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -55,16 +54,15 @@ void showPrivacyPolicy(BuildContext context) {
                 const SizedBox(height: 8),
 
                 Text(
-                  "At StoreX, we value your trust and are committed to protecting your personal information. We collect and process data only when necessary to provide our services and improve your experience within the application.",
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    height: 1.7,
-                  ),
+                  "At smartware, we value your trust and are committed to protecting your personal information. We collect and process data only when necessary to provide our services and improve your experience within the application."
+                      .tr,
+                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.7),
                 ),
 
                 const SizedBox(height: 24),
 
                 Text(
-                  "Information We Collect",
+                  "Information We Collect".tr,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -73,16 +71,15 @@ void showPrivacyPolicy(BuildContext context) {
                 const SizedBox(height: 8),
 
                 Text(
-                  "Depending on how you use StoreX, we may collect account information, profile details, language preferences, and other data required to deliver core functionality and enhance the overall user experience.",
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    height: 1.7,
-                  ),
+                  "Depending on how you use smartware, we may collect account information, profile details, language preferences, and other data required to deliver core functionality and enhance the overall user experience."
+                      .tr,
+                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.7),
                 ),
 
                 const SizedBox(height: 24),
 
                 Text(
-                  "Security & Protection",
+                  "Security & Protection".tr,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -91,16 +88,15 @@ void showPrivacyPolicy(BuildContext context) {
                 const SizedBox(height: 8),
 
                 Text(
-                  "We take appropriate measures to safeguard your information and continuously work to maintain the security and reliability of our platform.",
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    height: 1.7,
-                  ),
+                  "We take appropriate measures to safeguard your information and continuously work to maintain the security and reliability of our platform."
+                      .tr,
+                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.7),
                 ),
 
                 const SizedBox(height: 24),
 
                 Text(
-                  "Learn More",
+                  "Learn More".tr,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -109,10 +105,9 @@ void showPrivacyPolicy(BuildContext context) {
                 const SizedBox(height: 8),
 
                 Text(
-                  "For complete details about our privacy practices, data handling, and your rights, please visit our official website.",
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    height: 1.7,
-                  ),
+                  "For complete details about our privacy practices, data handling, and your rights, please visit our official website."
+                      .tr,
+                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.7),
                 ),
 
                 const SizedBox(height: 20),
@@ -123,9 +118,7 @@ void showPrivacyPolicy(BuildContext context) {
                       // TODO: Open Privacy Policy URL
                     },
                     icon: const Icon(Icons.open_in_new_rounded),
-                    label: const Text(
-                      "Read the Full Privacy Policy",
-                    ),
+                    label: Text("Read the Full Privacy Policy".tr),
                   ),
                 ),
 

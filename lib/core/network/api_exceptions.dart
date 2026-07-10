@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:storex/core/network/api_error.dart';
+import 'package:smartware/core/network/api_error.dart';
 
 class ApiExceptions {
   static ApiError handleError(DioException error) {

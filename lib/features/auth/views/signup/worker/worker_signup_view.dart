@@ -2,17 +2,17 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/core/routes/app_routes.dart';
-import 'package:storex/core/utils/validators.dart';
+import 'package:smartware/core/routes/app_routes.dart';
+import 'package:smartware/core/utils/validators.dart';
 
-import 'package:storex/features/auth/controllers/worker_signup_controller.dart';
+import 'package:smartware/features/auth/controllers/worker_signup_controller.dart';
 
-import 'package:storex/features/auth/widgets/signup_header.dart';
-import 'package:storex/widgets/app_snackbar.dart';
+import 'package:smartware/features/auth/widgets/signup_header.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
 
-import 'package:storex/widgets/back_button.dart';
-import 'package:storex/widgets/custom_textfield.dart';
-import 'package:storex/widgets/primary_button.dart';
+import 'package:smartware/widgets/back_button.dart';
+import 'package:smartware/widgets/custom_textfield.dart';
+import 'package:smartware/widgets/primary_button.dart';
 
 class WorkerSignupView extends StatelessWidget {
   const WorkerSignupView({super.key});
@@ -33,15 +33,10 @@ class WorkerSignupView extends StatelessWidget {
               /// FIXED BACK BUTTON ROW
               /// =========================
               Padding(
-                padding: const EdgeInsets.only(
-                  top: 10,
-                  left: 10,
-                ),
+                padding: const EdgeInsets.only(top: 10, left: 10),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: CustomBackButton(
-                    onPressed: controller.handleBack,
-                  ),
+                  child: CustomBackButton(onPressed: controller.handleBack),
                 ),
               ),
 
@@ -60,10 +55,7 @@ class WorkerSignupView extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(30),
                         child: BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: 20,
-                            sigmaY: 20,
-                          ),
+                          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                           child: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: media.size.width * 0.05,
@@ -150,7 +142,8 @@ class WorkerSignupView extends StatelessWidget {
                                       label: 'Password:'.tr,
                                       hint: 'Enter your password'.tr,
                                       isPassword: true,
-                                      isObscure: controller.isPasswordHidden.value,
+                                      isObscure:
+                                          controller.isPasswordHidden.value,
                                       onToggleVisibility:
                                           controller.togglePasswordVisibility,
                                       textInputAction: TextInputAction.done,
@@ -169,14 +162,17 @@ class WorkerSignupView extends StatelessWidget {
                                       label: 'Confirm Password:'.tr,
                                       hint: 'Enter your password'.tr,
                                       isPassword: true,
-                                      isObscure:
-                                          controller.isConfirmPasswordHidden.value,
-                                      onToggleVisibility:
-                                          controller.toggleConfirmPasswordVisibility,
+                                      isObscure: controller
+                                          .isConfirmPasswordHidden
+                                          .value,
+                                      onToggleVisibility: controller
+                                          .toggleConfirmPasswordVisibility,
                                       textInputAction: TextInputAction.done,
                                       validator: (value) {
                                         if (value !=
-                                            controller.passwordController.text) {
+                                            controller
+                                                .passwordController
+                                                .text) {
                                           return "Passwords do not match".tr;
                                         }
                                         return null;
@@ -187,21 +183,23 @@ class WorkerSignupView extends StatelessWidget {
                                   SizedBox(height: media.size.height * 0.04),
 
                                   /// BUTTON
-                                 Obx(()=>
-                                 PrimaryButton(
-                                    text: "Continue".tr,
-                                    isLoading: controller.isLoading.value,
-                                    onPressed: () {
-                                      controller.continueToVerify();
-                                      AppSnackbar.show(
-                                        title: "Success".tr,
-                                        message: "Account registered successfully!".tr,
-                                        icon: Icons.check_circle_outline,
-                                      );
-                                      Get.toNamed('/userverification');
-                                    },
+                                  Obx(
+                                    () => PrimaryButton(
+                                      text: "Continue".tr,
+                                      isLoading: controller.isLoading.value,
+                                      onPressed: () {
+                                        controller.continueToVerify();
+                                        AppSnackbar.show(
+                                          title: "Success".tr,
+                                          message:
+                                              "Account registered successfully!"
+                                                  .tr,
+                                          icon: Icons.check_circle_outline,
+                                        );
+                                        Get.toNamed('/userverification');
+                                      },
+                                    ),
                                   ),
-                                  ), 
 
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,

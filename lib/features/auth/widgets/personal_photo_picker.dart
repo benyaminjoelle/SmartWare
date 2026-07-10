@@ -1,8 +1,8 @@
 
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
-// import 'package:storex/features/auth/controllers/client_signup_controller.dart';
-// import 'package:storex/core/constants/app_colors.dart';
+// import 'package:smartware/features/auth/controllers/client_signup_controller.dart';
+// import 'package:smartware/core/constants/app_colors.dart';
 
 // class PersonalPhotoPicker extends StatelessWidget {
 //   const PersonalPhotoPicker({super.key});

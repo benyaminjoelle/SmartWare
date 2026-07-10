@@ -70,7 +70,7 @@ class AppImagePicker extends StatelessWidget {
               children: [
                 _ActionTile(
                   icon: Icons.visibility_rounded,
-                  title: "View Photo",
+                  title: "View Photo".tr,
                   onTap: () {
                     Get.back();
                     _showPreview(context, image);
@@ -79,7 +79,7 @@ class AppImagePicker extends StatelessWidget {
 
                 _ActionTile(
                   icon: Icons.edit_rounded,
-                  title: "Change Photo",
+                  title: "Change Photo".tr,
                   onTap: () {
                     Get.back();
                     onPick();
@@ -89,7 +89,7 @@ class AppImagePicker extends StatelessWidget {
                 if (onRemove != null)
                   _ActionTile(
                     icon: Icons.delete_outline_rounded,
-                    title: "Remove Photo",
+                    title: "Remove Photo".tr,
                     isDestructive: true,
                     onTap: () {
                       Get.back();
@@ -167,7 +167,7 @@ class AppImagePicker extends StatelessWidget {
                         const SizedBox(height: 8),
 
                         Text(
-                          "Add Photo",
+                          "Add Photo".tr,
                           style: theme
                               .textTheme
                               .bodySmall
