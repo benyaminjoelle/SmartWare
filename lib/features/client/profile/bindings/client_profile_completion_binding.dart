@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
-import 'package:storex/features/client/profile/controllers/client_profile_completion_controller.dart';
-
+import 'package:smartware/features/client/profile/controllers/client_profile_completion_controller.dart';
 
 class ClientProfileCompletionBinding extends Bindings {
   @override

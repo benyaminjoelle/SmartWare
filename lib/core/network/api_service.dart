@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:storex/core/constants/const_ip.dart';
-import 'package:storex/core/network/api_error.dart';
-import 'package:storex/core/utils/pref_helper.dart';
+import 'package:smartware/core/constants/const_ip.dart';
+import 'package:smartware/core/network/api_error.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
 
 class ApiService {
   static final ApiService _instance = ApiService._internal();
@@ -12,15 +12,11 @@ class ApiService {
   ApiService._internal() {
     dio = Dio(
       BaseOptions(
-
         baseUrl: 'http://${ConstIp().ip}:8000/api',
 
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
-        headers: {
-          'Accept': 'application/json',
-        },
-        responseType: ResponseType.json,
+        headers: {'Accept': 'application/json'},
         // Allow Dio to handle 4xx manually
         validateStatus: (status) => status != null && status < 500,
       ),
@@ -45,7 +41,9 @@ class ApiService {
           handler.next(options);
         },
         onResponse: (response, handler) {
-          print('✅ RESPONSE [${response.statusCode}] ${response.requestOptions.uri}');
+          print(
+            '✅ RESPONSE [${response.statusCode}] ${response.requestOptions.uri}',
+          );
           print('✅ Data: ${response.data}');
           handler.next(response);
         },
@@ -69,8 +67,10 @@ class ApiService {
     Map<String, dynamic>? queryParameters,
   }) async {
     try {
-      final response =
-          await dio.get(endpoint, queryParameters: queryParameters);
+      final response = await dio.get(
+        endpoint,
+        queryParameters: queryParameters,
+      );
 
       if (response.statusCode == 401) {
         return ApiError(message: 'Unauthorized');
@@ -91,11 +91,7 @@ class ApiService {
         endpoint,
         data: body,
         options: body is FormData
-            ? Options(
-                headers: {
-                  'Accept': 'application/json',
-                },
-              )
+            ? Options(headers: {'Accept': 'application/json'})
             : null,
       );
 
@@ -145,27 +141,31 @@ class ApiService {
       return ApiError(message: e.message ?? 'Network error');
     }
   }
+
   // =========================
-// PATCH
-// =========================
-Future<dynamic> patch(String endpoint, dynamic data) async {
-  try {
-    final response = await dio.patch(endpoint, data: data);
+  // PATCH
+  // =========================
+  Future<dynamic> patch(String endpoint, dynamic data) async {
+    try {
+      final response = await dio.patch(endpoint, data: data);
 
-    if (response.statusCode == 401) {
-      return ApiError(message: 'Unauthorized');
+      if (response.statusCode == 401) {
+        return ApiError(message: 'Unauthorized');
+      }
+
+      print(
+        '✅ PATCH RESPONSE [${response.statusCode}] ${response.requestOptions.uri}',
+      );
+      print('✅ Data: ${response.data}');
+
+      return response.data;
+    } on DioException catch (e) {
+      print(
+        '❌ PATCH ERROR [${e.response?.statusCode}] ${e.requestOptions.uri}',
+      );
+      print('❌ Data: ${e.response?.data}');
+      print('❌ Request Data: ${e.requestOptions.data}');
+      return ApiError(message: e.message ?? 'Network error');
     }
-
-    print('✅ PATCH RESPONSE [${response.statusCode}] ${response.requestOptions.uri}');
-    print('✅ Data: ${response.data}');
-
-    return response.data;
-  } on DioException catch (e) {
-    print('❌ PATCH ERROR [${e.response?.statusCode}] ${e.requestOptions.uri}');
-    print('❌ Data: ${e.response?.data}');
-    print('❌ Request Data: ${e.requestOptions.data}');
-    return ApiError(message: e.message ?? 'Network error');
   }
-}
-
 }

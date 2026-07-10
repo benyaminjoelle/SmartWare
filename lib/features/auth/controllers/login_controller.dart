@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/features/auth/models/auth_repo.dart';
-import 'package:storex/features/auth/models/user_model.dart';
-import 'package:storex/widgets/app_snackbar.dart';
+import 'package:smartware/features/auth/models/auth_repo.dart';
+import 'package:smartware/features/auth/models/user_model.dart';
+import 'package:smartware/features/auth/widgets/role_data.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
 
 class LoginController extends GetxController {
   final AuthRepo _authRepo = AuthRepo();
@@ -82,7 +83,6 @@ class LoginController extends GetxController {
       return;
     }
   }
- 
 
   void togglePasswordVisibility() {
     isPasswordHidden.value = !isPasswordHidden.value;
@@ -90,8 +90,7 @@ class LoginController extends GetxController {
 
   @override
   void onClose() {
-    // emailController.dispose();
-    // passwordController.dispose();
+    
     super.onClose();
   }
 }

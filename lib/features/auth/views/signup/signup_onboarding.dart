@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:storex/core/routes/app_routes.dart';
-import 'package:storex/features/auth/controllers/signup_onboarding_controller.dart';
-import 'package:storex/features/auth/widgets/role_data.dart';
-import 'package:storex/widgets/primary_button.dart';
+import 'package:smartware/core/routes/app_routes.dart';
+import 'package:smartware/features/auth/controllers/signup_onboarding_controller.dart';
+import 'package:smartware/features/auth/widgets/role_data.dart';
+import 'package:smartware/widgets/primary_button.dart';
 
 import '../../widgets/role_card.dart';
 import '../../widgets/signup_onboarding_header.dart';
@@ -38,9 +38,7 @@ class SignupOnboarding extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
 
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
-                  ),
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
 
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,8 +56,7 @@ class SignupOnboarding extends StatelessWidget {
 
                         itemCount: roles.length,
 
-                        gridDelegate:
-                            SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: isTablet ? 2 : 1,
                           childAspectRatio: isTablet ? 3.2 : 3.4,
                           crossAxisSpacing: 12,
@@ -76,8 +73,7 @@ class SignupOnboarding extends StatelessWidget {
                               icon: role.icon,
                               color: role.color,
                               isSelected:
-                                  controller.selectedType.value ==
-                                      role.type,
+                                  controller.selectedType.value == role.type,
                               onTap: () {
                                 controller.selectRole(role.type);
                               },

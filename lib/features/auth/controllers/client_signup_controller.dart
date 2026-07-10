@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/core/constants/app_colors.dart';
+import 'package:smartware/core/constants/app_colors.dart';
 
-
-import 'package:storex/features/auth/models/auth_repo.dart';
-import 'package:storex/widgets/app_dialog.dart';
-import 'package:storex/widgets/app_snackbar.dart';
+import 'package:smartware/features/auth/models/auth_repo.dart';
+import 'package:smartware/widgets/app_dialog.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
 
 class ClientSignupController extends GetxController {
   /// =========================================================
@@ -31,15 +30,16 @@ class ClientSignupController extends GetxController {
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
- 
+
   final otpController = TextEditingController();
 
   // =========================================================
   /// VERIFICATION DATA & STATE (REQUIRED FOR USERVERIFICATION VIEW)
   /// =========================================================
-  /// 
-  final registeredEmail = ''.obs; //  Track the successfully registered email as an RxString
-  final isResendEnabled = true.obs; 
+  ///
+  final registeredEmail =
+      ''.obs; //  Track the successfully registered email as an RxString
+  final isResendEnabled = true.obs;
   final secondsRemaining = 60.obs;
   Timer? _timer;
 
@@ -67,14 +67,13 @@ class ClientSignupController extends GetxController {
   }
 
   void toggleConfirmPasswordVisibility() {
-    isConfirmPasswordHidden.value =
-        !isConfirmPasswordHidden.value;
+    isConfirmPasswordHidden.value = !isConfirmPasswordHidden.value;
   }
 
   /// =========================================================
   /// REGISTER
   /// =========================================================
- 
+
   Future<void> continueToVerify() async {
     if (!validateClient()) {
       AppSnackbar.show(
@@ -94,8 +93,9 @@ class ClientSignupController extends GetxController {
         'last_name': lastNameController.text.trim(),
         'email': emailController.text.trim(),
         'phone_number': phoneController.text.trim(),
-        'business_name':businessNameController.text.trim(),
+        'business_name': businessNameController.text.trim(),
         'password': passwordController.text,
+
         /// IMPORTANT
         'role': 'client',
       };
@@ -104,9 +104,7 @@ class ClientSignupController extends GetxController {
       print("📤 Sending:");
       print(userData);
 
-      final user = await _authRepo.clientRegister(
-        userData,
-      );
+      final user = await _authRepo.clientRegister(userData);
 
       print("✅ Registration Success");
       print("🆔 User ID: ${user.id}");
@@ -124,10 +122,11 @@ class ClientSignupController extends GetxController {
         '/userverification',
         arguments: {
           'email': user.email,
-          'password':user.password,
+          'password': user.password,
           'isResendEnabled': isResendEnabled,
           'secondsRemaining': secondsRemaining,
-          'controller': this, // Passes instance for the dynamic bottom sheet type fallback
+          'controller':
+              this, // Passes instance for the dynamic bottom sheet type fallback
           'onVerify': () => verifyEmail(),
           'onResend': () => resendCode(),
         },
@@ -145,18 +144,26 @@ class ClientSignupController extends GetxController {
       isLoading.value = false;
     }
   }
+
   Future<void> verifyEmail() async {
     try {
       isLoading.value = true;
       print("🔍 Verifying email status for: ${registeredEmail.value}");
-      
+
       // Call backend API check to verify link status or token
       // bool isVerified = await _authRepo.checkEmailVerification(registeredEmail.value);
-      
+
       // Temporary check simulation:
-      AppSnackbar.show(title: "Status Check".tr, message: "Checking your verification state...".tr);
+      AppSnackbar.show(
+        title: "Status Check".tr,
+        message: "Checking your verification state...".tr,
+      );
     } catch (e) {
-      AppSnackbar.show(title: "Error".tr, message: e.toString(), iconColor: AppColors.error);
+      AppSnackbar.show(
+        title: "Error".tr,
+        message: e.toString(),
+        iconColor: AppColors.error,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -168,17 +175,21 @@ class ClientSignupController extends GetxController {
     try {
       print("📩 Requesting code resend to: ${registeredEmail.value}");
       // await _authRepo.resendVerificationEmail(registeredEmail.value);
-      
+
       AppSnackbar.show(
         title: "Sent".tr,
         message: "A new verification link has been sent.".tr,
         icon: Icons.email_outlined,
         iconColor: AppColors.primary,
       );
-      
+
       startResendTimer(); // Reset the timer countdown
     } catch (e) {
-      AppSnackbar.show(title: "Error".tr, message: e.toString(), iconColor: AppColors.error);
+      AppSnackbar.show(
+        title: "Error".tr,
+        message: e.toString(),
+        iconColor: AppColors.error,
+      );
     }
   }
 
@@ -186,7 +197,7 @@ class ClientSignupController extends GetxController {
     isResendEnabled.value = false;
     secondsRemaining.value = 60;
     _timer?.cancel();
-    
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (secondsRemaining.value > 0) {
         secondsRemaining.value--;
@@ -203,8 +214,7 @@ class ClientSignupController extends GetxController {
   Future<void> handleBack() async {
     final result = await AppDialogs.showConfirmDialog(
       title: "Exit signup?".tr,
-      message:
-          "Your progress will be lost if you leave now.".tr,
+      message: "Your progress will be lost if you leave now.".tr,
       confirmText: "Exit",
       confirmColor: theme.colorScheme.error,
     );
@@ -225,7 +235,7 @@ class ClientSignupController extends GetxController {
     phoneController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
-   
+
     otpController.dispose();
 
     super.onClose();

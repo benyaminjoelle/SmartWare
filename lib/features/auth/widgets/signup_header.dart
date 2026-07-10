@@ -12,8 +12,7 @@ class SignupHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        
-              const SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(
           "SmartWare",
           style: const TextStyle(
@@ -33,17 +32,12 @@ class SignupHeader extends StatelessWidget {
           ),
         ),
         Text(
-          "Tell us about yourself and your business"
-              .tr,
+          "Tell us about yourself and your business".tr,
 
-          style: theme
-              .textTheme
-              .bodyMedium
-              ?.copyWith(
-                color: colors.onSurface
-                    .withOpacity(0.6),
-                height: 1.4,
-              ),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: colors.onSurface.withOpacity(0.6),
+            height: 1.4,
+          ),
         ),
       ],
     );

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:storex/core/utils/validators.dart';
-import 'package:storex/features/auth/controllers/forgot_pass_controller.dart';
-import 'package:storex/widgets/app_snackbar.dart';
-import 'package:storex/widgets/back_button.dart';
-import 'package:storex/widgets/custom_textfield.dart';
-import 'package:storex/widgets/primary_button.dart';
+import 'package:smartware/core/utils/validators.dart';
+import 'package:smartware/features/auth/controllers/forgot_pass_controller.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
+import 'package:smartware/widgets/back_button.dart';
+import 'package:smartware/widgets/custom_textfield.dart';
+import 'package:smartware/widgets/primary_button.dart';
 
-class ResetPassword extends StatelessWidget{
+class ResetPassword extends StatelessWidget {
   const ResetPassword({super.key});
 
   @override
@@ -18,24 +18,29 @@ class ResetPassword extends StatelessWidget{
     final media = MediaQuery.of(context);
     final backgroundImage = 'assets/photos/pass_reset.png';
 
-     return GestureDetector(
+    return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-       child: Scaffold(
+      child: Scaffold(
         body: SafeArea(
           child: CustomScrollView(
             slivers: [
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: media.size.width * 0.05, vertical: media.size.height * 0.02),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: media.size.width * 0.05,
+                    vertical: media.size.height * 0.02,
+                  ),
                   child: Form(
                     key: controller.passwordKey,
                     child: Column(
                       children: [
                         CustomBackButton(),
-                        Image.asset(backgroundImage,
-                        height: media.size.height * 0.3,
-                        fit: BoxFit.contain,),
+                        Image.asset(
+                          backgroundImage,
+                          height: media.size.height * 0.3,
+                          fit: BoxFit.contain,
+                        ),
                         Text(
                           "Reset Password".tr,
                           textAlign: TextAlign.center,
@@ -78,7 +83,7 @@ class ResetPassword extends StatelessWidget{
                                    );
           
                                  } else {
-                                   controller.updatePassword();
+                                  //  controller.updatePassword();
                                    AppSnackbar.show(
                                      position: SnackPosition.TOP,
                                      title: "Error".tr,
@@ -90,11 +95,12 @@ class ResetPassword extends StatelessWidget{
                            })
                                 ],),
                   ),
-            ),
-            ),
-            ],)
+                ),
+              ),
+            ],
           ),
-           ),
-        );
+        ),
+      ),
+    );
   }
 }

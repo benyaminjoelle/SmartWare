@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/features/client/profile/controllers/client_profile_controller.dart';
-import 'package:storex/widgets/app_image_picker.dart';
+import 'package:smartware/features/client/profile/controllers/client_profile_controller.dart';
+import 'package:smartware/widgets/app_image_picker.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({super.key});
@@ -10,8 +10,7 @@ class ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final controller =
-        Get.find<ClientProfileController>();
+    final controller = Get.find<ClientProfileController>();
 
     return Column(
       children: [
@@ -28,10 +27,8 @@ class ProfileHeader extends StatelessWidget {
           () => Text(
             controller.businessName.value,
             textAlign: TextAlign.center,
-            
-            style: theme.textTheme.titleLarge
-                ?.copyWith(
-                
+
+            style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w500,
               letterSpacing: -.5,
             ),
@@ -39,8 +36,6 @@ class ProfileHeader extends StatelessWidget {
         ),
 
         const SizedBox(height: 6),
-
-        
       ],
     );
   }

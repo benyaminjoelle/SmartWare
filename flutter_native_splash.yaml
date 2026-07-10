@@ -2,8 +2,8 @@ flutter_native_splash:
   color: "#F1F5F9"
   color_dark: "#0F172A"
 
-  image: assets/photos/storex_splash.png
-  image_dark: assets/photos/storex_splash.png
+  image: assets/photos/SmartWare_splash.png
+  image_dark: assets/photos/SmartWare_splash.png
 
   fullscreen: true
 
@@ -11,8 +11,8 @@ flutter_native_splash:
     color: "#F1F5F9"
     color_dark: "#0F172A"
 
-    image: assets/photos/storex_splash.png
-    image_dark: assets/photos/storex_splash.png
+    image: assets/photos/SmartWare_splash.png
+    image_dark: assets/photos/SmartWare_splash.png
 
     icon_background_color: "#F1F5F9"
     icon_background_color_dark: "#0F172A"

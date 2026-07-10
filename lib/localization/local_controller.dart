@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/core/utils/pref_helper.dart';
-
-
+import 'package:smartware/core/utils/pref_helper.dart';
 
 class LocaleController extends GetxController {
   final Rx<Locale> currentLocale = const Locale('en').obs;
@@ -15,7 +13,7 @@ class LocaleController extends GetxController {
     Get.updateLocale(locale);
 
     await PrefHelper.saveLanguage(code);
-     currentLocale.refresh();
+    currentLocale.refresh();
   }
 
   Future<void> toggleLanguage() async {

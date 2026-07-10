@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:storex/features/client/home/views/ads_carousel_view.dart';
-import 'package:storex/features/client/home/views/filtering_menu.dart';
-import 'package:storex/features/client/widgets/top_selling_row.dart';
-import 'package:storex/widgets/custom_textfield.dart';
-import 'package:storex/widgets/dynamic_filter_row.dart';
+import 'package:smartware/features/client/home/views/ads_carousel_view.dart';
+import 'package:smartware/features/client/home/views/filtering_menu.dart';
+import 'package:smartware/features/client/widgets/top_selling_row.dart';
+import 'package:smartware/widgets/custom_textfield.dart';
+import 'package:smartware/widgets/dynamic_filter_row.dart';
+
 
 class ClientHomeView extends StatelessWidget {
   const ClientHomeView({super.key});

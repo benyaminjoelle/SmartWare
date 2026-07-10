@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/features/client/profile/controllers/client_settings_controller.dart';
-import 'package:storex/features/client/profile/widgets/about_StoreX.dart';
-import 'package:storex/features/client/profile/widgets/action_tile.dart';
-import 'package:storex/features/client/profile/widgets/glass_container.dart';
-import 'package:storex/features/client/profile/widgets/privacy_policy.dart';
-import 'package:storex/features/client/profile/widgets/support_options_tile.dart';
-import 'package:storex/localization/local_controller.dart';
+import 'package:smartware/features/client/profile/controllers/client_settings_controller.dart';
+import 'package:smartware/features/client/profile/widgets/about_smartware.dart';
+import 'package:smartware/features/client/profile/widgets/action_tile.dart';
+import 'package:smartware/features/client/profile/widgets/glass_container.dart';
+import 'package:smartware/features/client/profile/widgets/privacy_policy.dart';
+import 'package:smartware/features/client/profile/widgets/support_options_tile.dart';
+import 'package:smartware/localization/local_controller.dart';
 
 class ClientSettings extends StatelessWidget {
   const ClientSettings({super.key});
@@ -43,7 +43,7 @@ class ClientSettings extends StatelessWidget {
                       const BackButton(),
                       const SizedBox(width: 8),
                       Text(
-                        "Settings",
+                        "Settings".tr,
                         style: theme.textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.w700,
                           letterSpacing: -0.5,
@@ -57,7 +57,7 @@ class ClientSettings extends StatelessWidget {
                   /// =========================
                   /// APPEARANCE
                   /// =========================
-                  const _SectionTitle("Appearance"),
+                  _SectionTitle("Appearance".tr),
 
                   GlassContainer(
                     padding: EdgeInsets.zero,
@@ -68,7 +68,7 @@ class ClientSettings extends StatelessWidget {
                           () => ActionTile(
                             onTap: () {},
                             icon: Icons.dark_mode_rounded,
-                            title: "Dark Theme",
+                            title: "Dark Theme".tr,
                             trailing: Switch.adaptive(
                               value: controller.isDarkMode.value,
                               onChanged: (value) {
@@ -83,7 +83,7 @@ class ClientSettings extends StatelessWidget {
                         ActionTile(
                           onTap: () {},
                           icon: Icons.language_rounded,
-                          title: "Language",
+                          title: "Language".tr,
 
                           isLast: true,
                           trailing: PopupMenuButton<String>(
@@ -94,12 +94,15 @@ class ClientSettings extends StatelessWidget {
                             onSelected: (value) {
                               localeController.changeLanguage(value);
                             },
-                            itemBuilder: (_) => const [
+                            itemBuilder: (_) => [
                               PopupMenuItem(
                                 value: "en",
-                                child: Text("English"),
+                                child: Text("English".tr),
                               ),
-                              PopupMenuItem(value: "ar", child: Text("Arabic")),
+                              PopupMenuItem(
+                                value: "ar",
+                                child: Text("Arabic".tr),
+                              ),
                             ],
                           ),
                         ),
@@ -112,7 +115,7 @@ class ClientSettings extends StatelessWidget {
                   /// =========================
                   /// NOTIFICATIONS
                   /// =========================
-                  const _SectionTitle("Notifications"),
+                  _SectionTitle("Notifications".tr),
 
                   GlassContainer(
                     padding: EdgeInsets.zero,
@@ -123,8 +126,8 @@ class ClientSettings extends StatelessWidget {
                           () => ActionTile(
                             onTap: () {},
                             icon: Icons.notifications_active_rounded,
-                            title: "Notifications",
-                            subtitle: "Enable or disable app notifications",
+                            title: "Notifications".tr,
+                            subtitle: "Enable or disable app notifications".tr,
                             isLast: true,
                             trailing: Switch.adaptive(
                               value: controller.isNotificationsEnabled.value,
@@ -143,7 +146,7 @@ class ClientSettings extends StatelessWidget {
                   /// =========================
                   /// SUPPORT
                   /// =========================
-                  const _SectionTitle("Support"),
+                  _SectionTitle("Support".tr),
 
                   GlassContainer(
                     padding: EdgeInsets.zero,
@@ -152,24 +155,24 @@ class ClientSettings extends StatelessWidget {
                       children: [
                         ActionTile(
                           icon: Icons.info_outline_rounded,
-                          title: "About Us",
-                          subtitle: "Learn more about StoreX",
+                          title: "About Us".tr,
+                          subtitle: "Learn more about smartware".tr,
                           onTap: () {
-                            showAboutStoreX(context);
+                            showAboutsmartware(context);
                           },
                         ),
                         ActionTile(
                           icon: Icons.support_agent_rounded,
-                          title: "Contact Us",
-                          subtitle: "Reach our support team",
+                          title: "Contact Us".tr,
+                          subtitle: "Reach our support team".tr,
                           onTap: () {
                             SupportOptionsTile.show(context);
                           },
                         ),
                         ActionTile(
                           icon: Icons.privacy_tip_outlined,
-                          title: "Privacy Policy",
-                          subtitle: "Review our privacy practices",
+                          title: "Privacy Policy".tr,
+                          subtitle: "Review our privacy practices".tr,
                           onTap: () {
                             showPrivacyPolicy(context);
                           },
@@ -183,7 +186,7 @@ class ClientSettings extends StatelessWidget {
                   /// =========================
                   /// APP INFO
                   /// =========================
-                  const _SectionTitle("Application"),
+                  _SectionTitle("Application".tr),
 
                   GlassContainer(
                     padding: EdgeInsets.zero,
@@ -193,8 +196,8 @@ class ClientSettings extends StatelessWidget {
                         ActionTile(
                           onTap: () => {},
                           icon: Icons.verified_rounded,
-                          title: "Version",
-                          subtitle: "StoreX v1.0.0",
+                          title: "Version".tr,
+                          subtitle: "smartware v1.0.0",
                           isLast: true,
                         ),
                       ],

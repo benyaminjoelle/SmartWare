@@ -2,21 +2,23 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/core/constants/app_colors.dart';
-import 'package:storex/features/auth/models/auth_repo.dart';
+import 'package:smartware/core/constants/app_colors.dart';
+import 'package:smartware/features/auth/models/auth_repo.dart';
 
-import 'package:storex/widgets/app_dialog.dart';
-import 'package:storex/widgets/app_snackbar.dart';
+import 'package:smartware/widgets/app_dialog.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
 
 class OwnerSignupController extends GetxController {
   /// =========================================================
   /// REPOSITORY
   /// =========================================================
   final AuthRepo _authRepo = AuthRepo();
+
   /// =========================================================
   /// FORM KEY
   /// =========================================================
   final ownerSignupKey = GlobalKey<FormState>();
+
   /// =========================================================
   /// BASIC INFO
   /// =========================================================
@@ -31,15 +33,16 @@ class OwnerSignupController extends GetxController {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
- /// =========================================================
+  /// =========================================================
   /// VERIFICATION DATA & STATE (REQUIRED FOR USERVERIFICATION VIEW)
   /// =========================================================
   final otpController = TextEditingController();
-  final registeredEmail = ''.obs; // Track the successfully registered email as an RxString
-  final isResendEnabled = true.obs; 
+  final registeredEmail =
+      ''.obs; // Track the successfully registered email as an RxString
+  final isResendEnabled = true.obs;
   final secondsRemaining = 60.obs;
   Timer? _timer;
-  
+
   /// =========================================================
   /// OBSERVABLES
   /// =========================================================
@@ -56,9 +59,9 @@ class OwnerSignupController extends GetxController {
   }
 
   void toggleConfirmPasswordVisibility() {
-    isConfirmPasswordHidden.value =
-        !isConfirmPasswordHidden.value;
+    isConfirmPasswordHidden.value = !isConfirmPasswordHidden.value;
   }
+
   /// =========================================================
   /// VALIDATION
   /// =========================================================
@@ -92,17 +95,13 @@ class OwnerSignupController extends GetxController {
 
         'password': passwordController.text,
         'role': 'warehouse_admin',
-
-       
       };
 
       print("════════ REGISTER OWNER ════════");
       print("📤 Sending:");
       print(userData);
 
-      final user = await _authRepo.managerRegister(
-        userData,
-      );
+      final user = await _authRepo.managerRegister(userData);
 
       print("✅ Registration Success");
       print("🆔 User ID: ${user.id}");
@@ -116,22 +115,22 @@ class OwnerSignupController extends GetxController {
         iconColor: Colors.green,
       );
       print("════════ NAVIGATION DATA ════════");
-print("EMAIL = ${user.email}");
-print("PASSWORD = ${passwordController.text}");
+      print("EMAIL = ${user.email}");
+      print("PASSWORD = ${passwordController.text}");
 
       Get.toNamed(
         '/userverification',
         arguments: {
           'email': user.email,
-          'password':passwordController.text,
+          'password': passwordController.text,
           'isResendEnabled': isResendEnabled,
           'secondsRemaining': secondsRemaining,
-          'controller': this, // Passes instance for the dynamic bottom sheet type fallback
+          'controller':
+              this, // Passes instance for the dynamic bottom sheet type fallback
           'onVerify': () => verifyEmail(),
           'onResend': () => resendCode(),
         },
       );
-      
     } catch (e) {
       print("❌ Registration Error: ");
 
@@ -145,22 +144,29 @@ print("PASSWORD = ${passwordController.text}");
       isLoading.value = false;
     }
   }
-  
-///==========================================================
-///VERIFICATION
-///==========================================================
+
+  ///==========================================================
+  ///VERIFICATION
+  ///==========================================================
   Future<void> verifyEmail() async {
     try {
       isLoading.value = true;
       print("🔍 Verifying email status for: ${registeredEmail.value}");
-      
+
       // Call backend API check to verify link status or token
       // bool isVerified = await _authRepo.checkEmailVerification(registeredEmail.value);
-      
+
       // Temporary check simulation:
-      AppSnackbar.show(title: "Status Check".tr, message: "Checking your verification state...".tr);
+      AppSnackbar.show(
+        title: "Status Check".tr,
+        message: "Checking your verification state...".tr,
+      );
     } catch (e) {
-      AppSnackbar.show(title: "Error".tr, message: e.toString(), iconColor: AppColors.error);
+      AppSnackbar.show(
+        title: "Error".tr,
+        message: e.toString(),
+        iconColor: AppColors.error,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -172,17 +178,21 @@ print("PASSWORD = ${passwordController.text}");
     try {
       print("📩 Requesting code resend to: ${registeredEmail.value}");
       // await _authRepo.resendVerificationEmail(registeredEmail.value);
-      
+
       AppSnackbar.show(
         title: "Sent".tr,
         message: "A new verification link has been sent.".tr,
         icon: Icons.email_outlined,
         iconColor: AppColors.primary,
       );
-      
+
       startResendTimer(); // Reset the timer countdown
     } catch (e) {
-      AppSnackbar.show(title: "Error".tr, message: e.toString(), iconColor: AppColors.error);
+      AppSnackbar.show(
+        title: "Error".tr,
+        message: e.toString(),
+        iconColor: AppColors.error,
+      );
     }
   }
 
@@ -190,7 +200,7 @@ print("PASSWORD = ${passwordController.text}");
     isResendEnabled.value = false;
     secondsRemaining.value = 60;
     _timer?.cancel();
-    
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (secondsRemaining.value > 0) {
         secondsRemaining.value--;
@@ -200,16 +210,15 @@ print("PASSWORD = ${passwordController.text}");
       }
     });
   }
+
   /// =========================================================
   /// BACK BUTTON
   /// =========================================================
 
   Future<void> handleBack() async {
-    final result =
-        await AppDialogs.showConfirmDialog(
+    final result = await AppDialogs.showConfirmDialog(
       title: "Exit signup?".tr,
-      message:
-          "Your progress will be lost if you leave now.".tr,
+      message: "Your progress will be lost if you leave now.".tr,
       confirmText: "Exit",
       confirmColor: Colors.red,
     );

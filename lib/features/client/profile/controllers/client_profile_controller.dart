@@ -2,14 +2,14 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:storex/core/utils/pref_helper.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
 
 class ClientProfileController extends GetxController {
   /// =========================================================
   /// PROFILE DATA
   /// =========================================================
 
-  final businessName = "StoreX Business".obs;
+  final businessName = "Business name".obs;
 
   final profileImage = Rx<File?>(null);
 

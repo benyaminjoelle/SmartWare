@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/features/onboarding/controller/onboarding_carousel_controller.dart';
+import 'package:smartware/features/onboarding/controller/onboarding_carousel_controller.dart';
 
 class FeatureCarousel extends StatelessWidget {
   FeatureCarousel({super.key});
@@ -38,25 +38,20 @@ class FeatureCarousel extends StatelessWidget {
         Obx(() {
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              controller.features.length,
-              (index) {
-                final active = controller.currentPage.value == index;
+            children: List.generate(controller.features.length, (index) {
+              final active = controller.currentPage.value == index;
 
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: active ? 18 : 7,
-                  height: 7,
-                  decoration: BoxDecoration(
-                    color: active
-                        ? colors.primary
-                        : colors.onSurface,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                );
-              },
-            ),
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                width: active ? 18 : 7,
+                height: 7,
+                decoration: BoxDecoration(
+                  color: active ? colors.primary : colors.onSurface,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              );
+            }),
           );
         }),
       ],
@@ -94,28 +89,24 @@ class _FeatureCard extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  item.icon,
-                  size: 40,
-                  color: colors.primary,
-                ),
+                Icon(item.icon, size: 40, color: colors.primary),
                 const SizedBox(height: 12),
                 Text(
                   item.title.tr,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: colors.onSurface,
-                      ),
+                    fontWeight: FontWeight.w600,
+                    color: colors.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   item.description.tr,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodySmall?.copyWith(
-                        color: colors.onSurface,
-                        height: 1.4,
-                      ),
+                    color: colors.onSurface,
+                    height: 1.4,
+                  ),
                 ),
               ],
             ),

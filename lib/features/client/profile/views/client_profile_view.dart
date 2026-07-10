@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
-import 'package:storex/features/client/profile/widgets/profile_acount_management.dart';
-import 'package:storex/features/client/profile/widgets/profile_completion.dart';
+import 'package:smartware/features/client/profile/widgets/profile_acount_management.dart';
+import 'package:smartware/features/client/profile/widgets/profile_completion.dart';
 import '../widgets/logout_tile.dart';
 import '../widgets/profile_header.dart';
 
@@ -16,20 +15,16 @@ class ClientProfileView extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-        
           SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(
-                horizontal:
-                    media.size.width * 0.05,
+                horizontal: media.size.width * 0.05,
                 vertical: 20,
               ),
               child: Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxWidth: isTablet
-                        ? 520
-                        : double.infinity,
+                    maxWidth: isTablet ? 520 : double.infinity,
                   ),
                   child: const Column(
                     children: [

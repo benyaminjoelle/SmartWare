@@ -2,13 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/core/routes/app_routes.dart';
-import 'package:storex/core/utils/validators.dart';
-import 'package:storex/features/auth/controllers/owner_signup_controller.dart';
-import 'package:storex/features/auth/widgets/signup_header.dart';
-import 'package:storex/widgets/back_button.dart';
-import 'package:storex/widgets/custom_textfield.dart';
-import 'package:storex/widgets/primary_button.dart';
+import 'package:smartware/core/routes/app_routes.dart';
+import 'package:smartware/core/utils/validators.dart';
+import 'package:smartware/features/auth/controllers/owner_signup_controller.dart';
+import 'package:smartware/features/auth/widgets/signup_header.dart';
+import 'package:smartware/widgets/back_button.dart';
+import 'package:smartware/widgets/custom_textfield.dart';
+import 'package:smartware/widgets/primary_button.dart';
 
 class OwnerSignupView extends StatelessWidget {
   const OwnerSignupView({super.key});
@@ -166,16 +166,16 @@ class OwnerSignupView extends StatelessWidget {
                                   SizedBox(height: media.size.height * 0.04),
 
                                   /// BUTTON
-                                  Obx(()=>
-                                   PrimaryButton(
-                                    text: "Continue".tr,
-                                    isLoading: controller.isLoading.value,
-                                    onPressed: () {
-                                      controller.continueToVerify();
-                                    },
+                                  Obx(
+                                    () => PrimaryButton(
+                                      text: "Continue".tr,
+                                      isLoading: controller.isLoading.value,
+                                      onPressed: () {
+                                        controller.continueToVerify();
+                                      },
+                                    ),
                                   ),
-                                  ),
-                                 
+
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [

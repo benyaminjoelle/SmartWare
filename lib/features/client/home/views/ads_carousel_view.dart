@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/features/client/home/controllers/ads_carousel_controller.dart';
+import 'package:smartware/features/client/home/controllers/ads_carousel_controller.dart';
 
 class AutoMovingAdsCarousel extends StatelessWidget {
   const AutoMovingAdsCarousel({super.key});

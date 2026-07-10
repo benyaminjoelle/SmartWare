@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:storex/core/constants/theme.dart';
-import 'package:storex/core/utils/pref_helper.dart';
-import 'package:storex/localization/app_translation.dart';
+import 'package:smartware/core/constants/theme.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
+import 'package:smartware/localization/app_translation.dart';
 
 import 'core/routes/app_pages.dart';
 import 'core/routes/app_routes.dart';
@@ -12,24 +12,17 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final lang = await PrefHelper.getLanguage();
-  final savedTheme = await PrefHelper.getTheme(); 
+  final savedTheme = await PrefHelper.getTheme();
   // savedTheme: "dark" | "light" | "system" | null
 
-  runApp(MyApp(
-    initialLang: lang,
-    savedTheme: savedTheme,
-  ));
+  runApp(MyApp(initialLang: lang, savedTheme: savedTheme));
 }
 
 class MyApp extends StatelessWidget {
   final String initialLang;
   final String? savedTheme;
 
-  const MyApp({
-    super.key,
-    required this.initialLang,
-    required this.savedTheme,
-  });
+  const MyApp({super.key, required this.initialLang, required this.savedTheme});
 
   ThemeMode get themeMode {
     switch (savedTheme) {

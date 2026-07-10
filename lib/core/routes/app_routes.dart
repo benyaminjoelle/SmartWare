@@ -1,4 +1,4 @@
-import 'package:storex/features/auth/views/login/verify_email.dart';
+import 'package:smartware/features/auth/views/login/verify_email.dart';
 
 class AppRoutes {
   static const onboarding = '/onboarding';
@@ -15,6 +15,8 @@ class AppRoutes {
   static const userverification = '/userVerification';
   static const clientProfile = '/clientProfile';
   static const clientSettings = '/clientSettings';
-  static const clientSecurity = '/clientSecurity';
+  static const clientEditPofile = '/clientEditProfile';
   static const clientCompletion = '/clientCompletion';
+  static const clientOrders = '/clientOrders';
+  static const clientCart = '/clientCart';
 }

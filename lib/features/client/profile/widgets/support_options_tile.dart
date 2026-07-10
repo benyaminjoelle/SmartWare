@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SupportOptionsTile {
   static void show(BuildContext context) {
@@ -42,7 +43,7 @@ class SupportOptionsTile {
                 const SizedBox(height: 12),
 
                 Text(
-                  "Contact Support",
+                  "Contact Support".tr,
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -51,7 +52,7 @@ class SupportOptionsTile {
                 const SizedBox(height: 6),
 
                 Text(
-                  "Choose your preferred way to reach us.",
+                  "Choose your preferred way to reach us.".tr,
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: cs.onSurface.withValues(alpha: 0.65),
@@ -63,8 +64,8 @@ class SupportOptionsTile {
                 _option(
                   context,
                   icon: Icons.email_rounded,
-                  title: "Email",
-                  subtitle: "Send us an email",
+                  title: "Email".tr,
+                  subtitle: "Send us an email".tr,
                   onTap: () {
                     Navigator.pop(context);
                     // TODO: Email
@@ -76,8 +77,8 @@ class SupportOptionsTile {
                 _option(
                   context,
                   icon: Icons.chat_rounded,
-                  title: "WhatsApp",
-                  subtitle: "Chat with our team",
+                  title: "WhatsApp".tr,
+                  subtitle: "Chat with our team".tr,
                   onTap: () {
                     Navigator.pop(context);
                     // TODO: WhatsApp
@@ -89,8 +90,8 @@ class SupportOptionsTile {
                 _option(
                   context,
                   icon: Icons.language_rounded,
-                  title: "Website",
-                  subtitle: "Visit our official website",
+                  title: "Website".tr,
+                  subtitle: "Visit our official website".tr,
                   onTap: () {
                     Navigator.pop(context);
                     // TODO: Website

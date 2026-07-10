@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/features/client/home/controllers/client_home_controller.dart';
+import 'package:smartware/features/client/home/controllers/client_home_controller.dart';
 
 class FilteringMenu extends StatelessWidget{
   const FilteringMenu({super.key});

@@ -9,7 +9,7 @@ class ClientProfileCompletionController extends GetxController {
   final int totalSteps = 3;
 
   /// step-based progress map
-  final List<int> stepProgress = [0, 33, 66, 100];
+  final List<int> stepProgress = [ 33, 66, 100];
 
   void nextStep() {
     if (currentStep.value < totalSteps - 1) {
@@ -25,7 +25,7 @@ class ClientProfileCompletionController extends GetxController {
     }
   }
 
-  bool get isFirstStep => currentStep.value == 0;
+  bool get isFirstStep => currentStep.value == 33;
 
   bool get isLastStep => currentStep.value == totalSteps - 1;
 
@@ -33,7 +33,7 @@ class ClientProfileCompletionController extends GetxController {
   /// PROFILE COMPLETION
   /// =========================================================
 
-  final profileCompletion = 0.obs;
+  final profileCompletion = 33.obs;
   static const int maxCompletion = 100;
 
   double get completionPercent =>

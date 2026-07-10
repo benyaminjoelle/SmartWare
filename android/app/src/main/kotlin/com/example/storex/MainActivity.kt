@@ -1,4 +1,4 @@
-package com.example.storex
+package com.example.smartware
 
 import io.flutter.embedding.android.FlutterActivity
 

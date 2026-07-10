@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:storex/features/client/widgets/product_card.dart';
+import 'package:smartware/features/client/widgets/product_card.dart';
 
 class TopSellingRow extends StatelessWidget {
   const TopSellingRow({super.key});

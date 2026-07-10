@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:storex/core/constants/app_colors.dart';
+import 'package:smartware/core/constants/app_colors.dart';
 
-import 'package:storex/features/onboarding/widgets/feature_carousel.dart';
-import 'package:storex/features/onboarding/widgets/onboarding_text.dart';
-import 'package:storex/localization/local_controller.dart';
+import 'package:smartware/features/onboarding/widgets/feature_carousel.dart';
+import 'package:smartware/features/onboarding/widgets/onboarding_text.dart';
+import 'package:smartware/localization/local_controller.dart';
 
-import 'package:storex/widgets/primary_button.dart';
-import 'package:storex/widgets/secondary_button.dart';
+import 'package:smartware/widgets/primary_button.dart';
+import 'package:smartware/widgets/secondary_button.dart';
 
 class OnboardingView extends StatelessWidget {
   const OnboardingView({super.key});
@@ -26,9 +26,7 @@ class OnboardingView extends StatelessWidget {
             return SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: IntrinsicHeight(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -41,12 +39,14 @@ class OnboardingView extends StatelessWidget {
                           alignment: Alignment.centerRight,
                           child: Obx(() {
                             final isEnglish =
-                                localeController.currentLocale.value.languageCode ==
-                                    'en';
+                                localeController
+                                    .currentLocale
+                                    .value
+                                    .languageCode ==
+                                'en';
 
                             return TextButton.icon(
-                              onPressed:
-                                  localeController.toggleLanguage,
+                              onPressed: localeController.toggleLanguage,
                               icon: const Icon(
                                 Icons.language_rounded,
                                 size: 18,
@@ -58,8 +58,7 @@ class OnboardingView extends StatelessWidget {
                                 ),
                               ),
                               style: TextButton.styleFrom(
-                                foregroundColor:
-                                    theme.colorScheme.primary,
+                                foregroundColor: theme.colorScheme.primary,
                               ),
                             );
                           }),
@@ -73,11 +72,7 @@ class OnboardingView extends StatelessWidget {
                         const SizedBox(height: 20),
 
                         // MIDDLE (RESPONSIVE FLEX ZONE)
-                        Expanded(
-                          child: Center(
-                            child: FeatureCarousel(),
-                          ),
-                        ),
+                        Expanded(child: Center(child: FeatureCarousel())),
 
                         const SizedBox(height: 20),
 

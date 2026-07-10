@@ -2,15 +2,15 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:storex/core/routes/app_routes.dart';
-import 'package:storex/core/utils/validators.dart';
-import 'package:storex/features/auth/controllers/client_signup_controller.dart';
+import 'package:smartware/core/routes/app_routes.dart';
+import 'package:smartware/core/utils/validators.dart';
+import 'package:smartware/features/auth/controllers/client_signup_controller.dart';
 
-import 'package:storex/features/auth/widgets/signup_header.dart';
+import 'package:smartware/features/auth/widgets/signup_header.dart';
 
-import 'package:storex/widgets/back_button.dart';
-import 'package:storex/widgets/custom_textfield.dart';
-import 'package:storex/widgets/primary_button.dart';
+import 'package:smartware/widgets/back_button.dart';
+import 'package:smartware/widgets/custom_textfield.dart';
+import 'package:smartware/widgets/primary_button.dart';
 
 class ClientSignupView extends StatelessWidget {
   const ClientSignupView({super.key});
@@ -31,15 +31,10 @@ class ClientSignupView extends StatelessWidget {
               /// FIXED BACK BUTTON ROW
               /// =========================
               Padding(
-                padding: const EdgeInsets.only(
-                  top: 10,
-                  left: 10,
-                ),
+                padding: const EdgeInsets.only(top: 10, left: 10),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: CustomBackButton(
-                    onPressed: controller.handleBack,
-                  ),
+                  child: CustomBackButton(onPressed: controller.handleBack),
                 ),
               ),
 
@@ -58,10 +53,7 @@ class ClientSignupView extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(30),
                         child: BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: 20,
-                            sigmaY: 20,
-                          ),
+                          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                           child: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: media.size.width * 0.05,
@@ -106,7 +98,8 @@ class ClientSignupView extends StatelessWidget {
 
                                   SizedBox(height: media.size.height * 0.03),
                                   CustomTextField(
-                                    controller: controller.businessNameController,
+                                    controller:
+                                        controller.businessNameController,
                                     label: "Business Name:".tr,
                                     hint: "Enter your Business name".tr,
                                     textInputAction: TextInputAction.next,
@@ -146,7 +139,8 @@ class ClientSignupView extends StatelessWidget {
                                       label: 'Password:'.tr,
                                       hint: 'Enter your password'.tr,
                                       isPassword: true,
-                                      isObscure: controller.isPasswordHidden.value,
+                                      isObscure:
+                                          controller.isPasswordHidden.value,
                                       onToggleVisibility:
                                           controller.togglePasswordVisibility,
                                       textInputAction: TextInputAction.next,
@@ -165,28 +159,32 @@ class ClientSignupView extends StatelessWidget {
                                       label: 'Confirm Password:'.tr,
                                       hint: 'Confirm your password'.tr,
                                       isPassword: true,
-                                      isObscure:
-                                          controller.isConfirmPasswordHidden.value,
-                                      onToggleVisibility:
-                                          controller.toggleConfirmPasswordVisibility,
+                                      isObscure: controller
+                                          .isConfirmPasswordHidden
+                                          .value,
+                                      onToggleVisibility: controller
+                                          .toggleConfirmPasswordVisibility,
                                       textInputAction: TextInputAction.done,
-                                      validator:(value)=> Validators.confirmPassword(value,controller.passwordController.text)
-                                    
+                                      validator: (value) =>
+                                          Validators.confirmPassword(
+                                            value,
+                                            controller.passwordController.text,
+                                          ),
                                     ),
                                   ),
 
                                   SizedBox(height: media.size.height * 0.04),
 
                                   /// BUTTON
-                                 Obx(()=>
-                                  PrimaryButton(
-                                    text: "Continue".tr,
-                                    isLoading: controller.isLoading.value,
-                                    onPressed: () {
-                                      controller.continueToVerify();
-                                    },
+                                  Obx(
+                                    () => PrimaryButton(
+                                      text: "Continue".tr,
+                                      isLoading: controller.isLoading.value,
+                                      onPressed: () {
+                                        controller.continueToVerify();
+                                      },
+                                    ),
                                   ),
-                                 ),
 
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
