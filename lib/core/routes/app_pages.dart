@@ -15,7 +15,7 @@ import 'package:smartware/features/auth/views/signup/owner/owner_signup_view.dar
 import 'package:smartware/features/auth/views/signup/signup_onboarding.dart';
 import 'package:smartware/features/auth/views/login/forgot_password.dart';
 
-import 'package:smartware/features/auth/views/login/verify_email.dart';
+import 'package:smartware/features/auth/views/login/verify_code.dart';
 
 import 'package:smartware/features/auth/views/login/login.dart';
 import 'package:smartware/features/client/cart/views/client_cart_view.dart';
@@ -52,8 +52,8 @@ class AppPages {
       binding: ForgotPassBinding(),
     ),
     GetPage(
-      name: AppRoutes.verifyEmail,
-      page: () => const verifyEmail(),
+      name: AppRoutes.verifyCode,
+      page: () => const VerifyCode(),
       binding: ForgotPassBinding(),
     ),
     GetPage(

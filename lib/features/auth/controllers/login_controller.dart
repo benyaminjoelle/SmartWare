@@ -56,8 +56,16 @@ class LoginController extends GetxController {
         loginIdentifier: input,
         password: passwordText,
       );
+      AppSnackbar.show(
+        title: "Success".tr,
+        message: "Login successful".tr,
+        position: SnackPosition.TOP,
+        icon: Icons.check_circle_outline,
+        iconColor: theme.colorScheme.primary,
+      );
       // Route globally based on the user's role
       _navigateBasedOnRole(user.role);
+
 
       } catch (e) {
         AppSnackbar.show(title: "Error".tr,

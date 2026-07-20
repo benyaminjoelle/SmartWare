@@ -21,7 +21,7 @@ class AutoMovingAdsCarousel extends StatelessWidget {
         children: [
           // Infinite horizontal scrolling card box view
           SizedBox(
-            height: 110,
+            height: 130,
             child: Card(
               elevation: 2,
               color: colors.surface,

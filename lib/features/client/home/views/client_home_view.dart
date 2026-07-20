@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:smartware/features/client/home/controllers/client_home_controller.dart';
 import 'package:smartware/features/client/home/views/ads_carousel_view.dart';
 import 'package:smartware/features/client/home/views/filtering_menu.dart';
-import 'package:smartware/features/client/widgets/top_selling_row.dart';
+import 'package:smartware/features/client/widgets/product_card.dart';
+import 'package:smartware/features/client/widgets/horizontal_product_row.dart';
 import 'package:smartware/widgets/custom_textfield.dart';
 import 'package:smartware/widgets/dynamic_filter_row.dart';
 
@@ -16,6 +18,7 @@ class ClientHomeView extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final media = MediaQuery.of(context).size;
+    final controller = Get.find<ClientHomeController>();
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -47,7 +50,9 @@ class ClientHomeView extends StatelessWidget {
                             ).copyWith(color: colors.onSurface),
                           ),
                           Text(
-                            "Welcome back, John!",
+                            "Welcome back, @userName!".trParams({
+                              "userName": controller.userName,
+                            }),
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: colors.onSurface.withOpacity(0.8),
                               fontSize: 17,
@@ -91,7 +96,7 @@ class ClientHomeView extends StatelessWidget {
               
            ),
            ),
-           //The static search bar that pins when scrolling
+           // pinned search bar 
            SliverAppBar(
                   pinned: true,
                   floating: false,
@@ -105,7 +110,7 @@ class ClientHomeView extends StatelessWidget {
                   toolbarHeight: 60,
                   title: CustomTextField(
                    isSearch: true,
-                   hint: "Search for products",
+                   hint: "Search for products".tr,
                    prefixIcon: Icon(
                     Icons.search,
                     color: colors.onSurface.withOpacity(0.6),
@@ -126,9 +131,9 @@ class ClientHomeView extends StatelessWidget {
            SliverToBoxAdapter(
             child: Padding(
               padding:
-               EdgeInsets.symmetric(vertical: 16, horizontal: media.width * 0.05),
+               EdgeInsets.symmetric(vertical: 14, horizontal: media.width * 0.03),
                child: SizedBox(
-                height: media.height * 0.16,
+                height: media.height * 0.2,
                 child: AutoMovingAdsCarousel()),
             ),
             ),
@@ -138,8 +143,69 @@ class ClientHomeView extends StatelessWidget {
               ),
             //========= Most Selling ==========
             SliverToBoxAdapter(
-              child: TopSellingRow(),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: HorizontalProductRow(
+                title: "Top Selling".tr,
+                onSeeAllPressed: () {},
+              ),
             )
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: HorizontalProductRow(
+                  title: "Special Sales".tr,
+                  onSeeAllPressed: () {
+                    // Handle view routing
+                  },
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+              child: HorizontalProductRow(
+                title: "Buy It Again".tr,
+                itemCount: 3, // Say they only have 3 items historically ordered
+              ),
+            ),
+          ),
+          // ... previous horizontal rows ...
+
+//========= Section Header for All Products ==========
+SliverToBoxAdapter(
+  child: Padding(
+    padding: EdgeInsets.symmetric(horizontal: media.width * 0.05, vertical: 16),
+    child: Text(
+      "All Products".tr,
+      style: theme.textTheme.titleMedium?.copyWith(
+        fontWeight: FontWeight.bold,
+        fontSize: 18,
+      ),
+    ),
+  ),
+),
+
+//========= Main Product Grid ==========
+SliverPadding(
+  padding: EdgeInsets.symmetric(horizontal: media.width * 0.03),
+  sliver: SliverGrid.builder(
+    itemCount: 10, // Replace with your controller list length later
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 2,          
+      mainAxisSpacing: 16,       
+      childAspectRatio: 0.67,     // Width-to-height ratio (Adjust based on card design)
+    ),
+    itemBuilder: (context, index) {
+      return const ProductCard(); // Renders your standard client product card
+    },
+  ),
+),
+
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
            ],
            
             ),

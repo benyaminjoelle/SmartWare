@@ -1,8 +1,16 @@
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart'; // Added for disk retrieval
+import 'package:smartware/features/auth/models/user_model.dart';
 
-class ClientHomeController extends GetxController{
+class ClientHomeController extends GetxController {
+  late UserModel user; 
   
-  final List<String> userOnboardingSectors = ['foods', 'cleaning'];
+  // Clean Getters using Option 1 (Disk Storage)
+  String get userName => user.firstName ?? "User";
+  List<String> get userOnboardingSectors => ['foods', 'cleaning'];
+
+  //until i have the list from backend
+  // List<String> get userOnboardingSectors => user.sectors ?? ['foods', 'cleaning'];
 
   // This would typically come from your backend database repository
   final List<SubCategory> _allAvailableSubCategories = [
@@ -24,6 +32,15 @@ class ClientHomeController extends GetxController{
   @override
   void onInit() {
     super.onInit();
+    
+    // 1. Retrieve the saved user map from local storage immediately on startup
+    final box = GetStorage();
+    final Map<String, dynamic> responseMap = box.read('user_data') ?? {};
+    
+    // 2. Safely unpack JSON to create your runtime User instance 
+    user = UserModel.fromJson(responseMap);
+    
+    // 3. Now that the user instance is live, securely process the sector filters
     loadUserSubCategories();
   }
 
@@ -46,7 +63,8 @@ class ClientHomeController extends GetxController{
     // TODO: Trigger your warehouse items filter query here based on the selected ID
   }
 }
-//this should be in the model file later
+
+// This should be in the model file later
 class SubCategory {
   final String id;
   final String parentSector; // e.g., 'foods', 'cleaning'

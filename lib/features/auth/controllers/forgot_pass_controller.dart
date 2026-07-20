@@ -5,6 +5,7 @@ import 'package:smartware/core/network/api_error.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/features/auth/models/auth_repo.dart';
 import 'package:smartware/features/auth/models/user_model.dart';
+import 'package:smartware/features/auth/views/login/verify_code.dart';
 import 'package:smartware/widgets/app_snackbar.dart';
 
 class ForgotPassController extends GetxController {
@@ -15,7 +16,7 @@ class ForgotPassController extends GetxController {
   final codeController = TextEditingController();
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  final editEmailController = TextEditingController();
+  // final editEmailController = TextEditingController();
 
   final passwordKey = GlobalKey<FormState>();
   final formKey = GlobalKey<FormState>();
@@ -23,7 +24,7 @@ class ForgotPassController extends GetxController {
   //------------States & Variables-----------------
   var isLoading = false.obs; 
   var email = "user@example.com".obs; 
-  var token = "";
+  var otp = "";
   var password = '';
 
   ThemeData get theme => Get.theme;
@@ -55,7 +56,7 @@ class ForgotPassController extends GetxController {
 
   void startResendTimer() {
     isResendEnabled.value = false;
-    secondsRemaining.value = 60; // Cleaned up testing offset
+    secondsRemaining.value = 60; 
     
     // cancel any timers if already running
     timer?.cancel();
@@ -70,41 +71,42 @@ class ForgotPassController extends GetxController {
   }
 
   ///=================CHANGE EMAIL FUNCTION=================
-  Future<void> changeEmail(String newEmail) async {
-    try {
-      isLoading.value = true;
+  ///wont use anymore
+  // Future<void> changeEmail(String newEmail) async {
+  //   try {
+  //     isLoading.value = true;
 
-      final userId = await PrefHelper.getUserId();
+  //     final userId = await PrefHelper.getUserId();
 
-      if (userId == null) {
-        throw Exception("User ID not found in local storage");
-      }
+  //     if (userId == null) {
+  //       throw Exception("User ID not found in local storage");
+  //     }
 
-      await _authRepo.changeEmail(userId: userId, email: newEmail);
+  //     await _authRepo.changeEmail(userId: userId, email: newEmail);
 
-      email.value = newEmail;
+  //     email.value = newEmail;
 
-      await PrefHelper.saveUserEmail(newEmail);
+  //     await PrefHelper.saveUserEmail(newEmail);
 
-      AppSnackbar.show(
-        position: SnackPosition.TOP,
-        title: "Email Updated".tr,
-        message: "Your email has been changed successfully.".tr,
-        icon: Icons.check_circle_outline,
-        iconColor: Colors.green,
-      );
-    } catch (e) {
-      AppSnackbar.show(
-        position: SnackPosition.TOP,
-        title: "Error".tr,
-        message: e.toString(),
-        icon: Icons.error_outline,
-        iconColor: theme.colorScheme.error,
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  //     AppSnackbar.show(
+  //       position: SnackPosition.TOP,
+  //       title: "Email Updated".tr,
+  //       message: "Your email has been changed successfully.".tr,
+  //       icon: Icons.check_circle_outline,
+  //       iconColor: Colors.green,
+  //     );
+  //   } catch (e) {
+  //     AppSnackbar.show(
+  //       position: SnackPosition.TOP,
+  //       title: "Error".tr,
+  //       message: e.toString(),
+  //       icon: Icons.error_outline,
+  //       iconColor: theme.colorScheme.error,
+  //     );
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   ///=================RESEND CODE FUNCTION=================
   Future<void> resendCode() async {
@@ -113,14 +115,14 @@ class ForgotPassController extends GetxController {
     try {
       isLoading.value = true;
 
-      await _authRepo.resendVerificationEmail(email: email.value);
+      await _authRepo.forgotPassword(email: email.value);
 
       startResendTimer();
 
       AppSnackbar.show(
         position: SnackPosition.TOP,
         title: "Email Sent".tr,
-        message: "A new verification email has been sent.".tr,
+        message: "A new verification code has been sent.".tr,
         icon: Icons.check_circle_outline,
         iconColor: Colors.green,
       );
@@ -138,13 +140,13 @@ class ForgotPassController extends GetxController {
   }
 
   //============ Step 1: Send Password Recovery Link ===========
-  Future<void> sendForgotPasswordLink() async {
+  Future<void> sendCode() async {
     try {
       isLoading.value = true;
       email.value = emailController.text.trim();
 
-      await _authRepo.sendPasswordResetEmail(email: email.value);      
-      Get.toNamed('/verifyEmail', arguments: {'email': email.value});
+      await _authRepo.forgotPassword(email: email.value);      
+      Get.toNamed('/verifyCode');
     } catch (e) {
       AppSnackbar.show(
         position: SnackPosition.TOP,
@@ -159,37 +161,27 @@ class ForgotPassController extends GetxController {
   }
 
   //========== Step 2: Verify Email ==============
-  Future<void> verifyEmail() async {
+  Future<void> verifyCode() async {
     try {
       isLoading.value = true;
 
-      final String verificationToken = codeController.text.trim();
+      final String otp = codeController.text.trim();
+      final String email = emailController.text.trim();
 
-      if (verificationToken.isEmpty){
-        throw ApiError(message: 'Please click the verification link sent to your email.'.tr); 
+      if (otp.isEmpty || otp.length < 6) {
+        throw ApiError(message: 'Please check the code sent to your email.'.tr); 
       }
 
-      final responseMap = await _authRepo.verifyResetToken(
-        email: email.value,
-        token: verificationToken,
+      final responseMap = await _authRepo.verifyOtp(
+        email: email,
+        otp: otp,
       );
-      final user = UserModel.fromJson(responseMap, token: verificationToken);
+      // final user = UserModel.fromJson(responseMap);
       
-      token = verificationToken;
 
-      await PrefHelper.saveUserEmail(email.value);
+      await PrefHelper.saveUserEmail(email);
 
-      if (user.token != null) {
-        await PrefHelper.saveToken(user.token!);
-      }
-      
-      await PrefHelper.saveUserId(user.id);
-      await PrefHelper.saveUserName('${user.firstName} ${user.lastName}');
-      await PrefHelper.saveUserEmail(user.email);
-      await PrefHelper.saveUserPhone(user.phoneNumber);
-      await PrefHelper.saveBusinessName(user.businessName);
-
-      print("✅ TOKEN = ${user.token}");
+      // print("✅ TOKEN = ${user.token}");
 
       Get.toNamed('/resetPassword');
     } catch (e) {
@@ -206,16 +198,18 @@ class ForgotPassController extends GetxController {
   }
 
   //=========== Step 3: Reset Password API ===============
-  Future<void> updatePassword() async {
+  Future<void> passwordReset() async {
     try {
       isLoading.value = true;
 
-      final String newPass = newPasswordController.text;
-      final String confirmPass = confirmPasswordController.text;
-      
-      await _authRepo.changePassword(
-        newPassword: newPass,
-        confirmPassword: confirmPass
+      final String newPassword = newPasswordController.text;
+      final String email = emailController.text;
+      final String otp = codeController.text.trim();
+
+      await _authRepo.passwordReset(
+        email: email,
+        otp: otp,
+        newPassword: newPassword,
       );
 
       AppSnackbar.show(
@@ -246,7 +240,7 @@ class ForgotPassController extends GetxController {
     codeController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
-    editEmailController.dispose();
+    // editEmailController.dispose();
     timer?.cancel();
     super.onClose();
   }

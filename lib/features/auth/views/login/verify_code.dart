@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:pinput/pinput.dart';
 import 'package:smartware/features/auth/controllers/forgot_pass_controller.dart';
-import 'package:smartware/features/auth/views/login/verify_email.dart';
+import 'package:smartware/features/auth/views/login/verify_code.dart';
 import 'package:smartware/features/auth/widgets/change_email.dart';
+import 'package:smartware/features/auth/widgets/custom_pin_theme.dart';
 import 'package:smartware/widgets/back_button.dart';
 import 'package:smartware/widgets/primary_button.dart';
 
-class verifyEmail extends StatelessWidget {
-  const verifyEmail({super.key});
+class VerifyCode extends StatelessWidget {
+  const VerifyCode({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +56,10 @@ class verifyEmail extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        SizedBox(height: media.size.height * 0.015),
                         Obx(
                           () => Text(
-                            'verification_link_sent'.trParams({
+                            'verification_code_sent'.trParams({
                               'email': controller.email.value,
                             }),
                             textAlign: TextAlign.center,
@@ -66,22 +69,31 @@ class verifyEmail extends StatelessWidget {
                             ),
                           ),
                         ),
-                        TextButton(
-                          onPressed: () => EmailBottomSheet.show(
-                            context,
-                            controller,
-                            theme,
-                          ), // Open the change email bottom sheet
-                          child: Text(
-                            "Wrong email? Change it here".tr,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.primaryColor,
-                              // decoration: TextDecoration.underline,
-                            ),
-                          ),
-                        ),
+                        // TextButton(
+                        //   onPressed: () => EmailBottomSheet.show(
+                        //     context,
+                        //     controller,
+                        //     theme,
+                        //   ), // Open the change email bottom sheet
+                        //   child: Text(
+                        //     "Wrong email? Change it here".tr,
+                        //     style: theme.textTheme.bodySmall?.copyWith(
+                        //       color: theme.primaryColor,
+                        //       // decoration: TextDecoration.underline,
+                        //     ),
+                        //   ),
+                        // ),
 
-                        Text(
+                      
+                        SizedBox(height: media.size.height * 0.02),
+
+                        CustomPinTheme(
+                          length: 6,
+                          controller: controller.codeController,
+                        ),
+                        SizedBox(height: media.size.height * 0.02),
+
+                          Text(
                           "Please check your spam folder if you can't find it."
                               .tr,
                           textAlign: TextAlign.center,
@@ -90,13 +102,12 @@ class verifyEmail extends StatelessWidget {
                                 ?.withOpacity(0.5),
                           ),
                         ),
-                        SizedBox(height: media.size.height * 0.01),
 
                         SizedBox(height: media.size.height * 0.09),
                         PrimaryButton(
-                          text: "I have verified".tr,
+                          text: "Confirm Code".tr,
                           onPressed: () {
-                            controller.verifyEmail();
+                            controller.verifyCode();
                           },
                         ),
                         Row(

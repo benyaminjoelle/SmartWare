@@ -67,20 +67,18 @@ class ResetPassword extends StatelessWidget {
                             label: "Confirm Password".tr,
                             controller: controller.confirmPasswordController,
                             hint: "Confirm your new password".tr,
-                            validator: (value) => Validators.confirmPassword(value,
-                            controller.newPasswordController.text),
+                            validator: (value) => Validators.confirmPassword(
+                                value,
+                                controller.newPasswordController.text),
                             ),
                             SizedBox(height: media.size.height * 0.03),
-                           PrimaryButton(text: "Confirm Password".tr, onPressed: (){
+                            Obx (() => controller.isLoading.value
+                              ? const Center (child: CircularProgressIndicator())
+                              : PrimaryButton(
+                                text: "Confirm Password".tr,
+                                 onPressed: (){
                                  if (controller.passwordKey.currentState!.validate()) {
-                                   Get.offAllNamed('/login');
-                                   AppSnackbar.show(
-                                     position: SnackPosition.TOP,
-                                     title: "Success".tr,
-                                     message: "Your password has been reset successfully.".tr,
-                                     icon: Icons.check_circle_outline,
-                                     iconColor: theme.colorScheme.tertiary,
-                                   );
+                                    controller.passwordReset();
           
                                  } else {
                                   //  controller.updatePassword();
@@ -92,7 +90,7 @@ class ResetPassword extends StatelessWidget {
                                      iconColor: theme.colorScheme.error,
                                    );
                                  }
-                           })
+                           })),
                                 ],),
                   ),
                 ),

@@ -1,4 +1,4 @@
-import 'package:smartware/features/auth/views/login/verify_email.dart';
+import 'package:smartware/features/auth/views/login/verify_code.dart';
 
 class AppRoutes {
   static const onboarding = '/onboarding';
@@ -8,7 +8,7 @@ class AppRoutes {
   static const workerSignup = '/workerSignup';
   static const signupOnboarding = '/signupOnboarding';
   static const forgotPassword = '/forgotPassword';
-  static const verifyEmail = '/verifyEmail';
+  static const verifyCode = '/verifyCode';
   static const clientRoot = '/clientRoot';
   static const clientHome = '/clientHome';
   static const resetPassword = '/resetPassword';
