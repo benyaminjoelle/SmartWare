@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       case "light":
         return ThemeMode.light;
       default:
-        return ThemeMode.system; // 🌗 your requirement
+        return ThemeMode.system; 
     }
   }
 
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
       fallbackLocale: const Locale('en'),
 
       // ROUTES
-      initialRoute: AppRoutes.onboarding,
+      initialRoute: AppRoutes.clientRoot,
       getPages: AppPages.pages,
     );
   }

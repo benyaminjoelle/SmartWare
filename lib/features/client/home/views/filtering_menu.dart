@@ -65,6 +65,7 @@ class FilteringMenu extends StatelessWidget{
                     
                     // PLACEHOLDER: Your checkboxes, range sliders, or buttons go here
                     const Text("Filter attributes go here..."),
+                    //min Price, max price,
                     
                     const SizedBox(height: 100)
         ],
