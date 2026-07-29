@@ -8,7 +8,7 @@ class OnboardingText extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final textScaler = MediaQuery.textScalerOf(context);
-    final titleSize = textScaler.scale(30).clamp(28.0, 46.0);
+    final titleSize = textScaler.scale(20).clamp(28.0, 46.0);
     final taglineSize = textScaler.scale(12).clamp(10.0, 20.0);
 
     return Column(

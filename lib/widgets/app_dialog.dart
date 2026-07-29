@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:smartware/core/constants/app_colors.dart';
 
 class AppDialogs {
   static Future<bool?> showConfirmDialog({
@@ -8,6 +9,7 @@ class AppDialogs {
     String confirmText = "Confirm",
     String cancelText = "Cancel",
     Color? confirmColor,
+    Color? cancelColor,
     bool barrierDismissible = true,
   }) {
     return Get.dialog<bool>(
@@ -18,8 +20,12 @@ class AppDialogs {
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
-            child: Text(cancelText.tr),
+            child: Text(cancelText.tr,  style: TextStyle(
+                color: cancelColor ?? AppColors.primary,
+                fontWeight: FontWeight.w600,
+              ),),
           ),
+          
           TextButton(
             onPressed: () => Get.back(result: true),
             child: Text(

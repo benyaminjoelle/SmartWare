@@ -32,10 +32,7 @@ class ClientProfileCompletionView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                      onPressed: () => Get.back(),
-                      icon: const Icon(Icons.arrow_back),
-                    ),
+                   BackButton(onPressed: controller.handleBack,),
                     Text(
                       "Complete Profile",
                       style: theme.textTheme.titleMedium?.copyWith(
@@ -90,11 +87,12 @@ class ClientProfileCompletionView extends StatelessWidget {
   Widget _buildStep(ClientProfileCompletionController controller) {
     switch (controller.currentStep.value) {
       case 0:
-        return const PreferencesStep();
+        return const ClientPreferences();
       case 1:
-        return const ClientLocation();
+      return const ClientDocumentations();
+      
       case 2:
-        return const ClientDocumentations();
+          return const ClientLocation();
       default:
         return const SizedBox();
     }

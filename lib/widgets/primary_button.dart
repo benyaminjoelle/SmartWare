@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartware/core/constants/app_colors.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
@@ -35,7 +36,7 @@ class PrimaryButton extends StatelessWidget {
           backgroundColor: colors.primary,
           foregroundColor: colors.onPrimary,
           disabledBackgroundColor:
-              colors.primary.withValues(alpha: 1),
+              AppColors.grey.withOpacity(0.2),
           elevation: 0,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
