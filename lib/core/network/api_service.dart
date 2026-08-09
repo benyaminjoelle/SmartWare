@@ -17,8 +17,8 @@ class ApiService {
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
         headers: {'Accept': 'application/json'},
-        // Allow Dio to handle 4xx manually
-        validateStatus: (status) => status != null && status < 500,
+        // its causing error in some cases
+        // validateStatus: (status) => status != null && status < 500,
       ),
     );
 
@@ -95,9 +95,9 @@ class ApiService {
             : null,
       );
 
-      if (response.statusCode == 401) {
-        return ApiError(message: 'Unauthorized');
-      }
+      // if (response.statusCode == 401) {
+        // return ApiError(message: 'Unauthorized');
+      // }
 
       return response.data;
     } on DioException catch (e) {

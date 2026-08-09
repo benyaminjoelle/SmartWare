@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:smartware/core/constants/const_ip.dart';
 import 'package:smartware/core/network/api_error.dart';
 import 'package:smartware/core/network/api_service.dart';
@@ -266,12 +267,12 @@ class AuthRepo {
       final token = response['token'];
 
       if (userJson == null) {
-        throw ApiError(message: response['message'] ?? 'User data not found');
+        throw ApiError(message: response['message'] ?? 'User data not found'.tr);
       }
 
       return UserModel.fromJson(userJson, token: token);
     } on DioException catch (e) {
-      throw ApiError(message: e.response?.data?['message'] ?? 'Login failed');
+      throw ApiError(message: e.response?.data?['message'] ?? 'Login failed'.tr);
     } catch (e) {
       if (e is ApiError) rethrow;
       throw ApiError(message: 'Login failed');
@@ -445,7 +446,7 @@ Future<void> changeEmail({
 
 ///=================FORGOT PASSWORD======================
 ///==================1st screen==================
-   Future<Map<String,dynamic>> sendPasswordResetEmail ({
+   Future<Map<String,dynamic>> forgotPassword ({
     required String email,
    }) async {
     try {
@@ -468,27 +469,32 @@ Future<void> changeEmail({
     } catch (e) {
       print('════════ FORGOT PASSWORD ERROR ════════');
       if (e is ApiError) rethrow;
-      throw ApiError(message: 'Failed to send password reset email');
+      throw ApiError(message: 'Failed to send password reset email'.tr);
     }
    }
 
  
 ///=================2nd screen=====================
-  Future<Map<String,dynamic>> verifyResetToken({
-    required String token,
+  Future<Map<String,dynamic>> verifyOtp({
+    required String otp,
     required String email,
   }) async {
     try{
       print('════════ VERIFY RESET TOKEN START ════════');
-      print('📤 Query Params -> Email: $email | Token: $token');
+      print('📤 Query Params -> Email: $email | Otp: $otp');
 
+    // final FormData formData = FormData.fromMap({
+    //       'otp': otp,
+    //       'email': email.trim(),
+    // });
 
-      final response = await _api.get(
-        '$baseUrl/api/password/reset',
-        queryParameters: {
-          'token': token,
+      final response = await _api.post(
+        '$baseUrl/api/password/verify-otp',
+        {
+          'otp': otp,
           'email': email.trim(),
-        },
+        }
+        
       );
 
       print ('📥 Response: $response');
@@ -500,25 +506,27 @@ Future<void> changeEmail({
     } catch (e) {
       print('════════ VERIFY RESET TOKEN ERROR ════════');
       if (e is ApiError) rethrow;
-      throw ApiError(message: 'Link validation or reset request failed');
+      throw ApiError(message: 'OTP validation or reset request failed'.tr);
     }
   }
   ///====================3rd screen=========================
-    Future<Map<String, dynamic>> changePassword ({
+    Future<Map<String, dynamic>> passwordReset ({
+    required String otp,
+    required String email,
     required String newPassword,
-    required String confirmPassword,
    }) async {
     try {
       print('════════ CHANGE PASSWORD START ════════');
 
-      final FormData formData = FormData.fromMap({
-        'current_password': newPassword,
-        'new_password': confirmPassword,
-      });
+      
       print('📤 Submitting password alteration request...');
 
-      final response = await _api.post('$baseUrl/api/password/change',
-        formData,
+      final response = await _api.post('$baseUrl/api/password/reset',
+      {
+        'otp': otp, 
+        'email': email.trim(),
+        'password': newPassword,
+      }
         );
       print('📥 Response: $response');
       if (response is ApiError) throw response;

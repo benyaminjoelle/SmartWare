@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:smartware/core/constants/app_colors.dart';
 
 import 'package:smartware/features/auth/models/auth_repo.dart';
+import 'package:smartware/features/auth/models/user_model.dart';
 import 'package:smartware/widgets/app_dialog.dart';
 import 'package:smartware/widgets/app_snackbar.dart';
 
@@ -32,6 +33,7 @@ class ClientSignupController extends GetxController {
   final confirmPasswordController = TextEditingController();
 
   final otpController = TextEditingController();
+  late UserModel user;
 
   // =========================================================
   /// VERIFICATION DATA & STATE (REQUIRED FOR USERVERIFICATION VIEW)

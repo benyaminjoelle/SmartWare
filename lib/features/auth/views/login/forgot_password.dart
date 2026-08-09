@@ -97,11 +97,11 @@ class ForgotPassword extends StatelessWidget {
                                   .emailController
                                   .text
                                   .trim();
-                              //  controller.sendVerificationEmail();
-                              Get.toNamed(AppRoutes.verifyEmail);
+                               controller.sendCode();
+                            
                             } else {
                               AppSnackbar.show(
-                                position: SnackPosition.TOP,
+                                // position: SnackPosition.TOP,
                                 title: "Invalid Email".tr,
                                 message:
                                     "Please Enter a valid email address.".tr,

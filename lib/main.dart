@@ -4,13 +4,14 @@ import 'package:get/get.dart';
 import 'package:smartware/core/constants/theme.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/localization/app_translation.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'core/routes/app_pages.dart';
 import 'core/routes/app_routes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await GetStorage.init();
   final lang = await PrefHelper.getLanguage();
   final savedTheme = await PrefHelper.getTheme();
   // savedTheme: "dark" | "light" | "system" | null
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
       case "light":
         return ThemeMode.light;
       default:
-        return ThemeMode.system; // 🌗 your requirement
+        return ThemeMode.system; 
     }
   }
 
