@@ -19,6 +19,8 @@ class ClientHomeView extends StatelessWidget {
     final colors = theme.colorScheme;
     final media = MediaQuery.of(context).size;
     final controller = Get.find<ClientHomeController>();
+    final products = controller.displayedProducts; // Assuming you have a list of displayed products in your controller
+
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -86,7 +88,7 @@ class ClientHomeView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: IconButton(
-                          onPressed: (){},
+                          onPressed: ()=> Get.toNamed("/clientCart"),
                           icon: Icon(Icons.shopping_cart_outlined),
                           color: colors.onSurface.withOpacity(0.8),),
                       ),
@@ -111,6 +113,10 @@ class ClientHomeView extends StatelessWidget {
                   title: CustomTextField(
                    isSearch: true,
                    hint: "Search for products".tr,
+                   onChanged: (Value) {
+                     controller.searchQuery.value = Value;
+                     controller.applyFilters(); 
+                   },
                    prefixIcon: Icon(
                     Icons.search,
                     color: colors.onSurface.withOpacity(0.6),
@@ -133,9 +139,10 @@ class ClientHomeView extends StatelessWidget {
               padding:
                EdgeInsets.symmetric(vertical: 14, horizontal: media.width * 0.03),
                child: SizedBox(
-                height: media.height * 0.2,
-                child: AutoMovingAdsCarousel()),
+                height: media.height * 0.25,
+                child: const AutoMovingAdsCarousel()),
             ),
+
             ),
             //=========== The filtering chips =========
               SliverToBoxAdapter(
@@ -148,6 +155,7 @@ class ClientHomeView extends StatelessWidget {
               child: HorizontalProductRow(
                 title: "Top Selling".tr,
                 onSeeAllPressed: () {},
+                products: controller.products.toList(),
               ),
             )
             ),
@@ -159,6 +167,7 @@ class ClientHomeView extends StatelessWidget {
                   onSeeAllPressed: () {
                     // Handle view routing
                   },
+                  products: controller.products.toList(),
                 ),
               ),
             ),
@@ -167,11 +176,12 @@ class ClientHomeView extends StatelessWidget {
               padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
               child: HorizontalProductRow(
                 title: "Buy It Again".tr,
-                itemCount: 3, // Say they only have 3 items historically ordered
+                onSeeAllPressed: () => Get.toNamed("/client/purchase-history"),
+                products: controller.products.toList(), 
               ),
             ),
           ),
-          // ... previous horizontal rows ...
+          
 
 //========= Section Header for All Products ==========
 SliverToBoxAdapter(
@@ -188,30 +198,32 @@ SliverToBoxAdapter(
 ),
 
 //========= Main Product Grid ==========
-SliverPadding(
-  padding: EdgeInsets.symmetric(horizontal: media.width * 0.03),
-  sliver: SliverGrid.builder(
-    itemCount: 10, // Replace with your controller list length later
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 2,          
-      mainAxisSpacing: 16,       
-      childAspectRatio: 0.67,     // Width-to-height ratio (Adjust based on card design)
+Obx(() {
+  return SliverPadding(
+    padding: EdgeInsets.symmetric(horizontal: media.width * 0.03),
+    sliver: SliverGrid.builder(
+      itemCount: products.length, 
+      gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,          
+        mainAxisSpacing: 16,       
+        childAspectRatio: 0.67,     // Width-to-height ratio (Adjust based on card design)
+      ),
+      itemBuilder: (context, index) {
+        return  ProductCard(product: products[index],); 
+      },
     ),
-    itemBuilder: (context, index) {
-      return const ProductCard(); // Renders your standard client product card
-    },
+);
+}
+),
+    const SliverToBoxAdapter(
+      child: SizedBox(height: 32),
+    ),
+    ],
+    
+    ),
   ),
 ),
+);
 
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
-            ),
-           ],
-           
-            ),
-         ),
-       ),
-      );
-     
   }
 }

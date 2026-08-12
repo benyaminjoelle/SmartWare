@@ -7,12 +7,10 @@ class AutoMovingAdsCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Inject or find your controller pipeline dependencies 
     final controller = Get.put(AdsCarouselController());
     final colors = Theme.of(context).colorScheme;
 
     return Obx(() {
-      // Fallback state context handling if the data list is empty
       if (controller.imageUrls.isEmpty) {
         return const SizedBox(height: 110);
       }
@@ -20,8 +18,7 @@ class AutoMovingAdsCarousel extends StatelessWidget {
       return Column(
         children: [
           // Infinite horizontal scrolling card box view
-          SizedBox(
-            height: 130,
+          Expanded(
             child: Card(
               elevation: 2,
               color: colors.surface,

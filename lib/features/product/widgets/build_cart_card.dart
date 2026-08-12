@@ -16,6 +16,8 @@ class CartCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<CartController>();
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       shape: RoundedRectangleBorder(
@@ -60,15 +62,23 @@ class CartCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     'Total: \$${cartItem.total.toStringAsFixed(2)}',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.green),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: colors.tertiary),
                   ),
                 ],
               ),
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => controller.addToCart(cartItem.product),
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.remove),
+                onPressed: () => controller.removeSingleItem(cartItem.product.sku),
+              ),
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () => controller.addToCart(cartItem.product),
+              ),
+            ],
           )
         ]
       ),
