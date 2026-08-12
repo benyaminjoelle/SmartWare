@@ -42,7 +42,8 @@ dependencies:
   pinput: ^6.0.2
   dio: ^5.9.2
   get_storage: ^2.1.1
-
+  syncfusion_flutter_charts: ^34.2.3
+  google_maps_flutter: ^2.14.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
