@@ -121,7 +121,7 @@ class ClientHomeView extends StatelessWidget {
                     Icons.search,
                     color: colors.onSurface.withOpacity(0.6),
                     size: 25,
-                  ),
+                  ), 
                   suffixIcon: IconButton(
                     onPressed: () {
                       Get.bottomSheet(const FilteringMenu(),
@@ -149,7 +149,8 @@ class ClientHomeView extends StatelessWidget {
                 child: DynamicFilterRow(),
               ),
             //========= Most Selling ==========
-            SliverToBoxAdapter(
+         Obx(()=> 
+           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: HorizontalProductRow(
@@ -159,7 +160,9 @@ class ClientHomeView extends StatelessWidget {
               ),
             )
             ),
-            SliverToBoxAdapter(
+         ),   
+          Obx(() =>
+             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: HorizontalProductRow(
@@ -171,16 +174,8 @@ class ClientHomeView extends StatelessWidget {
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
-              child: HorizontalProductRow(
-                title: "Buy It Again".tr,
-                onSeeAllPressed: () => Get.toNamed("/client/purchase-history"),
-                products: controller.products.toList(), 
-              ),
-            ),
-          ),
+          ), 
+         
           
 
 //========= Section Header for All Products ==========
@@ -200,13 +195,13 @@ SliverToBoxAdapter(
 //========= Main Product Grid ==========
 Obx(() {
   return SliverPadding(
-    padding: EdgeInsets.symmetric(horizontal: media.width * 0.03),
+    padding: EdgeInsets.only(left: media.width * 0.03),
     sliver: SliverGrid.builder(
       itemCount: products.length, 
       gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,          
         mainAxisSpacing: 16,       
-        childAspectRatio: 0.67,     // Width-to-height ratio (Adjust based on card design)
+        childAspectRatio: media.aspectRatio * 1.5,     // Width-to-height ratio (Adjust based on card design)
       ),
       itemBuilder: (context, index) {
         return  ProductCard(product: products[index],); 

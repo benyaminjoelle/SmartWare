@@ -15,8 +15,7 @@ class DynamicFilterRow extends StatelessWidget {
       if (controller.filteredSubCategories.isEmpty) {
         return const SizedBox.shrink();
       }
-
-      // Add 1 to the length to account for our permanent trailing "Edit" action chip
+     
       final int totalItemCount = controller.filteredSubCategories.length + 1;
 
       return SizedBox(
@@ -55,11 +54,11 @@ class DynamicFilterRow extends StatelessWidget {
             // Otherwise, render the standard sub-category filter chips as normal
             final subCategory = controller.filteredSubCategories[index];
             return Obx (() {
-                final bool isSelected = controller.selectedSubCategoryId.value == subCategory.id;
+                final bool isSelected = controller.selectedSubCategoryId.contains(subCategory.id);
 
             return Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: ChoiceChip(
+              child: FilterChip(
                 label: Text(subCategory.name),
                 selected: isSelected,
                 selectedColor: colors.primary,
@@ -76,7 +75,7 @@ class DynamicFilterRow extends StatelessWidget {
                   ),
                 ),
                 showCheckmark: false,
-                onSelected: (bool selected) => controller.selectSubCategory(subCategory.id),
+                onSelected: (bool selected) => controller.toggleSubCategory(subCategory.id),
               ),
             );
             });
