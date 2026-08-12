@@ -34,6 +34,13 @@ import 'package:smartware/features/client/root/binding/root_binding.dart';
 import 'package:smartware/features/client/root/view/root_view.dart';
 import 'package:smartware/features/onboarding/binding/carousel_binding.dart';
 import 'package:smartware/features/onboarding/views/onboarding_view.dart';
+import 'package:smartware/features/owner/analytics/views/owner_analytic_view.dart';
+import 'package:smartware/features/owner/home/views/owner_home_view.dart';
+import 'package:smartware/features/owner/notifications/views/owner_notifications_view.dart';
+import 'package:smartware/features/owner/orders/views/owner_orders_view.dart';
+import 'package:smartware/features/owner/profile/views/owner_profile_view.dart';
+import 'package:smartware/features/owner/root/binding/owner_root_binding.dart';
+import 'package:smartware/features/owner/root/view/owner_root_view.dart';
 
 class AppPages {
   static final pages = [
@@ -133,6 +140,33 @@ class AppPages {
     GetPage(
       name: AppRoutes.checkout,
       page: () => CheckoutView()
+    ),
+     GetPage(
+      name: AppRoutes.ownerRoot,
+      page: () => OwnerRootView(),
+      binding: OwnerRootBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.onwerHome,
+      page: () => OwnerHomeView(),
+      binding: OwnerRootBinding(),
+    ),
+     GetPage(
+      name: AppRoutes.onwerAnalytics,
+      page: () => OwnerAnalyticView(),
+      binding: OwnerRootBinding(),
+    ), GetPage(
+      name: AppRoutes.onwerNotifications,
+      page: () => OwnerNotificationsView(),
+      binding: OwnerRootBinding(),
+    ), GetPage(
+      name: AppRoutes.onwerOrders,
+      page: () => OwnerOrdersView(),
+      binding: OwnerRootBinding(),
+    ), GetPage(
+      name: AppRoutes.onwerProfile,
+      page: () => OwnerProfileView(),
+      binding: OwnerRootBinding(),
     ),
   ];
 }
