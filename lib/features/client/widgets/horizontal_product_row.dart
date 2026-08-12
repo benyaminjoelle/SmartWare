@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smartware/features/client/widgets/product_card.dart';
+import 'package:smartware/features/product/models/product_model.dart';
 
 class HorizontalProductRow extends StatelessWidget {
   final String title;
   final VoidCallback? onSeeAllPressed;
-  final int itemCount; // Switch this to List<ProductModel> products later!
+  final List<Product> products;
 
   const HorizontalProductRow({
     super.key,
     required this.title,
     this.onSeeAllPressed,
-    this.itemCount = 5, // Default item fallback
+    required this.products // Default empty list
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final media = MediaQuery.of(context).size;
+
+    if (products.isEmpty) {
+      return const SizedBox.shrink(); 
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,23 +43,25 @@ class HorizontalProductRow extends StatelessWidget {
               if (onSeeAllPressed != null)
                 TextButton(
                   onPressed: onSeeAllPressed,
-                  child:  Text("See All".tr),
+                  child: Text("See All".tr),
                 ),
             ],
           ),
         ),
 
-        // Horizontal Free-Flowing Product List Container
+        // Horizontal Product List Container
         SizedBox(
-          height: 240, 
-          child: ListView.builder(
+          height: 240,
+          child: products.isEmpty
+          ?Center(child: Text("No items available".tr))
+          : ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: itemCount, 
+            itemCount: products.length,
             padding: EdgeInsets.only(left: media.width * 0.05, right: media.width * 0.03),
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
-              // Once you have live controllers, pass data down: product: products[index]
-              return const ProductCard(); 
+              final product = products[index];
+              return ProductCard(product: product);
             },
           ),
         ),

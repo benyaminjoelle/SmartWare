@@ -18,6 +18,7 @@ import 'package:smartware/features/auth/views/login/forgot_password.dart';
 import 'package:smartware/features/auth/views/login/verify_code.dart';
 
 import 'package:smartware/features/auth/views/login/login.dart';
+import 'package:smartware/features/client/cart/views/checkout_view.dart';
 import 'package:smartware/features/client/cart/views/client_cart_view.dart';
 import 'package:smartware/features/client/home/views/client_home_view.dart';
 import 'package:smartware/features/client/orders/views/client_orders_view.dart';
@@ -86,6 +87,7 @@ class AppPages {
       page: () => WorkerSignupView(),
       binding: WorkerSignupBinding(),
     ),
+    //============= Client routes =================
     GetPage(
       name: AppRoutes.clientRoot,
       page: () => ClientRootView(),
@@ -116,8 +118,21 @@ class AppPages {
       page: () => ClientProfileCompletionView(),
       binding: ClientProfileCompletionBinding(),
     ),
-    GetPage(name: AppRoutes.clientOrders, page: () => ClientOrdersView()),
-    GetPage(name: AppRoutes.clientCart, page: () => ClientCartView()),
-    GetPage(name: AppRoutes.userverification, page: () => UserVerification()),
+    GetPage(name:
+     AppRoutes.clientOrders,
+     page: () => ClientOrdersView()
+    ),
+    GetPage(
+      name: AppRoutes.clientCart,
+      page: () => ClientCartView()
+    ),
+    GetPage(
+      name: AppRoutes.userverification,
+      page: () => UserVerification()
+    ),
+    GetPage(
+      name: AppRoutes.checkout,
+      page: () => CheckoutView()
+    ),
   ];
 }
