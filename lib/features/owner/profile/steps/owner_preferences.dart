@@ -1,0 +1,65 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:smartware/features/owner/profile/controllers/owner_profile_complition_controller.dart';
+import 'package:smartware/features/owner/profile/widgets/owner_business_type_section.dart';
+import 'package:smartware/features/owner/profile/widgets/owner_product_type_section.dart';
+import 'package:smartware/widgets/primary_button.dart';
+
+class OwnerPreferences extends StatelessWidget {
+  const OwnerPreferences({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.find<OwnerProfileComplitionController>();
+   
+ 
+      return Column(
+      
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.only(bottom: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                
+                  // --- SECTION 1: BUSINESS TYPE ---
+                 OwnerBusinessTypeSection(),
+                  const SizedBox(height: 36),
+
+                  // --- SECTION 2: WAREHOUSE CATEGORIES ---
+                 OwnerProductTypeSection()
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          
+          // --- FOOTER ACTION ---
+   Obx(
+  () {
+    print(
+      "Business: ${controller.selectedBusinessType.value}"
+    );
+    print(
+      "Products: ${controller.selectedProducts}"
+    );
+    print(
+      "Can next: ${controller.canGoNext}"
+    );
+
+    return PrimaryButton(
+      text: "Continue",
+      isDisabled: !controller.canGoNext,
+      onPressed: controller.nextStep,
+    );
+  },
+),
+        ],
+      );
+  
+  }
+}
+

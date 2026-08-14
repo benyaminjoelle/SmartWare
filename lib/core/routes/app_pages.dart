@@ -41,7 +41,11 @@ import 'package:smartware/features/owner/analytics/views/owner_analytic_view.dar
 import 'package:smartware/features/owner/home/views/owner_home_view.dart';
 import 'package:smartware/features/owner/notifications/views/owner_notifications_view.dart';
 import 'package:smartware/features/owner/orders/views/owner_orders_view.dart';
+import 'package:smartware/features/owner/products/views/owner_products_view.dart';
+import 'package:smartware/features/owner/profile/views/owner_edit_profile_view.dart';
 import 'package:smartware/features/owner/profile/views/owner_profile_view.dart';
+import 'package:smartware/features/owner/profile/views/owner_settings_view.dart';
+import 'package:smartware/features/owner/profile/views/owner_workers_view.dart';
 import 'package:smartware/features/owner/root/binding/owner_root_binding.dart';
 import 'package:smartware/features/owner/root/view/owner_root_view.dart';
 import 'package:smartware/features/warehouse/controllers/warehouse_controller.dart';
@@ -157,7 +161,7 @@ class AppPages {
     ),
      GetPage(
       name: AppRoutes.onwerAnalytics,
-      page: () => OwnerAnalyticView(),
+      page: () => OwnerAnalyticsView(),
       binding: OwnerRootBinding(),
     ), GetPage(
       name: AppRoutes.onwerNotifications,
@@ -172,6 +176,7 @@ class AppPages {
       page: () => OwnerProfileView(),
       binding: OwnerRootBinding(),
     ),
+<<<<<<< HEAD
       GetPage(
       name: AppRoutes.productDetails,
       page: () => const ProductDetailsView(),
@@ -180,5 +185,26 @@ class AppPages {
       Get.lazyPut<WarehouseController>(() => WarehouseController());
       })
       ),
+=======
+    GetPage(
+      name: AppRoutes.ownerEditPofile,
+      page: () => OwnerEditProfileView(),
+    ),
+    GetPage(
+      name: AppRoutes.ownerSettings,
+      page: () => OwnerSettingsView(),
+      binding: OwnerRootBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.ownerWorkers,
+      page: () => OwnerWorkersView(),
+      binding: OwnerRootBinding(),
+    ),
+     GetPage(
+      name: AppRoutes.ownerProducts,
+      page: () => OwnerProductsView(),
+      binding: OwnerRootBinding(),
+    ),
+>>>>>>> 331505e109ae212e16fb17b5ecd642ae7b794cb3
   ];
 }

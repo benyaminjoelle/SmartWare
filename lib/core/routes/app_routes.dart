@@ -1,5 +1,3 @@
-import 'package:smartware/features/auth/views/login/verify_code.dart';
-
 class AppRoutes {
   static const onboarding = '/onboarding';
   //============= Auth ==============
@@ -33,7 +31,14 @@ class AppRoutes {
   static const onwerNotifications = '/ownerNotifications';
   static const onwerAnalytics = '/ownerAnalytics';
   static const onwerProfile = '/ownerProfile';
+<<<<<<< HEAD
 
 
 
+=======
+  static const ownerSettings = '/ownerSettings';
+  static const ownerEditPofile = '/ownerEditProfile';
+  static const ownerWorkers = '/ownerWorkers';
+  static const ownerProducts = '/ownerProducts';
+>>>>>>> 331505e109ae212e16fb17b5ecd642ae7b794cb3
 }
