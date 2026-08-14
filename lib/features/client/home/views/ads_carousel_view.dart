@@ -2,37 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smartware/features/client/home/controllers/ads_carousel_controller.dart';
 
-class AutoMovingAdsCarousel extends StatelessWidget {
-  const AutoMovingAdsCarousel({super.key});
+class AutoMovingAdsCarousel extends GetView<AdsCarouselController> {
+  final List<String>? images;
+  final double height;
+  final String? controllerTag;
+
+  const AutoMovingAdsCarousel({
+    super.key,
+    this.images,
+    this.height = 180,
+    this.controllerTag,
+  });
+  @override
+  AdsCarouselController get controller => Get.find<AdsCarouselController>(tag: controllerTag);
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AdsCarouselController());
+    // final controller = Get.put(AdsCarouselController(), tag: controllerTag);
     final colors = Theme.of(context).colorScheme;
 
     return Obx(() {
-      if (controller.imageUrls.isEmpty) {
-        return const SizedBox(height: 110);
+       final activeImages = (images != null && images!.isNotEmpty)
+        ? images!
+        : controller.imageUrls;
+
+      if (activeImages.isEmpty) {
+        return SizedBox(height: height);
       }
 
       return Column(
+        mainAxisSize: MainAxisSize.min, 
         children: [
-          // Infinite horizontal scrolling card box view
-          Expanded(
+          SizedBox(
+            height: height,
             child: Card(
               elevation: 2,
               color: colors.surface,
+              margin: EdgeInsets.zero,
               child: PageView.builder(
                 controller: controller.pageController,
                 itemCount: controller.infinitePoolCount,
                 onPageChanged: controller.handlePageChange,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  final realIndex = index % controller.imageUrls.length;
-                  final imgUrl = controller.imageUrls[realIndex];
-                        
+                  final realIndex = index % activeImages.length;
+                  final imgUrl = activeImages[realIndex];
+
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: Image.network(
@@ -56,28 +73,25 @@ class AutoMovingAdsCarousel extends StatelessWidget {
               ),
             ),
           ),
-          
           const SizedBox(height: 12),
+          if (activeImages.length > 1)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(activeImages.length, (index) {
+                final bool isActive = index == controller.currentRealIndex.value;
 
-          // Dynamic Moving Indicator Dots Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(controller.imageUrls.length, (index) {
-              final bool isActive = index == controller.currentRealIndex.value;
-              
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                height: 6,
-                // Expanding layout pill shape for your modern, minimal aesthetic
-                width: isActive ? 18 : 6, 
-                decoration: BoxDecoration(
-                  color: isActive ? colors.primary : colors.onSurface.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              );
-            }),
-          ),
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  height: 6,
+                  width: isActive ? 18 : 6,
+                  decoration: BoxDecoration(
+                    color: isActive ? colors.primary : colors.onSurface.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                );
+              }),
+            ),
         ],
       );
     });

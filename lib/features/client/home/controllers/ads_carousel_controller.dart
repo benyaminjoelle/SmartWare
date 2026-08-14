@@ -23,7 +23,6 @@ class AdsCarouselController extends GetxController {
   void onInit() {
     super.onInit();
     
-    // Calculate a perfect mid-point that aligns exactly with index 0
     final int startingMidPoint = infinitePoolCount ~/ 2;
     final int remainder = startingMidPoint % (imageUrls.isNotEmpty ? imageUrls.length : 1);
     _virtualPage = startingMidPoint - remainder;
@@ -33,9 +32,10 @@ class AdsCarouselController extends GetxController {
   }
 
   void startAutoScroll() {
+    stopAutoScroll(); //in case fi other timer
     _autoScrollTimer?.cancel(); // Clear any existing timers safely
     _autoScrollTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
-      if (pageController.hasClients) {
+      if (pageController.hasClients && pageController.position.hasContentDimensions) {
         _virtualPage++;
         pageController.animateToPage(
           _virtualPage,

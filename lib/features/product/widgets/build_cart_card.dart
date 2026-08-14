@@ -76,7 +76,7 @@ class CartCard extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.add),
-                onPressed: () => controller.addToCart(cartItem.product),
+                onPressed: () => controller.addToCart(cartItem.product, 1),
               ),
             ],
           )

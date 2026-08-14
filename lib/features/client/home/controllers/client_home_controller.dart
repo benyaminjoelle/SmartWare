@@ -25,7 +25,7 @@ class ClientHomeController extends GetxController {
     SubCategory(id: '7', parentSector: 'electronics', name: 'Phones'), 
   ];
   // mock data until backend integration
-  final List<Product> products = [
+  final RxList<Product> products = [
     Product(
       sku: 'FO-PAN-01',
       name: 'Olive Oil',
@@ -76,7 +76,7 @@ class ClientHomeController extends GetxController {
       productType: 'cleaning',
       imageUrl: 'https://via.placeholder.com/150',
     ),
-  ];
+  ].obs;
 
   // The final reactive list that the horizontal row will look at
   final RxList<SubCategory> filteredSubCategories = <SubCategory>[].obs;
