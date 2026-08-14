@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:smartware/features/owner/analytics/views/owner_analytic_view.dart';
 import 'package:smartware/features/owner/home/views/owner_home_view.dart';
 import 'package:smartware/features/owner/orders/views/owner_orders_view.dart';
+import 'package:smartware/features/owner/products/views/owner_products_view.dart';
 import 'package:smartware/features/owner/profile/views/owner_profile_view.dart';
 import 'package:smartware/features/owner/root/controller/owner_root_controller.dart';
 
@@ -20,7 +21,8 @@ class OwnerRootView extends GetView<OwnerRootController> {
     final pages = [
        OwnerHomeView(),
       OwnerOrdersView(),
-    OwnerAnalyticView(),
+      OwnerProductsView(),
+    OwnerAnalyticsView(),
        OwnerProfileView(),
     ];
 
@@ -120,13 +122,18 @@ class OwnerRootView extends GetView<OwnerRootController> {
 
                         _destination(
                           icon: Icons.local_shipping,
-                          selectedIcon: Icons.shopping_cart_outlined,
+                          selectedIcon: Icons.local_shipping,
                           label: "Orders".tr,
+                        ),
+                         _destination(
+                          icon: Icons.inventory_2_outlined,
+                          selectedIcon: Icons.inventory_2_outlined,
+                          label: "Products".tr,
                         ),
 
                         _destination(
                           icon: Icons.analytics_outlined,
-                          selectedIcon: Icons.local_shipping,
+                          selectedIcon: Icons.analytics_outlined,
                           label: "Analytics".tr,
                         ),
 
