@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:smartware/features/client/home/controllers/product_details_controller.dart';
 import 'package:smartware/features/client/home/widgets/stock_card.dart';
 import 'package:smartware/features/warehouse/controllers/warehouse_controller.dart';
+import 'package:smartware/features/warehouse/widgets/client_warehouse_product_card.dart';
 import 'package:smartware/widgets/app_snackbar.dart';
 import 'package:smartware/widgets/primary_button.dart';
 
@@ -12,6 +13,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
   @override
   Widget build(BuildContext context) {
     final wcontroller = Get.find<WarehouseController>();
+    final warehouseProducts = wcontroller.warehouseProducts;
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
 
@@ -21,11 +23,8 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
       ),
       body: Obx(() {
         final product = controller.product.value;
-        final warehouses = wcontroller.warehouses;
-        final matchingWarehouses = warehouses
-            .where((wh) => wh.id == product.sku)
-            .toList();
-
+        final warehouseProducts = wcontroller.warehouseProducts;
+      
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -95,7 +94,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
               ),
               const SizedBox(height: 8),
 
-              if (matchingWarehouses.isEmpty)
+              if (warehouseProducts.isEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Text(
@@ -105,20 +104,17 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                 )
               else
                 ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: matchingWarehouses.length,
-                  itemBuilder: (context, index) {
-                    final wh = matchingWarehouses[index];
-                    return ClientWarehouseStockCard(
-                      warehouseName: wh.name,
-                      warehouseAddress: wh.address,
-                      stockQuantity: wh.currentOccupiedUnits,
-                      price: product.price,
-                      discountPercentage: product.discountPercentage,
-                    );
-                  },
-                ),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: warehouseProducts.length,
+                itemBuilder: (context, index) {
+                  final warehouseProduct = warehouseProducts[index];
+
+                  return ClientWarehouseProductCard(
+                    warehouseProduct: warehouseProduct,
+                  );
+                },
+              ),
               const SizedBox(height: 24),
             ],
           ),

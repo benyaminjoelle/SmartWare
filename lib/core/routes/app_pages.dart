@@ -176,7 +176,6 @@ class AppPages {
       page: () => OwnerProfileView(),
       binding: OwnerRootBinding(),
     ),
-<<<<<<< HEAD
       GetPage(
       name: AppRoutes.productDetails,
       page: () => const ProductDetailsView(),
@@ -185,7 +184,6 @@ class AppPages {
       Get.lazyPut<WarehouseController>(() => WarehouseController());
       })
       ),
-=======
     GetPage(
       name: AppRoutes.ownerEditPofile,
       page: () => OwnerEditProfileView(),
@@ -205,6 +203,5 @@ class AppPages {
       page: () => OwnerProductsView(),
       binding: OwnerRootBinding(),
     ),
->>>>>>> 331505e109ae212e16fb17b5ecd642ae7b794cb3
   ];
 }

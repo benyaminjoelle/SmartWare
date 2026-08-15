@@ -1,66 +1,44 @@
 import 'package:get/get.dart';
-import 'package:smartware/features/warehouse/models/warehouse_model.dart';
+import 'package:smartware/features/warehouse/models/warehouse_product_model.dart';
 
 class WarehouseController extends GetxController {
-  final warehouses = <Warehouse>[].obs;
+  final warehouseProducts = <WarehouseProduct>[].obs;
   final isLoading = false.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    loadMockWarehouses();
-  }
-
-  void loadMockWarehouses() {
-    warehouses.assignAll([
-      Warehouse(
-        id: 'wh_001',
-        name: 'Central Distribution Hub',
+  void loadWarehousesForProduct(String productSku) {
+  
+    warehouseProducts.assignAll([
+      WarehouseProduct(
+        warehouseId: 'wh_001',
+        warehouseName: 'Central Distribution Hub',
         address: 'Industrial Zone, Block 4, Bldg 12',
-        city: 'Damascus',
-        phone: '+963 11 555 0192',
-        managerName: 'Samer Haddad',
-        totalCapacityUnits: 50000,
-        currentOccupiedUnits: 38200,
-      
-        latitude: 33.5138,
-        longitude: 36.2765,
+        price: 95.0,
+        discountPercentage: 10.0,
+        stockQuantity: 25,
       ),
-      Warehouse(
-        id: 'wh_002',
-        name: 'Northern Port Depot',
+      WarehouseProduct(
+        warehouseId: 'wh_002',
+        warehouseName: 'Northern Port Depot',
         address: 'Free Zone Area, Dock 3',
-        city: 'Lattakia',
-        phone: '+963 41 444 8821',
-        managerName: 'Kareem Mansour',
-        totalCapacityUnits: 30000,
-        currentOccupiedUnits: 14500,
-        latitude: 35.5317,
-        longitude: 35.7915,
+        price: 100.0,
+        discountPercentage: null,
+        stockQuantity: 12,
       ),
-      Warehouse(
-        id: 'wh_003',
-        name: 'Southern Commercial Warehouse',
+      WarehouseProduct(
+        warehouseId: 'wh_003',
+        warehouseName: 'Southern Commercial Warehouse',
         address: 'Main Highway Exit 7',
-        city: 'Daraa',
-        phone: '+963 15 222 3411',
-        managerName: 'Nour El-Din',
-        totalCapacityUnits: 20000,
-        currentOccupiedUnits: 19100, // Almost full (95.5%)
-        latitude: 32.6255,
-        longitude: 36.1018,
+        price: 92.0,
+        discountPercentage: 5.0,
+        stockQuantity: 8,
       ),
-      Warehouse(
-        id: 'wh_004',
-        name: 'Central Coast Storage',
+      WarehouseProduct(
+        warehouseId: 'wh_004',
+        warehouseName: 'Central Coast Storage',
         address: 'Industrial City, Plot 88',
-        city: 'Homs',
-        phone: '+963 31 333 9012',
-        managerName: 'Rania Kassam',
-        totalCapacityUnits: 25000,
-        currentOccupiedUnits: 8000,
-        latitude: 34.7324,
-        longitude: 36.7137,
+        price: 105.0,
+        discountPercentage: null,
+        stockQuantity: 30,
       ),
     ]);
   }
