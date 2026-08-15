@@ -20,7 +20,10 @@ import 'package:smartware/features/auth/views/login/verify_code.dart';
 import 'package:smartware/features/auth/views/login/login.dart';
 import 'package:smartware/features/client/cart/views/checkout_view.dart';
 import 'package:smartware/features/client/cart/views/client_cart_view.dart';
+import 'package:smartware/features/client/home/controllers/product_details_controller.dart';
+import 'package:smartware/features/client/home/dependencies/product_details_bindings.dart';
 import 'package:smartware/features/client/home/views/client_home_view.dart';
+import 'package:smartware/features/client/home/views/product_details_view.dart';
 import 'package:smartware/features/client/orders/views/client_orders_view.dart';
 import 'package:smartware/features/client/profile/bindings/client_profile_binding.dart';
 import 'package:smartware/features/client/profile/bindings/client_profile_completion_binding.dart';
@@ -45,6 +48,7 @@ import 'package:smartware/features/owner/profile/views/owner_settings_view.dart'
 import 'package:smartware/features/owner/profile/views/owner_workers_view.dart';
 import 'package:smartware/features/owner/root/binding/owner_root_binding.dart';
 import 'package:smartware/features/owner/root/view/owner_root_view.dart';
+import 'package:smartware/features/warehouse/controllers/warehouse_controller.dart';
 
 class AppPages {
   static final pages = [
@@ -172,6 +176,14 @@ class AppPages {
       page: () => OwnerProfileView(),
       binding: OwnerRootBinding(),
     ),
+      GetPage(
+      name: AppRoutes.productDetails,
+      page: () => const ProductDetailsView(),
+      binding: BindingsBuilder(() {
+      Get.lazyPut<ProductDetailsController>(() => ProductDetailsController());
+      Get.lazyPut<WarehouseController>(() => WarehouseController());
+      })
+      ),
     GetPage(
       name: AppRoutes.ownerEditPofile,
       page: () => OwnerEditProfileView(),

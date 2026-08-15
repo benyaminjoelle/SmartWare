@@ -20,7 +20,7 @@ class ProductCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Get.toNamed('/product-details', arguments: product);
+        Get.toNamed('/productDetails', arguments: product);
       },
     child:  Container(
       width: 160, // Fixed width guarantees the partial item layout look on screen edges
@@ -81,8 +81,8 @@ class ProductCard extends StatelessWidget {
                 ),
                 child: Text(
                   "${product.discountPercentage?.toStringAsFixed(0)}% OFF",
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style:  TextStyle(
+                    color: colors.onSurface,
                     fontWeight: FontWeight.w900,
                     fontSize: 9,
                     letterSpacing: 0.5,
@@ -130,11 +130,12 @@ class ProductCard extends StatelessWidget {
                  const Spacer(),
                  InkWell(
                           onTap: () {
-                            controller.addToCart(product);
+                            controller.addToCart(product, 1);
                             AppSnackbar.show(
                             title: "Added to Cart",
                             message: "${product.name} has been added to your cart.",
                             position: SnackPosition.TOP,
+                            duration: const Duration(seconds: 1),
                 
                             );
                           },

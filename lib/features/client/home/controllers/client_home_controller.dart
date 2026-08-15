@@ -25,7 +25,7 @@ class ClientHomeController extends GetxController {
     SubCategory(id: '7', parentSector: 'electronics', name: 'Phones'), 
   ];
   // mock data until backend integration
-  final List<Product> products = [
+  final RxList<Product> products = [
     Product(
       sku: 'FO-PAN-01',
       name: 'Olive Oil',
@@ -76,16 +76,16 @@ class ClientHomeController extends GetxController {
       productType: 'cleaning',
       imageUrl: 'https://via.placeholder.com/150',
     ),
-  ];
+  ].obs;
 
   // The final reactive list that the horizontal row will look at
   final RxList<SubCategory> filteredSubCategories = <SubCategory>[].obs;
   final RxList<Product> displayedProducts = <Product>[].obs;
-  final RxnString selectedSubCategoryId = RxnString();
 
   // ================= FILTER STATES =================
   final RxSet<String> selectedContainerTypes = <String>{}.obs;
   final RxSet<String> selectedProductTypes = <String>{}.obs;
+  final RxSet<String> selectedSubCategoryId = <String>{}.obs;
   final RxString searchQuery = ''.obs;
 
   double minPossiblePrice = 0.0;
@@ -97,7 +97,7 @@ class ClientHomeController extends GetxController {
     super.onInit();  
     final box = GetStorage();
     final Map<String, dynamic> responseMap = box.read('user_data') ?? {};
-    
+
     user = UserModel.fromJson(responseMap);
     
     calculatePriceBounds();
@@ -143,32 +143,49 @@ class ClientHomeController extends GetxController {
     filteredSubCategories.assignAll(matchedItems);
   }
 //================= FILTERING LOGIC =================
-  void applyFilters() {
-    final filtered = products.where((product) {
+ void applyFilters() {
 
-    final query = searchQuery.value.trim().toLowerCase();
-    final matchesSearch = query.isEmpty ||
-        product.name.toLowerCase().contains(query) ||
-        product.sku.toLowerCase().contains(query);
-     
-      final allowedSectors = selectedProductTypes.isEmpty 
-          ? userOnboardingSectors 
+    final filtered = products.where((product) {
+      final query = searchQuery.value.trim().toLowerCase();
+      final matchesSearch = query.isEmpty ||
+          product.name.toLowerCase().contains(query) ||
+          product.sku.toLowerCase().contains(query);
+
+      final allowedSectors = selectedProductTypes.isEmpty
+          ? userOnboardingSectors
           : selectedProductTypes;
-      
+
       final matchesType = allowedSectors.contains(product.productType);
 
-      //container type filter
       final matchesContainer = selectedContainerTypes.isEmpty ||
           selectedContainerTypes.contains(product.containerType);
 
-      //price range filter
       final matchesPrice = product.price >= priceRange.value.start &&
           product.price <= priceRange.value.end;
 
-      return matchesType && matchesContainer && matchesPrice && matchesSearch;
+      bool matchesSubCategory = true;
+      if (selectedSubCategoryId.isNotEmpty) {
+        final activeSectors = _allAvailableSubCategories
+            .where((sub) => selectedSubCategoryId.contains(sub.id))
+            .map((sub) => sub.parentSector.toLowerCase())
+            .toSet();
+
+        matchesSubCategory = activeSectors.contains(product.productType.toLowerCase());
+      }
+
+      return matchesType && matchesContainer && matchesPrice && matchesSearch && matchesSubCategory;
     }).toList();
 
     displayedProducts.assignAll(filtered);
+  }
+
+  void toggleSubCategory(String id) {
+    if (selectedSubCategoryId.contains(id)) {
+      selectedSubCategoryId.remove(id);
+    } else {
+      selectedSubCategoryId.add(id);
+    }
+    applyFilters();
   }
 
   void toggleContainerType(String type) {
@@ -190,27 +207,13 @@ class ClientHomeController extends GetxController {
   void resetFilters() {
     selectedContainerTypes.clear();
     selectedProductTypes.clear();
-    selectedSubCategoryId.value = null;
+    selectedSubCategoryId.clear();
     priceRange.value = RangeValues(minPossiblePrice, maxPossiblePrice);
     applyFilters();
   }
-
-  void selectSubCategory(String id) {
-    if (selectedSubCategoryId.value == id) {
-      selectedSubCategoryId.value = null; 
-    } else {
-      selectedSubCategoryId.value = id;
-    }
-      final sub = _allAvailableSubCategories.firstWhere((s) => s.id == id); 
-      final filtered = products.where((p) => 
-        p.productType.toLowerCase() == sub.parentSector.toLowerCase()
-      ).toList();
-      
-      displayedProducts.assignAll(filtered);
-    
     // TODO: Trigger your warehouse items filter query here based on the selected ID
   }
-}
+
 
 // This should be in the model file later
 class SubCategory {

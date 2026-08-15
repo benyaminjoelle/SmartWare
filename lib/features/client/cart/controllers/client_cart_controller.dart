@@ -6,7 +6,7 @@ import 'package:smartware/features/product/models/cart_item_model.dart';
 import 'package:smartware/features/product/models/product_model.dart';
 
 class CartController extends GetxController {
-  //  O(1), cz sku is better thank looking for the whole object             
+  //  O(1), cz sku is better than looking for the whole object             
   final RxMap<String, CartItem> cartItems = <String, CartItem>{}.obs;
   static const String _cartKey = 'saved_cart_items';
   static const String _ordersKey = 'saved_orders';
@@ -32,22 +32,21 @@ class CartController extends GetxController {
   double get finalTotal => rawSubtotal - totalSavings;
 
   int get itemCount => cartItems.length;
-  // int get totalQuantity => cartItems.values.fold(0, (sum, item) => sum + item.quantity);
 
 
-  // ==================== ACTIONS =====================
+  // ==================== ACTIONS ====================
 
-  void addToCart(Product product) {
+  void addToCart(Product product, int value) {
     if (cartItems.containsKey(product.sku)) {
       cartItems.update(
         product.sku,
         (existing) => CartItem(
           product: existing.product,
-          quantity: existing.quantity + 1,
+          quantity: existing.quantity + value,
         ),
       );
     } else {
-      cartItems[product.sku] = CartItem(product: product, quantity: 1);
+      cartItems[product.sku] = CartItem(product: product, quantity: value);
     }
 
     cartItems.refresh();
@@ -73,6 +72,7 @@ class CartController extends GetxController {
   void removeItem(String sku) {
     cartItems.remove(sku);
     cartItems.refresh();
+    _saveCartToStorage();
   }
   Future<void> _saveCartToStorage() async {
     final prefs = await SharedPreferences.getInstance();

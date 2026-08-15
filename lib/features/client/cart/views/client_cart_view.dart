@@ -112,7 +112,39 @@ class ClientCartView extends StatelessWidget {
                 itemCount: cartItemsList.length,
                 itemBuilder: (context, index) {
                   final CartItem item = cartItemsList[index];
-                  return CartCard(cartItem: item);
+                  return Dismissible(
+                    key: Key(item.product.sku),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.only(right: 20),
+                      alignment: Alignment.centerRight,
+                      decoration: BoxDecoration(
+                        color: Colors.redAccent,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.delete_sweep_rounded, color: Colors.white, size: 28),
+                          SizedBox(width: 8),
+                          Text(
+                            "Remove",
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    confirmDismiss: (direction) async {
+                      return true;
+                    },
+                    onDismissed: (direction) {
+                      controller.removeItem(item.product.sku);
+                    },
+                    child: CartCard(
+                      cartItem: item,
+                    ),
+                  );
                 },
               ),
             ),

@@ -21,6 +21,7 @@ class AppRoutes {
   static const clientOrders = '/clientOrders';
   static const clientCart = '/clientCart';
   static const checkout = '/checkout';
+  static const productDetails = '/productDetails';
   // static const orderSuccess = '/order-success';
 
   //============= owner routes =================
@@ -30,6 +31,9 @@ class AppRoutes {
   static const onwerNotifications = '/ownerNotifications';
   static const onwerAnalytics = '/ownerAnalytics';
   static const onwerProfile = '/ownerProfile';
+
+
+
   static const ownerSettings = '/ownerSettings';
   static const ownerEditPofile = '/ownerEditProfile';
   static const ownerWorkers = '/ownerWorkers';
