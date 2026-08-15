@@ -4,264 +4,164 @@ import 'package:get/get.dart';
 import 'package:smartware/features/owner/home/controllers/owner_home_controller.dart';
 
 class OwnerHomeView extends StatelessWidget {
-  const OwnerHomeView({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final OwnerHomeController controller =
-        Get.find<OwnerHomeController>();
-
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-
-    return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
-      body: SafeArea(
-        child: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: Obx(() {
-            if (controller.isLoading.value) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-
-            return RefreshIndicator(
-              onRefresh: controller.refreshHome,
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(
-                  20,
-                  18,
-                  20,
-                  30,
-                ),
-                children: [
-                  // ============================================================
-                  // HEADER
-                  // ============================================================
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              controller.greeting,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: colors.onSurfaceVariant,
-                              ),
-                            ),
-
-                            const SizedBox(height: 4),
-
-                            Text(
-                              controller.ownerName.value,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(width: 12),
-
-                      _ProfileButton(
-                        onTap: controller.openProfile,
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // ============================================================
-                  // OVERVIEW
-                  // ============================================================
-
-                  Text(
-                    'Overview',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  _OverviewGrid(
-                    controller: controller,
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // ============================================================
-                  // QUICK ACTIONS
-                  // ============================================================
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Quick actions',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  _QuickActions(
-                    controller: controller,
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  // ============================================================
-                  // WAREHOUSES
-                  // ============================================================
-
-                  _SectionHeader(
-                    title: 'Your warehouses',
-                    actionText: 'View all',
-                    onTap: controller.openWarehouses,
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  if (controller.warehouses.isEmpty)
-                    const _EmptyHomeState(
-                      icon: Icons.warehouse_outlined,
-                      title: 'No warehouses yet',
-                      subtitle: 'Add your first warehouse to get started.',
-                    )
-                  else
-                    ...controller.warehouses.take(3).map(
-                      (warehouse) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: _WarehouseHomeCard(
-                            warehouse: warehouse,
-                            onTap: () {
-                              controller.openWarehouse(warehouse);
-                            },
-                          ),
-                        );
-                      },
-                    ),
-
-                  const SizedBox(height: 16),
-
-                  // ============================================================
-                  // LOW STOCK
-                  // ============================================================
-
-                  _SectionHeader(
-                    title: 'Needs attention',
-                    actionText: 'View products',
-                    onTap: controller.openProducts,
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  if (controller.lowStockProducts.isEmpty)
-                    const _EmptyHomeState(
-                      icon: Icons.check_circle_outline_rounded,
-                      title: 'Everything looks good',
-                      subtitle: 'No products are currently low on stock.',
-                    )
-                  else
-                    ...controller.lowStockProducts.take(3).map(
-                      (product) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: _LowStockHomeCard(
-                            product: product,
-                            onTap: () {
-                              controller.openProduct(product);
-                            },
-                          ),
-                        );
-                      },
-                    ),
-
-                  const SizedBox(height: 18),
-
-                  // ============================================================
-                  // RECENT ORDERS
-                  // ============================================================
-
-                  _SectionHeader(
-                    title: 'Recent orders',
-                    actionText: 'View all',
-                    onTap: controller.openOrders,
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  if (controller.recentOrders.isEmpty)
-                    const _EmptyHomeState(
-                      icon: Icons.receipt_long_outlined,
-                      title: 'No recent orders',
-                      subtitle: 'New orders will appear here.',
-                    )
-                  else
-                    ...controller.recentOrders.take(4).map(
-                      (order) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: _RecentOrderCard(
-                            order: order,
-                          ),
-                        );
-                      },
-                    ),
-                ],
-              ),
-            );
-          }),
-        ),
-      ),
-    );
-  }
-}
-
-// =============================================================================
-// PROFILE BUTTON
-// =============================================================================
-
-class _ProfileButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _ProfileButton({
-    required this.onTap,
-  });
+  const OwnerHomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    return Material(
-      color: colors.surface,
-      borderRadius: BorderRadius.circular(15),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(15),
-        child: SizedBox(
-          width: 46,
-          height: 46,
-          child: Icon(
-            Icons.person_outline_rounded,
-            color: colors.onSurface,
-          ),
+    final backgroundColor =
+        Theme.of(context).scaffoldBackgroundColor;
+
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: SafeArea(
+        child: Obx(
+          () {
+            final controller = Get.find<OwnerHomeController>();
+
+            if (controller.isLoading.value) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: colors.primary,
+                  strokeWidth: 2.5,
+                ),
+              );
+            }
+
+            return RefreshIndicator(
+              color: colors.primary,
+              onRefresh: controller.refreshHome,
+              child: ListView(
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
+                padding: const EdgeInsets.fromLTRB(
+                  20,
+                  18,
+                  20,
+                  35,
+                ),
+                children: [
+                  _Header(
+                    controller: controller,
+                    colors: colors,
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  _MainHero(
+                    controller: controller,
+                    colors: colors,
+                  ),
+
+                  const SizedBox(height: 28),
+
+                  _SectionTitle(
+                    title: 'Quick access',
+                    colors: colors,
+                  ),
+
+                  const SizedBox(height: 13),
+
+                  _QuickAccess(
+                    controller: controller,
+                    colors: colors,
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  _SectionHeader(
+                    title: 'Your space',
+                    action: 'View all',
+                    colors: colors,
+                    onTap: controller.openWarehouses,
+                  ),
+
+                  const SizedBox(height: 13),
+
+                  if (controller.warehouses.isEmpty)
+                    _EmptyState(
+                      icon: Icons.warehouse_outlined,
+                      title: 'Your warehouse space is empty',
+                      subtitle:
+                          'Create your first warehouse to get started.',
+                      colors: colors,
+                    )
+                  else
+                    ...controller.warehouses.take(2).map(
+                      (warehouse) => Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: 12),
+                        child: _WarehouseCard(
+                          warehouse: warehouse,
+                          colors: colors,
+                          onTap: () {
+                            controller.openWarehouse(warehouse);
+                          },
+                        ),
+                      ),
+                    ),
+
+                  const SizedBox(height: 18),
+
+                  _SectionHeader(
+                    title: 'Needs attention',
+                    action: 'See products',
+                    colors: colors,
+                    onTap: controller.openProducts,
+                  ),
+
+                  const SizedBox(height: 13),
+
+                  if (controller.lowStockProducts.isEmpty)
+                    _SuccessBanner(
+                      colors: colors,
+                    )
+                  else
+                    ...controller.lowStockProducts.take(2).map(
+                      (product) => Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: 10),
+                        child: _AttentionCard(
+                          product: product,
+                          colors: colors,
+                          onTap: () {
+                            controller.openProduct(product);
+                          },
+                        ),
+                      ),
+                    ),
+
+                  const SizedBox(height: 18),
+
+                  _SectionHeader(
+                    title: 'Latest activity',
+                    action: 'All orders',
+                    colors: colors,
+                    onTap: controller.openOrders,
+                  ),
+
+                  const SizedBox(height: 13),
+
+                  if (controller.recentOrders.isEmpty)
+                    _EmptyState(
+                      icon: Icons.bolt_rounded,
+                      title: 'Nothing happening yet',
+                      subtitle:
+                          'Your latest warehouse activity will appear here.',
+                      colors: colors,
+                    )
+                  else
+                    _ActivityCard(
+                      orders:
+                          controller.recentOrders.take(4).toList(),
+                      colors: colors,
+                    ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
@@ -269,116 +169,282 @@ class _ProfileButton extends StatelessWidget {
 }
 
 // =============================================================================
-// OVERVIEW GRID
+// HEADER
 // =============================================================================
 
-class _OverviewGrid extends StatelessWidget {
+class _Header extends StatelessWidget {
   final OwnerHomeController controller;
+  final ColorScheme colors;
 
-  const _OverviewGrid({
+  const _Header({
     required this.controller,
+    required this.colors,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      childAspectRatio: 1.7,
+    return Row(
       children: [
-        _OverviewCard(
-          title: 'Warehouses',
-          value: controller.warehouseCount.toString(),
-          icon: Icons.warehouse_outlined,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                controller.greeting.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  color: colors.onSurface.withOpacity(.55),
+                  letterSpacing: 1.3,
+                ),
+              ),
+
+              const SizedBox(height: 7),
+
+              Text(
+                controller.ownerName.value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 27,
+                  fontWeight: FontWeight.w900,
+                  color: colors.onSurface,
+                  letterSpacing: -1,
+                ),
+              ),
+            ],
+          ),
         ),
 
-        _OverviewCard(
-          title: 'Products',
-          value: controller.productCount.toString(),
-          icon: Icons.inventory_2_outlined,
-        ),
-
-        _OverviewCard(
-          title: 'Pending orders',
-          value: controller.pendingOrders.toString(),
-          icon: Icons.shopping_cart_outlined,
-        ),
-
-        _OverviewCard(
-          title: 'Low stock',
-          value: controller.lowStockCount.toString(),
-          icon: Icons.warning_amber_rounded,
+        GestureDetector(
+          onTap: controller.openProfile,
+          child: Container(
+            width: 49,
+            height: 49,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  colors.primary,
+                  colors.secondary,
+                ],
+              ),
+              borderRadius: BorderRadius.circular(17),
+              boxShadow: [
+                BoxShadow(
+                  color: colors.primary.withOpacity(.22),
+                  blurRadius: 15,
+                  offset: const Offset(0, 7),
+                ),
+              ],
+            ),
+            child: Icon(
+              Icons.person_outline_rounded,
+              color: colors.onPrimary,
+              size: 22,
+            ),
+          ),
         ),
       ],
     );
   }
 }
 
-class _OverviewCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final IconData icon;
+// =============================================================================
+// MAIN HERO
+// =============================================================================
 
-  const _OverviewCard({
-    required this.title,
-    required this.value,
-    required this.icon,
+class _MainHero extends StatelessWidget {
+  final OwnerHomeController controller;
+  final ColorScheme colors;
+
+  const _MainHero({
+    required this.controller,
+    required this.colors,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-
     return Container(
-      padding: const EdgeInsets.all(15),
+      height: 245,
       decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(30),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            colors.primary,
+            colors.secondary,
+          ],
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.035),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
+            color: colors.primary.withOpacity(.18),
+            blurRadius: 30,
+            offset: const Offset(0, 16),
           ),
         ],
       ),
-      child: Row(
+      child: Stack(
+        clipBehavior: Clip.hardEdge,
         children: [
-          Icon(
-            icon,
-            size: 21,
-            color: colors.primary,
+          Positioned(
+            right: -60,
+            top: -70,
+            child: Container(
+              width: 210,
+              height: 210,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: colors.onPrimary.withOpacity(.08),
+              ),
+            ),
           ),
 
-          const SizedBox(width: 10),
+          Positioned(
+            right: 45,
+            bottom: -90,
+            child: Container(
+              width: 180,
+              height: 180,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: colors.onPrimary.withOpacity(.06),
+              ),
+            ),
+          ),
 
-          Expanded(
+          Positioned(
+            right: 20,
+            top: 20,
+            child: Icon(
+              Icons.grid_4x4_rounded,
+              size: 90,
+              color: colors.onPrimary.withOpacity(.035),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(23),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 9,
+                      height: 9,
+                      decoration: BoxDecoration(
+                        color: colors.tertiary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+
+                    const SizedBox(width: 8),
+
+                    Text(
+                      'SMARTWARE',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 2,
+                        color: colors.onPrimary.withOpacity(.72),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 18),
+
                 Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
+                  'Everything under\ncontrol.',
+                  style: TextStyle(
+                    fontSize: 25,
+                    height: 1.05,
+                    fontWeight: FontWeight.w900,
+                    color: colors.onPrimary,
+                    letterSpacing: -.9,
                   ),
                 ),
 
-                const SizedBox(height: 2),
+                const Spacer(),
 
-                Text(
-                  title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colors.onSurfaceVariant,
-                  ),
+                Row(
+                  children: [
+                    _HeroMetric(
+                      value:
+                          controller.warehouseCount.value.toString(),
+                      label: 'WAREHOUSES',
+                      colors: colors,
+                    ),
+
+                    _HeroDivider(
+                      colors: colors,
+                    ),
+
+                    _HeroMetric(
+                      value:
+                          controller.productCount.value.toString(),
+                      label: 'PRODUCTS',
+                      colors: colors,
+                    ),
+
+                    _HeroDivider(
+                      colors: colors,
+                    ),
+
+                    _HeroMetric(
+                      value:
+                          controller.pendingOrders.value.toString(),
+                      label: 'PENDING',
+                      colors: colors,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 4,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(10),
+                          color:
+                              colors.onPrimary.withOpacity(.10),
+                        ),
+                        child: FractionallySizedBox(
+                          alignment: Alignment.centerLeft,
+                          widthFactor: controller
+                              .overallCapacity
+                              .value
+                              .clamp(0.0, 1.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(10),
+                              color: colors.tertiary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Text(
+                      'LIVE',
+                      style: TextStyle(
+                        fontSize: 8,
+                        fontWeight: FontWeight.w900,
+                        color: colors.tertiary,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -389,47 +455,117 @@ class _OverviewCard extends StatelessWidget {
   }
 }
 
-// =============================================================================
-// QUICK ACTIONS
-// =============================================================================
+class _HeroMetric extends StatelessWidget {
+  final String value;
+  final String label;
+  final ColorScheme colors;
 
-class _QuickActions extends StatelessWidget {
-  final OwnerHomeController controller;
-
-  const _QuickActions({
-    required this.controller,
+  const _HeroMetric({
+    required this.value,
+    required this.label,
+    required this.colors,
   });
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 21,
+              fontWeight: FontWeight.w900,
+              color: colors.onPrimary,
+            ),
+          ),
 
+          const SizedBox(height: 2),
+
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 8,
+              fontWeight: FontWeight.w700,
+              letterSpacing: .7,
+              color: colors.onPrimary.withOpacity(.45),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroDivider extends StatelessWidget {
+  final ColorScheme colors;
+
+  const _HeroDivider({
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 1,
+      height: 30,
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      color: colors.onPrimary.withOpacity(.10),
+    );
+  }
+}
+
+// =============================================================================
+// QUICK ACCESS
+// =============================================================================
+
+class _QuickAccess extends StatelessWidget {
+  final OwnerHomeController controller;
+  final ColorScheme colors;
+
+  const _QuickAccess({
+    required this.controller,
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Expanded(
-          child: _QuickActionButton(
-            icon: Icons.add_box_outlined,
-            label: 'Add product',
+          child: _QuickButton(
+            icon: Icons.inventory_2_rounded,
+            title: 'Add product',
+            subtitle: 'Inventory',
+            color: colors.primary,
+            colors: colors,
             onTap: controller.addProduct,
           ),
         ),
 
-        const SizedBox(width: 10),
+        const SizedBox(width: 11),
 
         Expanded(
-          child: _QuickActionButton(
-            icon: Icons.person_add_alt_outlined,
-            label: 'Add worker',
+          child: _QuickButton(
+            icon: Icons.person_add_alt_1_rounded,
+            title: 'Add worker',
+            subtitle: 'Team',
+            color: colors.secondary,
+            colors: colors,
             onTap: controller.addWorker,
           ),
         ),
 
-        const SizedBox(width: 10),
+        const SizedBox(width: 11),
 
         Expanded(
-          child: _QuickActionButton(
-            icon: Icons.receipt_long_outlined,
-            label: 'Orders',
+          child: _QuickButton(
+            icon: Icons.receipt_long_rounded,
+            title: 'Orders',
+            subtitle: 'Requests',
+            color: colors.tertiary,
+            colors: colors,
             onTap: controller.openOrders,
           ),
         ),
@@ -438,50 +574,77 @@ class _QuickActions extends StatelessWidget {
   }
 }
 
-class _QuickActionButton extends StatelessWidget {
+class _QuickButton extends StatelessWidget {
   final IconData icon;
-  final String label;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final ColorScheme colors;
   final VoidCallback onTap;
 
-  const _QuickActionButton({
+  const _QuickButton({
     required this.icon,
-    required this.label,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.colors,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-
     return Material(
       color: colors.surface,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(21),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8,
-            vertical: 14,
+        borderRadius: BorderRadius.circular(21),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(21),
+            border: Border.all(
+              color: colors.outline.withOpacity(.25),
+            ),
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                icon,
-                size: 21,
-                color: colors.primary,
+              Container(
+                width: 37,
+                height: 37,
+                decoration: BoxDecoration(
+                  color: color.withOpacity(.10),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  size: 19,
+                  color: color,
+                ),
               ),
 
-              const SizedBox(height: 7),
+              const SizedBox(height: 12),
 
               Text(
-                label,
+                title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: colors.onSurface,
+                ),
+              ),
+
+              const SizedBox(height: 3),
+
+              Text(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w500,
+                  color: colors.onSurface.withOpacity(.55),
                 ),
               ),
             ],
@@ -493,56 +656,79 @@ class _QuickActionButton extends StatelessWidget {
 }
 
 // =============================================================================
-// SECTION HEADER
+// SECTION
 // =============================================================================
+
+class _SectionTitle extends StatelessWidget {
+  final String title;
+  final ColorScheme colors;
+
+  const _SectionTitle({
+    required this.title,
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w900,
+        color: colors.onSurface,
+        letterSpacing: -.4,
+      ),
+    );
+  }
+}
 
 class _SectionHeader extends StatelessWidget {
   final String title;
-  final String actionText;
+  final String action;
+  final ColorScheme colors;
   final VoidCallback onTap;
 
   const _SectionHeader({
     required this.title,
-    required this.actionText,
+    required this.action,
+    required this.colors,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-
     return Row(
       children: [
         Expanded(
           child: Text(
             title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w800,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w900,
+              color: colors.onSurface,
+              letterSpacing: -.4,
             ),
           ),
         ),
 
-        TextButton(
-          onPressed: onTap,
+        GestureDetector(
+          onTap: onTap,
           child: Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                actionText,
+                action,
                 style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
                   color: colors.primary,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
 
-              const SizedBox(width: 3),
+              const SizedBox(width: 5),
 
               Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 11,
+                Icons.arrow_forward_rounded,
+                size: 15,
                 color: colors.primary,
               ),
             ],
@@ -554,65 +740,82 @@ class _SectionHeader extends StatelessWidget {
 }
 
 // =============================================================================
-// WAREHOUSE CARD
+// WAREHOUSE
 // =============================================================================
 
-class _WarehouseHomeCard extends StatelessWidget {
+class _WarehouseCard extends StatelessWidget {
   final OwnerWarehouseHomeModel warehouse;
+  final ColorScheme colors;
   final VoidCallback onTap;
 
-  const _WarehouseHomeCard({
+  const _WarehouseCard({
     required this.warehouse,
+    required this.colors,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
+    final capacity =
+        warehouse.capacity.clamp(0.0, 1.0);
 
-    final capacity = warehouse.capacity.clamp(0.0, 1.0);
+    final capacityColor =
+        capacity >= .9
+            ? colors.error
+            : capacity >= .7
+                ? colors.secondary
+                : colors.tertiary;
 
     return Material(
       color: colors.surface,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(24),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
-        child: Padding(
-          padding: const EdgeInsets.all(15),
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: colors.outline.withOpacity(.25),
+            ),
+          ),
           child: Column(
             children: [
               Row(
                 children: [
-                  _SmallImage(
+                  _WarehouseImage(
                     imageUrl: warehouse.imageUrl,
-                    icon: Icons.warehouse_outlined,
+                    colors: colors,
                   ),
 
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 13),
 
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start,
                       children: [
                         Text(
                           warehouse.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.w800,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                            color: colors.onSurface,
                           ),
                         ),
 
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 5),
 
                         Row(
                           children: [
                             Icon(
-                              Icons.location_on_outlined,
-                              size: 14,
-                              color: colors.onSurfaceVariant,
+                              Icons.location_on_rounded,
+                              size: 12,
+                              color:
+                                  colors.onSurface.withOpacity(.55),
                             ),
 
                             const SizedBox(width: 3),
@@ -621,9 +824,13 @@ class _WarehouseHomeCard extends StatelessWidget {
                               child: Text(
                                 warehouse.location,
                                 maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: colors.onSurfaceVariant,
+                                overflow:
+                                    TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  color: colors.onSurface
+                                      .withOpacity(.55),
                                 ),
                               ),
                             ),
@@ -633,24 +840,34 @@ class _WarehouseHomeCard extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(width: 8),
-
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 14,
-                    color: colors.onSurfaceVariant,
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: colors.primary.withOpacity(.08),
+                      borderRadius: BorderRadius.circular(11),
+                    ),
+                    child: Icon(
+                      Icons.arrow_outward_rounded,
+                      size: 16,
+                      color: colors.primary,
+                    ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 17),
 
               Row(
                 children: [
                   Text(
-                    'Capacity',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colors.onSurfaceVariant,
+                    'SPACE UTILIZATION',
+                    style: TextStyle(
+                      fontSize: 8,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: .8,
+                      color:
+                          colors.onSurface.withOpacity(.50),
                     ),
                   ),
 
@@ -658,21 +875,34 @@ class _WarehouseHomeCard extends StatelessWidget {
 
                   Text(
                     '${(capacity * 100).round()}%',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w700,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w900,
+                      color: capacityColor,
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 7),
+              const SizedBox(height: 8),
 
               ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: LinearProgressIndicator(
-                  value: capacity,
-                  minHeight: 6,
-                  backgroundColor: colors.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(20),
+                child: Stack(
+                  children: [
+                    Container(
+                      height: 7,
+                      color: colors.onSurface.withOpacity(.07),
+                    ),
+
+                    FractionallySizedBox(
+                      widthFactor: capacity,
+                      child: Container(
+                        height: 7,
+                        color: capacityColor,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -683,85 +913,152 @@ class _WarehouseHomeCard extends StatelessWidget {
   }
 }
 
+class _WarehouseImage extends StatelessWidget {
+  final String? imageUrl;
+  final ColorScheme colors;
+
+  const _WarehouseImage({
+    required this.imageUrl,
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasImage =
+        imageUrl != null &&
+        imageUrl!.trim().isNotEmpty;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(17),
+      child: SizedBox(
+        width: 58,
+        height: 58,
+        child: hasImage
+            ? Image.network(
+                imageUrl!,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) {
+                  return _placeholder();
+                },
+              )
+            : _placeholder(),
+      ),
+    );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.primary.withOpacity(.08),
+      ),
+      child: Icon(
+        Icons.warehouse_rounded,
+        color: colors.primary,
+        size: 26,
+      ),
+    );
+  }
+}
+
 // =============================================================================
-// LOW STOCK CARD
+// LOW STOCK
 // =============================================================================
 
-class _LowStockHomeCard extends StatelessWidget {
+class _AttentionCard extends StatelessWidget {
   final OwnerLowStockHomeModel product;
+  final ColorScheme colors;
   final VoidCallback onTap;
 
-  const _LowStockHomeCard({
+  const _AttentionCard({
     required this.product,
+    required this.colors,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-
     return Material(
       color: colors.surface,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(19),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
+        borderRadius: BorderRadius.circular(19),
+        child: Container(
           padding: const EdgeInsets.all(13),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(19),
+            border: Border.all(
+              color: colors.error.withOpacity(.20),
+            ),
+          ),
           child: Row(
             children: [
-              _SmallImage(
-                imageUrl: product.imageUrl,
-                icon: Icons.inventory_2_outlined,
+              Container(
+                width: 43,
+                height: 43,
+                decoration: BoxDecoration(
+                  color: colors.error.withOpacity(.08),
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: Icon(
+                  Icons.warning_amber_rounded,
+                  color: colors.error,
+                  size: 21,
+                ),
               ),
 
               const SizedBox(width: 12),
 
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
                   children: [
                     Text(
                       product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                        color: colors.onSurface,
                       ),
                     ),
 
                     const SizedBox(height: 4),
 
                     Text(
-                      'Minimum ${product.minimumStock}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colors.onSurfaceVariant,
+                      'Minimum ${product.minimumStock} units',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color:
+                            colors.onSurface.withOpacity(.55),
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
               ),
 
-              const SizedBox(width: 10),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     product.currentStock.toString(),
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w900,
                       color: colors.error,
                     ),
                   ),
 
                   Text(
-                    'in stock',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: colors.onSurfaceVariant,
+                    'remaining',
+                    style: TextStyle(
+                      fontSize: 8,
+                      fontWeight: FontWeight.w600,
+                      color:
+                          colors.onSurface.withOpacity(.50),
                     ),
                   ),
                 ],
@@ -770,9 +1067,9 @@ class _LowStockHomeCard extends StatelessWidget {
               const SizedBox(width: 8),
 
               Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 13,
-                color: colors.onSurfaceVariant,
+                Icons.chevron_right_rounded,
+                size: 21,
+                color: colors.onSurface.withOpacity(.25),
               ),
             ],
           ),
@@ -783,40 +1080,40 @@ class _LowStockHomeCard extends StatelessWidget {
 }
 
 // =============================================================================
-// RECENT ORDER CARD
+// SUCCESS
 // =============================================================================
 
-class _RecentOrderCard extends StatelessWidget {
-  final OwnerRecentOrderModel order;
+class _SuccessBanner extends StatelessWidget {
+  final ColorScheme colors;
 
-  const _RecentOrderCard({
-    required this.order,
+  const _SuccessBanner({
+    required this.colors,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: colors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(21),
+        border: Border.all(
+          color: colors.tertiary.withOpacity(.25),
+        ),
       ),
       child: Row(
         children: [
           Container(
-            width: 42,
-            height: 42,
+            width: 43,
+            height: 43,
             decoration: BoxDecoration(
-              color: colors.primaryContainer,
-              borderRadius: BorderRadius.circular(12),
+              color: colors.tertiary.withOpacity(.10),
+              shape: BoxShape.circle,
             ),
             child: Icon(
-              Icons.receipt_long_outlined,
-              size: 20,
-              color: colors.primary,
+              Icons.check_rounded,
+              color: colors.tertiary,
+              size: 22,
             ),
           ),
 
@@ -824,14 +1121,139 @@ class _RecentOrderCard extends StatelessWidget {
 
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Inventory looks healthy',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                    color: colors.onSurface,
+                  ),
+                ),
+
+                const SizedBox(height: 3),
+
+                Text(
+                  'No products require immediate attention.',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color:
+                        colors.onSurface.withOpacity(.55),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Icon(
+            Icons.verified_rounded,
+            color: colors.tertiary,
+            size: 20,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// =============================================================================
+// ACTIVITY
+// =============================================================================
+
+class _ActivityCard extends StatelessWidget {
+  final List<OwnerRecentOrderModel> orders;
+  final ColorScheme colors;
+
+  const _ActivityCard({
+    required this.orders,
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: BorderRadius.circular(23),
+        border: Border.all(
+          color: colors.outline.withOpacity(.25),
+        ),
+      ),
+      child: Column(
+        children: [
+          for (int i = 0; i < orders.length; i++)
+            _ActivityRow(
+              order: orders[i],
+              isLast: i == orders.length - 1,
+              colors: colors,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActivityRow extends StatelessWidget {
+  final OwnerRecentOrderModel order;
+  final bool isLast;
+  final ColorScheme colors;
+
+  const _ActivityRow({
+    required this.order,
+    required this.isLast,
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(
+        15,
+        14,
+        15,
+        14,
+      ),
+      decoration: BoxDecoration(
+        border: isLast
+            ? null
+            : Border(
+                bottom: BorderSide(
+                  color: colors.outline.withOpacity(.15),
+                ),
+              ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: colors.primary.withOpacity(.08),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              Icons.bolt_rounded,
+              size: 19,
+              color: colors.primary,
+            ),
+          ),
+
+          const SizedBox(width: 11),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
               children: [
                 Text(
                   order.orderNumber,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w900,
+                    color: colors.onSurface,
                   ),
                 ),
 
@@ -841,23 +1263,33 @@ class _RecentOrderCard extends StatelessWidget {
                   order.clientName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colors.onSurfaceVariant,
+                  style: TextStyle(
+                    fontSize: 9,
+                    color:
+                        colors.onSurface.withOpacity(.55),
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(width: 8),
-
-          Text(
-            order.status,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: colors.primary,
-              fontWeight: FontWeight.w700,
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 5,
+            ),
+            decoration: BoxDecoration(
+              color: colors.primary.withOpacity(.08),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              order.status,
+              style: TextStyle(
+                fontSize: 8,
+                fontWeight: FontWeight.w900,
+                color: colors.primary,
+              ),
             ),
           ),
         ],
@@ -867,123 +1299,74 @@ class _RecentOrderCard extends StatelessWidget {
 }
 
 // =============================================================================
-// SMALL IMAGE
-// =============================================================================
-
-class _SmallImage extends StatelessWidget {
-  final String? imageUrl;
-  final IconData icon;
-
-  const _SmallImage({
-    required this.imageUrl,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-
-    final hasImage =
-        imageUrl != null && imageUrl!.trim().isNotEmpty;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: SizedBox(
-        width: 48,
-        height: 48,
-        child: hasImage
-            ? Image.network(
-                imageUrl!,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) {
-                  return _EmptyImage(
-                    icon: icon,
-                  );
-                },
-              )
-            : _EmptyImage(
-                icon: icon,
-              ),
-      ),
-    );
-  }
-}
-
-class _EmptyImage extends StatelessWidget {
-  final IconData icon;
-
-  const _EmptyImage({
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-
-    return Container(
-      color: colors.surfaceContainerHighest.withOpacity(0.45),
-      child: Icon(
-        icon,
-        size: 22,
-        color: colors.onSurfaceVariant.withOpacity(0.5),
-      ),
-    );
-  }
-}
-
-// =============================================================================
 // EMPTY STATE
 // =============================================================================
 
-class _EmptyHomeState extends StatelessWidget {
+class _EmptyState extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
+  final ColorScheme colors;
 
-  const _EmptyHomeState({
+  const _EmptyState({
     required this.icon,
     required this.title,
     required this.subtitle,
+    required this.colors,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 20,
-        vertical: 24,
+        vertical: 25,
       ),
       decoration: BoxDecoration(
         color: colors.surface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(23),
+        border: Border.all(
+          color: colors.outline.withOpacity(.25),
+        ),
       ),
       child: Column(
         children: [
-          Icon(
-            icon,
-            size: 30,
-            color: colors.onSurfaceVariant.withOpacity(0.45),
-          ),
-
-          const SizedBox(height: 10),
-
-          Text(
-            title,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w700,
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: colors.primary.withOpacity(.08),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: colors.primary,
+              size: 22,
             ),
           ),
 
-          const SizedBox(height: 4),
+          const SizedBox(height: 11),
+
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+              color: colors.onSurface,
+            ),
+          ),
+
+          const SizedBox(height: 5),
 
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: colors.onSurfaceVariant,
+            style: TextStyle(
+              fontSize: 10,
+              height: 1.4,
+              color: colors.onSurface.withOpacity(.55),
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
