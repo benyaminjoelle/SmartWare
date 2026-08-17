@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:smartware/features/client/home/controllers/client_home_controller.dart';
+import 'package:smartware/features/product/controllers/product_controller.dart';
 
 class FilteringMenu extends StatelessWidget {
   const FilteringMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ClientHomeController>();
+    final controller = Get.find<ProductController>();
     final theme = Theme.of(context);
     final color = theme.colorScheme;
+    
 
     return SafeArea(
       child: DraggableScrollableSheet(
@@ -88,14 +89,14 @@ class FilteringMenu extends StatelessWidget {
 
                       // --- 2. CONTAINER TYPES ---
                       Text(
-                        "Container Type".tr,
+                        "Unit".tr,
                         style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
                       Obx(() => Wrap(
                             spacing: 8,
-                            children: controller.availableContainerTypes.map((container) {
-                              final isSelected = controller.selectedContainerTypes.contains(container);
+                            children: controller.availableUnits.map((container) {
+                              final isSelected = controller.selectedUnit.contains(container);
                               return FilterChip(
                                 label: Text(container),
                                 selected: isSelected,

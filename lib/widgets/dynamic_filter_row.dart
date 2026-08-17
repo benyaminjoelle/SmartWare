@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:smartware/features/client/home/controllers/client_home_controller.dart';
+import 'package:smartware/features/product/controllers/product_controller.dart';
 
 class DynamicFilterRow extends StatelessWidget {
   const DynamicFilterRow({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ClientHomeController>();
+    final controller = Get.find<ProductController>();
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
 
     return Obx(() {
-      if (controller.filteredSubCategories.isEmpty) {
+      if (controller.selectedSubCategoryId.isEmpty) {
         return const SizedBox.shrink();
       }
      
-      final int totalItemCount = controller.filteredSubCategories.length + 1;
+      final int totalItemCount = controller.selectedSubCategoryId.length + 1;
 
       return SizedBox(
         height: 40,
@@ -52,7 +52,7 @@ class DynamicFilterRow extends StatelessWidget {
             }
 
             // Otherwise, render the standard sub-category filter chips as normal
-            final subCategory = controller.filteredSubCategories[index];
+            final subCategory = controller.selectedSubCategoryId[index];
             return Obx (() {
                 final bool isSelected = controller.selectedSubCategoryId.contains(subCategory.id);
 
@@ -84,4 +84,8 @@ class DynamicFilterRow extends StatelessWidget {
       );
     });
   }
+}
+
+extension on RxSet<String> {
+  operator [](int other) {}
 }

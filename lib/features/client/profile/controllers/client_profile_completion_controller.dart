@@ -8,10 +8,7 @@ import 'package:smartware/widgets/app_dialog.dart';
 
 
 class ClientProfileCompletionController extends GetxController {
-  /// =========================================================
-  /// STEPS
-  /// =========================================================
-
+ 
   final currentStep = 0.obs;
   final int totalSteps = 3;
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smartware/features/client/cart/controllers/client_cart_controller.dart';
 import 'package:smartware/features/client/root/controller/root_controller.dart';
-import 'package:smartware/features/product/models/cart_item_model.dart';
+import 'package:smartware/features/client/cart/models/cart_item_model.dart';
 import 'package:smartware/features/product/widgets/build_cart_card.dart';
 import 'package:smartware/widgets/primary_button.dart';
 
@@ -139,7 +139,7 @@ class ClientCartView extends StatelessWidget {
                       return true;
                     },
                     onDismissed: (direction) {
-                      controller.removeItem(item.product.sku);
+                      controller.removeItem(item.product.sku, item.product.name);
                     },
                     child: CartCard(
                       cartItem: item,

@@ -50,7 +50,7 @@ class ProductCard extends StatelessWidget {
                   width: double.infinity,
                   color: colors.surfaceContainerLow,
                   child: Image.network(
-                    product.imageUrl,
+                    product.imageUrl ?? '',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) =>  Center(
                       child: Icon(Icons.inventory_2_outlined, size: 40, color: colors.onPrimary),
@@ -109,14 +109,6 @@ class ProductCard extends StatelessWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                     product.productType,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colors.onSurface.withOpacity(0.5),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    
                     // Price Tag display info
                     Text(
                       '\$${product.price.toStringAsFixed(2)}',
@@ -129,17 +121,19 @@ class ProductCard extends StatelessWidget {
                 ),
                  const Spacer(),
                  InkWell(
-                          onTap: () {
-                            controller.addToCart(product, 1);
+                         onTap: () {
+                              Get.toNamed(
+                                '/productDetails',
+                                arguments: product,
+                              );
                             AppSnackbar.show(
                             title: "Added to Cart",
                             message: "${product.name} has been added to your cart.",
                             position: SnackPosition.TOP,
                             duration: const Duration(seconds: 1),
-                
                             );
-                          },
-                          borderRadius: BorderRadius.circular(8),
+                            },
+                            
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(

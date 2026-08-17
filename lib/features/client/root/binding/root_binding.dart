@@ -5,6 +5,7 @@ import 'package:smartware/features/client/home/controllers/client_home_controlle
 import 'package:smartware/features/client/profile/controllers/client_profile_controller.dart';
 import 'package:smartware/features/client/profile/controllers/client_settings_controller.dart';
 import 'package:smartware/features/client/root/controller/root_controller.dart';
+import 'package:smartware/features/warehouse/controllers/warehouse_controller.dart';
 import 'package:smartware/localization/local_controller.dart';
 
 class ClientRootBinding extends Bindings {
@@ -18,6 +19,7 @@ class ClientRootBinding extends Bindings {
     Get.lazyPut<ClientProfileController>(() => ClientProfileController());
     Get.lazyPut<ClientSettingsController>(() => ClientSettingsController());
     Get.lazyPut<CartController>(() => CartController());
+    Get.lazyPut<WarehouseController>(() => WarehouseController(),);
     // Get.lazyPut<productDetailsBinding>(() => productDetailsBinding());
   }
 }

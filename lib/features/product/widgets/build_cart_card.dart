@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:smartware/features/client/cart/controllers/client_cart_controller.dart';
-import 'package:smartware/features/product/models/cart_item_model.dart';
-import 'package:smartware/features/product/models/product_model.dart';
+import 'package:smartware/features/client/cart/models/cart_item_model.dart';
 
 class CartCard extends StatelessWidget {
   const CartCard({
@@ -32,7 +31,7 @@ class CartCard extends StatelessWidget {
               bottomLeft: Radius.circular(12),
             ),
             child: Image.network(
-              cartItem.product.imageUrl,
+              cartItem.product.imageUrl ?? '',
               width: 100,
               height: 100,
               fit: BoxFit.cover,
@@ -72,14 +71,41 @@ class CartCard extends StatelessWidget {
             children: [
               IconButton(
                 icon: const Icon(Icons.remove),
-                onPressed: () => controller.removeSingleItem(cartItem.product.sku),
+                onPressed: () => controller.removeSingleItem(
+                                  cartItem.product.sku,
+                                  cartItem.warehouseId,
+                                ),
               ),
               IconButton(
                 icon: const Icon(Icons.add),
-                onPressed: () => controller.addToCart(cartItem.product, 1),
+                onPressed: () => controller.addToCart(
+                                  cartItem.product,
+                                  1,
+                                  cartItem.warehouseName,
+                                  cartItem.warehouseId,
+                                  cartItem.unitPrice,
+                                  cartItem.discountPercentage!
+                              ),
               ),
             ],
-          )
+          ),
+          const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.warehouse_outlined,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 5),
+                    Expanded(
+                      child: Text(
+                        cartItem.warehouseName,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
         ]
       ),
     );
