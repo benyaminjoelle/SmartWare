@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:pinput/pinput.dart';
 import 'package:smartware/features/auth/controllers/forgot_pass_controller.dart';
-import 'package:smartware/features/auth/views/login/verify_code.dart';
-import 'package:smartware/features/auth/widgets/change_email.dart';
 import 'package:smartware/features/auth/widgets/custom_pin_theme.dart';
 import 'package:smartware/widgets/back_button.dart';
 import 'package:smartware/widgets/primary_button.dart';

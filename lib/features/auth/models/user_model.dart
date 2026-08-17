@@ -4,7 +4,7 @@ class UserModel {
   final int id;
   final String firstName;
   final String lastName;
-  final String businessName;
+ 
   final String phoneNumber;
   final String email;
   final String? token;
@@ -20,7 +20,7 @@ class UserModel {
     required this.role,
     required this.phoneNumber,
     required this.id,
-    required this.businessName,
+  
     this.token,
     this.password,
   });
@@ -34,7 +34,6 @@ class UserModel {
       lastName: json['last_name'] ?? '',
       phoneNumber: json['phone_number'] ?? '',
       role: _parseRole(json['role']),
-      businessName: json['business_name'] ?? '',
       nationalId: json['national_id'] ?? '',
       password: json['password']??'',
       token: token,
@@ -48,7 +47,6 @@ class UserModel {
       'last_name': lastName,
       'phone_number': phoneNumber,
       'role': role.name,
-      'business_name': businessName,
       'token': token,
       'password':password
     };

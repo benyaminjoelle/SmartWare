@@ -3,6 +3,7 @@ import 'package:get/get.dart' hide FormData;
 import 'package:smartware/core/constants/const_ip.dart';
 import 'package:smartware/core/network/api_error.dart';
 import 'package:smartware/core/network/api_service.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/features/auth/models/user_model.dart';
 
 class AuthRepo {
@@ -133,7 +134,7 @@ class AuthRepo {
       print('📧 Email: ${user.email}');
       print('👤 Name: ${user.firstName} ${user.lastName}');
       print('📱 Phone: ${user.phoneNumber}');
-      print('📱 Phone: ${user.businessName}');
+     
       print('🎭 Role: ${user.role}');
       print('════════ REGISTER SUCCESS ════════');
 
@@ -210,7 +211,6 @@ class AuthRepo {
       print('📧 Email: ${user.email}');
       print('👤 Name: ${user.firstName} ${user.lastName}');
       print('📱 Phone: ${user.phoneNumber}');
-      print('📱 Phone: ${user.businessName}');
       print('📱 Phone: ${user.nationalId}');
       print('🎭 Role: ${user.role}');
       print('════════ REGISTER SUCCESS ════════');
@@ -267,12 +267,16 @@ class AuthRepo {
       final token = response['token'];
 
       if (userJson == null) {
-        throw ApiError(message: response['message'] ?? 'User data not found'.tr);
+        throw ApiError(
+          message: response['message'] ?? 'User data not found'.tr,
+        );
       }
 
       return UserModel.fromJson(userJson, token: token);
     } on DioException catch (e) {
-      throw ApiError(message: e.response?.data?['message'] ?? 'Login failed'.tr);
+      throw ApiError(
+        message: e.response?.data?['message'] ?? 'Login failed'.tr,
+      );
     } catch (e) {
       if (e is ApiError) rethrow;
       throw ApiError(message: 'Login failed');
@@ -280,86 +284,102 @@ class AuthRepo {
   }
 
   ///=================VERIFIED LOGIN=========================???
-  Future<UserModel> verifiedLogin({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      print('════════ VERIFIED LOGIN START ════════');
+ Future<UserModel> verifiedLogin({
+  required String email,
+  required String password,
+}) async {
+  try {
+    print('════════ VERIFIED LOGIN START ════════');
 
-   final FormData formData = FormData.fromMap({
-    'login': email.trim(),
-    'password': password,
-   });
+    final FormData formData = FormData.fromMap({
+      'login': email.trim(),
+      'password': password,
+    });
 
-    print('📤 Request Data (Form Data): email = ${email.trim()}');
+    print('📤 Request Data:');
+    print({
+      'login': email.trim(),
+      'password': '********',
+    });
 
     final response = await _api.post(
       '$baseUrl/api/email/verified-login',
       formData,
     );
 
-      print('📥 Raw Response:');
-      print(response);
+    print('📥 Raw Response:');
+    print(response);
 
-      if (response is ApiError) {
-        print('❌ ApiError returned from ApiService');
-        print('❌ Message: ${response.message}');
-        throw response;
-      }
-
-      if (response is! Map<String, dynamic>) {
-        print('❌ Response is not a Map');
-        print('❌ Runtime Type: ${response.runtimeType}');
-
-        throw ApiError(message: 'Invalid response from server');
-      }
-
-      print('✅ Response Keys: ${response.keys.toList()}');
-
-      final userJson = response['user'];
-      final token = response['token'];
-
-      print('👤 User JSON:');
-      print(userJson);
-
-      print('🔑 Token: $token');
-
-      if (userJson == null) {
-        throw ApiError(message: response['message'] ?? 'User data not found');
-      }
-
-      final user = UserModel.fromJson(userJson, token: token);
-
-      print('✅ Login Successful');
-      print('🆔 ID: ${user.id}');
-      print('📧 Email: ${user.email}');
-      print('🎭 Role: ${user.role}');
-      print('🔑 Token Saved');
-      print('════════ VERIFIED LOGIN SUCCESS ════════');
-
-      return user;
-    } on DioException catch (e) {
-      print('════════ VERIFIED LOGIN DIO ERROR ════════');
-      print('❌ Status Code: ${e.response?.statusCode}');
-      print('❌ Response Data: ${e.response?.data}');
-      print('═════════════════════════════════════════');
-
-      throw ApiError(
-        message: e.response?.data?['message'] ?? 'Verification login failed',
-      );
-    } catch (e, stackTrace) {
-      print('════════ VERIFIED LOGIN ERROR ════════');
-      print('❌ Error: $e');
-      print('❌ Type: ${e.runtimeType}');
-      print(stackTrace);
-      print('══════════════════════════════════════');
-
-      if (e is ApiError) rethrow;
-
-      throw ApiError(message: 'Verification login failed');
+    if (response is ApiError) {
+      throw response;
     }
+
+    if (response is! Map<String, dynamic>) {
+      throw ApiError(
+        message: 'Invalid response from server',
+      );
+    }
+
+    final token = response['token'];
+    final role = response['role'];
+    final userJson = response['user'];
+
+    print('🔑 Token: $token');
+    print('🎭 Role: $role');
+    print('👤 User JSON: $userJson');
+
+    if (token == null) {
+      throw ApiError(
+        message: 'Login token was not returned by server',
+      );
+    }
+
+    if (userJson == null) {
+      throw ApiError(
+        message: 'User data was not returned by server',
+      );
+    }
+
+    final user = UserModel.fromJson(
+      userJson,
+      token: token,
+    );
+
+    print('✅ Login Successful');
+    print('🆔 ID: ${user.id}');
+    print('📧 Email: ${user.email}');
+    print('🎭 Role: ${user.role}');
+    print('🔑 Token: ${user.token}');
+    print('════════ VERIFIED LOGIN SUCCESS ════════');
+
+    return user;
+  } on DioException catch (e) {
+    print('════════ VERIFIED LOGIN DIO ERROR ════════');
+    print('❌ Status Code: ${e.response?.statusCode}');
+    print('❌ Response Data: ${e.response?.data}');
+    print('═════════════════════════════════════════');
+
+    throw ApiError(
+      message:
+          e.response?.data?['message'] ??
+          'Verification login failed',
+    );
+  } catch (e, stackTrace) {
+    print('════════ VERIFIED LOGIN ERROR ════════');
+    print('❌ Error: $e');
+    print('❌ Type: ${e.runtimeType}');
+    print(stackTrace);
+    print('══════════════════════════════════════');
+
+    if (e is ApiError) {
+      rethrow;
+    }
+
+    throw ApiError(
+      message: 'Verification login failed',
+    );
   }
+}
 
   ///============================================================
   Future<void> resendVerificationEmail({required String email}) async {
@@ -401,68 +421,60 @@ class AuthRepo {
     }
   }
 
-///==================cHANGE EMAIL======================
-Future<void> changeEmail({
-  required int userId,
-  required String email,
-}) async {
-  try {
-    print('════════ CHANGE EMAIL START ════════');
+  ///==================cHANGE EMAIL======================
+  Future<void> changeEmail({required int userId, required String email}) async {
+    try {
+      print('════════ CHANGE EMAIL START ════════');
 
-    final FormData formData = FormData.fromMap({
-      'email': email.trim(),
-    });
+      final FormData formData = FormData.fromMap({'email': email.trim()});
 
-    print('📤 Request Data (Form Data): email = ${email.trim()} to ID: $userId');
+      print(
+        '📤 Request Data (Form Data): email = ${email.trim()} to ID: $userId',
+      );
 
-    final response = await _api.post(
-      'http://${ConstIp().ip}:8000/api/email/change/$userId',
-      formData,
-    );
+      final response = await _api.post(
+        'http://${ConstIp().ip}:8000/api/email/change/$userId',
+        formData,
+      );
 
-    print('📥 Response:');
-    print(response);
+      print('📥 Response:');
+      print(response);
 
-    if (response is ApiError) {
-      throw response;
+      if (response is ApiError) {
+        throw response;
+      }
+
+      print('════════ CHANGE EMAIL SUCCESS ════════');
+    } catch (e) {
+      print('════════ CHANGE EMAIL ERROR ════════');
+      print(e);
+
+      if (e is ApiError) rethrow;
+
+      throw ApiError(message: 'Failed to change email');
     }
-
-    print('════════ CHANGE EMAIL SUCCESS ════════');
-  } catch (e) {
-    print('════════ CHANGE EMAIL ERROR ════════');
-    print(e);
-
-    if (e is ApiError) rethrow;
-
-    throw ApiError(
-      message: 'Failed to change email',
-    );
   }
-}
-///=============================================================
 
+  ///=============================================================
 
-
-
-///=================FORGOT PASSWORD======================
-///==================1st screen==================
-   Future<Map<String,dynamic>> forgotPassword ({
-    required String email,
-   }) async {
+  ///=================FORGOT PASSWORD======================
+  ///==================1st screen==================
+  Future<Map<String, dynamic>> forgotPassword({required String email}) async {
     try {
       print('════════ FORGOT PASSWORD START ════════');
 
-      final FormData formData = FormData.fromMap({
-        'email': email.trim(),
-      });
+      final FormData formData = FormData.fromMap({'email': email.trim()});
 
-    print('📤 Requesting reset link for email: ${email.trim()}');
+      print('📤 Requesting reset link for email: ${email.trim()}');
 
-    final response = await _api.post('$baseUrl/api/password/forgot', formData);
+      final response = await _api.post(
+        '$baseUrl/api/password/forgot',
+        formData,
+      );
 
-    print('📥 Response: $response');
+      print('📥 Response: $response');
 
-    if (response is ApiError) throw response;
+      if (response is ApiError) throw response;
 
       print('════════ FORGOT PASSWORD SUCCESS ════════');
       return response;
@@ -471,33 +483,28 @@ Future<void> changeEmail({
       if (e is ApiError) rethrow;
       throw ApiError(message: 'Failed to send password reset email'.tr);
     }
-   }
+  }
 
- 
-///=================2nd screen=====================
-  Future<Map<String,dynamic>> verifyOtp({
+  ///=================2nd screen=====================
+  Future<Map<String, dynamic>> verifyOtp({
     required String otp,
     required String email,
   }) async {
-    try{
+    try {
       print('════════ VERIFY RESET TOKEN START ════════');
       print('📤 Query Params -> Email: $email | Otp: $otp');
 
-    // final FormData formData = FormData.fromMap({
-    //       'otp': otp,
-    //       'email': email.trim(),
-    // });
+      // final FormData formData = FormData.fromMap({
+      //       'otp': otp,
+      //       'email': email.trim(),
+      // });
 
-      final response = await _api.post(
-        '$baseUrl/api/password/verify-otp',
-        {
-          'otp': otp,
-          'email': email.trim(),
-        }
-        
-      );
+      final response = await _api.post('$baseUrl/api/password/verify-otp', {
+        'otp': otp,
+        'email': email.trim(),
+      });
 
-      print ('📥 Response: $response');
+      print('📥 Response: $response');
 
       if (response is ApiError) throw response;
 
@@ -509,35 +516,73 @@ Future<void> changeEmail({
       throw ApiError(message: 'OTP validation or reset request failed'.tr);
     }
   }
+
   ///====================3rd screen=========================
-    Future<Map<String, dynamic>> passwordReset ({
+  Future<Map<String, dynamic>> passwordReset({
     required String otp,
     required String email,
     required String newPassword,
-   }) async {
+  }) async {
     try {
       print('════════ CHANGE PASSWORD START ════════');
 
-      
       print('📤 Submitting password alteration request...');
 
-      final response = await _api.post('$baseUrl/api/password/reset',
-      {
-        'otp': otp, 
+      final response = await _api.post('$baseUrl/api/password/reset', {
+        'otp': otp,
         'email': email.trim(),
         'password': newPassword,
-      }
-        );
+      });
       print('📥 Response: $response');
       if (response is ApiError) throw response;
 
       print('════════ CHANGE PASSWORD SUCCESS ════════');
       return response;
-
     } catch (e) {
       print('════════ CHANGE PASSWORD ERROR ════════');
       if (e is ApiError) rethrow;
       throw ApiError(message: 'Failed to alter account password');
     }
-   }
+  }
+  /// ================= LOGOUT =================
+Future<void> logout() async {
+  try {
+    print('════════ LOGOUT START ════════');
+
+    final token = await PrefHelper.getToken();
+
+    if (token == null || token.isEmpty) {
+      throw ApiError(message: 'No authentication token found');
+    }
+
+    print('🔑 Sending logout request with token');
+
+    final response = await _api.post(
+      '$baseUrl/api/logout',
+      {},
+     
+    );
+
+    print('📥 Logout Response: $response');
+
+    if (response is ApiError) {
+      throw response;
+    }
+
+    print('✅ LOGOUT SUCCESS');
+  } on DioException catch (e) {
+    print('❌ LOGOUT DIO ERROR');
+    print(e.response?.data);
+
+    throw ApiError(
+      message: e.response?.data?['message'] ?? 'Logout failed',
+    );
+  } catch (e) {
+    print('❌ LOGOUT ERROR: $e');
+
+    if (e is ApiError) rethrow;
+
+    throw ApiError(message: 'Logout failed');
+  }
+}
 }

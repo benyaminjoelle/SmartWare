@@ -1,4 +1,5 @@
 class AppRoutes {
+  static const splash = '/splash';
   static const onboarding = '/onboarding';
   //============= Auth ==============
   static const login = '/login';
@@ -31,8 +32,6 @@ class AppRoutes {
   static const onwerNotifications = '/ownerNotifications';
   static const onwerAnalytics = '/ownerAnalytics';
   static const onwerProfile = '/ownerProfile';
-
-
 
   static const ownerSettings = '/ownerSettings';
   static const ownerEditPofile = '/ownerEditProfile';

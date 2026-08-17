@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:smartware/core/routes/app_routes.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
+import 'package:smartware/features/auth/models/auth_repo.dart';
 
 class ClientProfileController extends GetxController {
   /// =========================================================
@@ -73,16 +75,20 @@ class ClientProfileController extends GetxController {
   /// LOGOUT
   /// =========================================================
 
-  Future<void> logout() async {
-    try {
-      isLoading.value = true;
+  final AuthRepo _authRepo = AuthRepo();
 
-      /// TODO:
-      /// API Logout
+Future<void> logout() async {
+  try {
+    await _authRepo.logout();
 
-      // await authRepository.logout();
-    } finally {
-      isLoading.value = false;
-    }
+    await PrefHelper.clearUser();
+
+    Get.offAllNamed(AppRoutes.onboarding);
+  } catch (e) {
+    Get.snackbar(
+      'Error',
+      e.toString(),
+    );
   }
+}
 }

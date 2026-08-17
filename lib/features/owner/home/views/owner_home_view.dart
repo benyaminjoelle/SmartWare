@@ -551,7 +551,7 @@ class _QuickAccess extends StatelessWidget {
             icon: Icons.person_add_alt_1_rounded,
             title: 'Add worker',
             subtitle: 'Team',
-            color: colors.secondary,
+            color: colors.primary,
             colors: colors,
             onTap: controller.addWorker,
           ),
@@ -763,7 +763,7 @@ class _WarehouseCard extends StatelessWidget {
         capacity >= .9
             ? colors.error
             : capacity >= .7
-                ? colors.secondary
+                ? colors.primary
                 : colors.tertiary;
 
     return Material(
