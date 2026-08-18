@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:smartware/features/client/home/controllers/client_home_controller.dart';
+import 'package:smartware/features/product/controllers/product_controller.dart';
 
 class FilteringMenu extends StatelessWidget {
   const FilteringMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<ClientHomeController>();
+    final controller = Get.find<ProductController>();
     final theme = Theme.of(context);
     final color = theme.colorScheme;
 
@@ -29,6 +29,7 @@ class FilteringMenu extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 4),
+
                 // Handle
                 Center(
                   child: Container(
@@ -42,7 +43,7 @@ class FilteringMenu extends StatelessWidget {
                   ),
                 ),
 
-                // Title & Clear Action
+                // Title + Reset
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -53,98 +54,160 @@ class FilteringMenu extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () => controller.resetFilters(),
+                      onPressed: controller.resetFilters,
                       child: Text("Reset".tr),
                     ),
                   ],
                 ),
-                const Divider(height: 24, thickness: 0.5),
 
-                // Scrollable Body Content
+                const Divider(
+                  height: 24,
+                  thickness: 0.5,
+                ),
+
+                // Scrollable content
                 Expanded(
                   child: ListView(
                     controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 10,
+                    ),
                     children: [
-                     
+                      // =====================================================
+                      // 1. BUSINESS CATEGORIES
+                      // =====================================================
+
                       Text(
-                        "Product Sector".tr,
-                        style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                        "Business Categories".tr,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+
                       const SizedBox(height: 8),
-                      Obx(() => Wrap(
-                            spacing: 8,
-                            children: controller.userOnboardingSectors.map((sector) {
-                              final isSelected = controller.selectedProductTypes.contains(sector);
-                              return FilterChip(
-                                label: Text(sector.capitalizeFirst!),
-                                selected: isSelected,
-                                onSelected: (_) => controller.toggleProductType(sector),
+
+                      Obx(
+                        () => Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: controller.businessCategories.map(
+                            (category) {
+                              final isSelected =
+                                  controller.selectedCategories.contains(
+                                category,
                               );
-                            }).toList(),
-                          )),
 
-                      const SizedBox(height: 20),
-
-                      // --- 2. CONTAINER TYPES ---
-                      Text(
-                        "Container Type".tr,
-                        style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      Obx(() => Wrap(
-                            spacing: 8,
-                            children: controller.availableContainerTypes.map((container) {
-                              final isSelected = controller.selectedContainerTypes.contains(container);
                               return FilterChip(
-                                label: Text(container),
-                                selected: isSelected,
-                                onSelected: (_) => controller.toggleContainerType(container),
-                              );
-                            }).toList(),
-                          )),
-
-                      const SizedBox(height: 20),
-
-                      // --- 3. PRICE RANGE SLIDER ---
-                      Obx(() => Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Price Range".tr,
-                                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    "\$${controller.priceRange.value.start.toStringAsFixed(1)} - \$${controller.priceRange.value.end.toStringAsFixed(1)}",
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: color.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              RangeSlider(
-                                values: controller.priceRange.value,
-                                min: controller.minPossiblePrice,
-                                max: controller.maxPossiblePrice,
-                                divisions: 20,
-                                labels: RangeLabels(
-                                  "\$${controller.priceRange.value.start.toStringAsFixed(0)}",
-                                  "\$${controller.priceRange.value.end.toStringAsFixed(0)}",
+                                label: Text(
+                                  category
+                                      .replaceAll('_', ' ')
+                                      .capitalizeFirst!,
                                 ),
-                                onChanged: (RangeValues values) {
-                                  controller.priceRange.value = values;
+                                selected: isSelected,
+                                onSelected: (_) {
+                                  controller.toggleCategory(category);
                                 },
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // =====================================================
+                      // 2. UNIT
+                      // =====================================================
+
+                      Text(
+                        "Unit".tr,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Obx(
+                        () => Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: controller.availableUnits.map(
+                            (unit) {
+                              final isSelected =
+                                  controller.selectedUnit.contains(unit);
+
+                              return FilterChip(
+                                label: Text(unit),
+                                selected: isSelected,
+                                onSelected: (_) {
+                                  controller.toggleUnit(unit);
+                                },
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // =====================================================
+                      // 3. PRICE RANGE
+                      // =====================================================
+
+                      Obx(
+                        () => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Price Range".tr,
+                                  style:
+                                      theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                Text(
+                                  "\$${controller.priceRange.value.start.toStringAsFixed(1)}"
+                                  " - "
+                                  "\$${controller.priceRange.value.end.toStringAsFixed(1)}",
+                                  style:
+                                      theme.textTheme.bodyMedium?.copyWith(
+                                    color: color.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            RangeSlider(
+                              values: controller.priceRange.value,
+                              min: controller.minPossiblePrice,
+                              max: controller.maxPossiblePrice,
+                              divisions: 20,
+                              labels: RangeLabels(
+                                "\$${controller.priceRange.value.start.toStringAsFixed(0)}",
+                                "\$${controller.priceRange.value.end.toStringAsFixed(0)}",
                               ),
-                            ],
-                          )),
+                              onChanged: (RangeValues values) {
+                                controller.updatePriceRange(values);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
 
                       const SizedBox(height: 30),
 
-                      // --- 4. APPLY BUTTON ---
+                      // =====================================================
+                      // 4. APPLY BUTTON
+                      // =====================================================
+
                       SizedBox(
                         width: double.infinity,
                         height: 50,
@@ -158,14 +221,18 @@ class FilteringMenu extends StatelessWidget {
                           ),
                           onPressed: () {
                             controller.applyFilters();
-                            Get.back(); // Dismiss BottomSheet
+                            Get.back();
                           },
                           child: Text(
                             "Apply Filters".tr,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 20),
                     ],
                   ),

@@ -12,7 +12,9 @@ class PrefHelper {
   static const String _userPhotoKey = 'user_photo';
   static const String _businessNameKey = 'business_name';
   static const String _themeKey = 'theme_mode';
-static const String _userRoleKey = 'user_role';
+  static const String _userRoleKey = 'user_role';
+  static const String _businessTypeKey = 'business_type';
+  static const String _businessCategoriesKey = 'business_categories';
   // ============================================================
   // THEME
   // ============================================================
@@ -196,6 +198,18 @@ static Future<String?> getUserRole() async {
 
     await prefs.remove(_userPhotoKey);
   }
+  static const String _profileCompletedKey = 'profile_completed';
+
+  //=============== profile completion ===============
+  static Future<void> saveProfileCompleted(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_profileCompletedKey, value);
+  }
+
+  static Future<bool> getProfileCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_profileCompletedKey) ?? false;
+}
 
   // ============================================================
   // DEBUG EVERYTHING
@@ -214,6 +228,9 @@ static Future<String?> getUserRole() async {
     print('🏢 Business    : ${prefs.getString(_businessNameKey)}');
     print('🖼️ Photo       : ${prefs.getString(_userPhotoKey)}');
     print('🌐 Language    : ${prefs.getString(_langKey)}');
+    print('🏪 Business Type: ${prefs.getString(_businessTypeKey)}');
+    print('📦 Categories: ${prefs.getStringList(_businessCategoriesKey)}',
+);
     print('══════════════════════════════════');
     print('');
   }
@@ -534,13 +551,48 @@ static Future<void> clearClientOnboarding() async {
     _clientSelectedProducts,
   );
 }
+// ============================================================
+// ONBOARDING PREFERENCES
+// ============================================================
+
+static Future<void> saveBusinessType(String businessType) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  await prefs.setString(_businessTypeKey, businessType);
+
+  print('💾 Business type saved: $businessType');
+}
+
+static Future<String?> getBusinessType() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  return prefs.getString(_businessTypeKey);
+}
+
+static Future<void> saveBusinessCategories(
+    List<String> categories) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  await prefs.setStringList(
+    _businessCategoriesKey,
+    categories,
+  );
+  print('💾 Business categories saved: $categories');
+}
+
+static Future<List<String>> getBusinessCategories() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  return prefs.getStringList(_businessCategoriesKey) ?? [];
+}
+
   // ============================================================
   // CLEAR USER / LOGOUT
   // ============================================================
 
   static Future<void> clearUser() async {
     final prefs = await SharedPreferences.getInstance();
-await prefs.remove(_userRoleKey);
+    await prefs.remove(_userRoleKey);
     await prefs.remove(_tokenKey);
     await prefs.remove(_userIdKey);
     await prefs.remove(_userNameKey);
@@ -550,6 +602,8 @@ await prefs.remove(_userRoleKey);
     await prefs.remove(_businessNameKey);
     await prefs.remove(_fcmTokenKey);
     await prefs.remove(_readNotificationsKey);
+    await prefs.remove(_businessTypeKey);
+    await prefs.remove(_businessCategoriesKey);
 
     print('🧹 User data completely wiped out from local storage.');
   }

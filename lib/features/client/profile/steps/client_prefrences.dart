@@ -28,15 +28,15 @@ class ClientPreferences extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 20),
-                                  CustomTextField(
-                                    controller:
-                                        controller.businessNameController,
-                                    label: "Business Name:".tr,
-                                    hint: "Enter your Business name".tr,
-                                    textInputAction: TextInputAction.next,
-                                    validator: Validators.nameValidation,
-                                  ),
-SizedBox(height: 20),
+                  CustomTextField(
+                    controller:
+                        controller.businessNameController,
+                    label: "Business Name:".tr,
+                    hint: "Enter your Business name".tr,
+                    textInputAction: TextInputAction.next,
+                    validator: Validators.nameValidation,
+                  ),
+                    SizedBox(height: 20),
                   // --- SECTION 1: BUSINESS TYPE ---
                  BusinessTypeSection(),
                   const SizedBox(height: 36),

@@ -1,167 +1,329 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smartware/features/client/cart/controllers/checkout_controller.dart';
+import 'package:smartware/features/client/cart/models/cart_item_model.dart';
 
 class CheckoutView extends StatelessWidget {
-  const CheckoutView({Key? key}) : super(key: key);
+  const CheckoutView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CheckoutController());
+    final controller = Get.find<CheckoutController>();
     final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Order Summary"),
+        title: const Text("Checkout"),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // --- 1. Purchased Items List Summary ---
-            Text("Items Summary", style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: controller.cartController.cartItems.length,
-              separatorBuilder: (_, __) => const Divider(height: 12),
-              itemBuilder: (context, index) {
-                final item = controller.cartController.cartItems.values.toList()[index];
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("${item.quantity}x  ${item.product.name}"),
-                    Text(
-                      "\$${(item.product.discountedPrice * item.quantity).toStringAsFixed(2)}",
-                      style: const TextStyle(fontWeight: FontWeight.w600),
+
+      body: Obx(() {
+        final invoices = controller.warehouseInvoices;
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              Text(
+                "Your Invoices",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
+              ),
+
+              const SizedBox(height: 16),
+
+              // ==================================================
+              // ONE INVOICE PER WAREHOUSE
+              // ==================================================
+
+              ...invoices.entries.map((entry) {
+                final items = entry.value;
+
+                return _buildWarehouseInvoice(
+                  context,
+                  controller,
+                  items,
+                  colors,
                 );
-              },
-            ),
+              }),
 
-            const SizedBox(height: 24),
-            const Divider(thickness: 1.5),
-            const SizedBox(height: 12),
+              const SizedBox(height: 20),
 
-            // --- 2. Final Invoice Financial Breakdown ---
-            Text("Payment Details", style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 12),
+              // ==================================================
+              // GRAND TOTAL
+              // ==================================================
 
-            // Original Price Subtotal
-            _buildPriceRow(
-              "Original Subtotal",
-              "\$${controller.cartController.rawSubtotal.toStringAsFixed(2)}",
-              colors,
-            ),
+              const Divider(thickness: 1.5),
 
-            // Discount Savings Highlight (If applicable)
-            if (controller.cartController.totalSavings > 0) ...[
-              const SizedBox(height: 6),
-              _buildPriceRow(
-                "Discount Savings",
-                "-\$${controller.cartController.totalSavings.toStringAsFixed(2)}",
-                colors,
-                isDiscount: true,
+              const SizedBox(height: 16),
+
+              Row(
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Total to Pay",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  Text(
+                    "\$${controller.grandTotal.toStringAsFixed(2)}",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: colors.primary,
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 28),
+
+              // ==================================================
+              // PLACE ORDER
+              // ==================================================
+
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: controller.isLoading.value
+                      ? null
+                      : controller.placeOrder,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: controller.isLoading.value
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : const Text(
+                          "Confirm & Place Order",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                ),
               ),
             ],
+          ),
+        );
+      }),
+    );
+  }
 
-            const SizedBox(height: 6),
-            _buildPriceRow(
-              "Shipping Fee",
-              "\$${controller.shippingFee.toStringAsFixed(2)}",
-              colors,
-            ),
+  // ============================================================
+  // WAREHOUSE INVOICE
+  // ============================================================
 
-            const SizedBox(height: 6),
-            _buildPriceRow(
-              "Estimated Tax (8%)",
-              "\$${controller.estimatedTax.toStringAsFixed(2)}",
-              colors,
-            ),
+  Widget _buildWarehouseInvoice(
+    BuildContext context,
+    CheckoutController controller,
+    List<CartItem> items,
+    ColorScheme colors,
+  ) {
+    final warehouseName = items.first.warehouseName;
 
-            const SizedBox(height: 12),
-            const Divider(),
-            const SizedBox(height: 12),
+    final subtotal =
+        controller.warehouseSubtotal(items);
 
-            // Grand Payable Total Row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Grand Total",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    final savings =
+        controller.warehouseSavings(items);
+
+    final finalTotal =
+        controller.warehouseFinalTotal(items);
+
+    final tax =
+        controller.warehouseTax(items);
+
+    final total =
+        controller.warehouseGrandTotal(items);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colors.outline.withOpacity(0.15),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          // Warehouse name
+          Row(
+            children: [
+              Icon(
+                Icons.warehouse_outlined,
+                color: colors.primary,
+              ),
+
+              const SizedBox(width: 8),
+
+              Expanded(
+                child: Text(
+                  warehouseName,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                Obx(() => Text(
-                      "\$${controller.grandTotal.toStringAsFixed(2)}",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: colors.primary,
-                      ),
-                    )),
-              ],
-            ),
+              ),
+            ],
+          ),
 
-            const SizedBox(height: 32),
+          const SizedBox(height: 16),
 
-            // --- 3. Confirm & Pay Action Button ---
-            Obx(() => SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: controller.isLoading.value
-                        ? null
-                        : () => controller.placeOrder(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+          // Products
+          ...items.map(
+            (item) {
+              return Padding(
+                padding:
+                    const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  children: [
+
+                    Expanded(
+                      child: Text(
+                        "${item.quantity} × ${item.product.name}",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    child: controller.isLoading.value
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : const Text(
-                            "Confirm & Place Order",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                  ),
-                )),
+
+                    Text(
+                      "\$${item.discountedTotal.toStringAsFixed(2)}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+
+          const Divider(),
+
+          const SizedBox(height: 8),
+
+          _buildPriceRow(
+            "Subtotal",
+            subtotal,
+            colors,
+          ),
+
+          if (savings > 0) ...[
+            const SizedBox(height: 6),
+
+            _buildPriceRow(
+              "Discount Savings",
+              -savings,
+              colors,
+              isDiscount: true,
+            ),
           ],
-        ),
+
+          const SizedBox(height: 6),
+
+          _buildPriceRow(
+            "Shipping",
+            controller.shippingFee,
+            colors,
+          ),
+
+          const SizedBox(height: 6),
+
+          _buildPriceRow(
+            "Tax (8%)",
+            tax,
+            colors,
+          ),
+
+          const SizedBox(height: 10),
+
+          const Divider(),
+
+          const SizedBox(height: 10),
+
+          Row(
+            mainAxisAlignment:
+                MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Invoice Total",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+
+              Text(
+                "\$${total.toStringAsFixed(2)}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: colors.primary,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  // Helper Widget for Clean Invoice Rows
   Widget _buildPriceRow(
     String label,
-    String amount,
+    double amount,
     ColorScheme colors, {
     bool isDiscount = false,
   }) {
+    final prefix = amount < 0 ? "-\$" : "\$";
+    final value = amount.abs();
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment:
+          MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
           style: TextStyle(
-            color: isDiscount ? colors.tertiary : colors.onSurface.withOpacity(0.7),
-            fontWeight: isDiscount ? FontWeight.w600 : FontWeight.normal,
+            color: isDiscount
+                ? colors.tertiary
+                : colors.onSurface.withOpacity(0.7),
+            fontWeight: isDiscount
+                ? FontWeight.w600
+                : FontWeight.normal,
           ),
         ),
+
         Text(
-          amount,
+          "$prefix${value.toStringAsFixed(2)}",
           style: TextStyle(
-            color: isDiscount ? colors.tertiary : colors.onSurface,
-            fontWeight: isDiscount ? FontWeight.bold : FontWeight.w500,
+            color: isDiscount
+                ? colors.tertiary
+                : colors.onSurface,
+            fontWeight: isDiscount
+                ? FontWeight.bold
+                : FontWeight.w500,
           ),
         ),
       ],

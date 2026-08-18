@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:smartware/features/warehouse/models/warehouse_product_model.dart';
 
 class ClientWarehouseStockCard extends StatelessWidget {
-  final String warehouseName;
-  final String warehouseAddress;
-  final int? stockQuantity;
-  final double price;
-  final double? discountPercentage;
-  // final String? discountNote;
+  final WarehouseProductModel warehouse;
   final VoidCallback? onSelectWarehouse;
 
   const ClientWarehouseStockCard({
     super.key,
-    required this.warehouseName,
-    required this.warehouseAddress,
-    this.stockQuantity,
-    required this.price,
-    this.discountPercentage,
-    // this.discountNote,
+    required this.warehouse,
     this.onSelectWarehouse,
   });
 
@@ -24,18 +15,17 @@ class ClientWarehouseStockCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
-    final hasDiscount = discountPercentage != null && discountPercentage! > 0;
-    final discountedPrice = hasDiscount
-        ? price * (1 - (discountPercentage! / 100))
-        : price;
-    final isAvailable = stockQuantity != null && stockQuantity! > 0;
+
+    final isAvailable = warehouse.quantity > 0;
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6.0),
       elevation: 1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: colors.outlineVariant.withAlpha(80)),
+        side: BorderSide(
+          color: colors.outlineVariant.withAlpha(80),
+        ),
       ),
       child: InkWell(
         onTap: isAvailable ? onSelectWarehouse : null,
@@ -45,18 +35,21 @@ class ClientWarehouseStockCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- TOP ROW: Warehouse Name & Stock Status ---
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Row(
                       children: [
-                        Icon(Icons.storefront_rounded, color: colors.primary, size: 20),
+                        Icon(
+                          Icons.storefront_rounded,
+                          color: colors.primary,
+                          size: 20,
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            warehouseName,
+                            warehouse.warehouseName,
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -66,9 +59,12 @@ class ClientWarehouseStockCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Availability Badge
+
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: isAvailable
                           ? colors.primaryContainer
@@ -76,7 +72,9 @@ class ClientWarehouseStockCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
-                      isAvailable ? "$stockQuantity Available" : "Out of Stock",
+                      isAvailable
+                          ? '${warehouse.quantity} Available'
+                          : 'Out of Stock',
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: isAvailable
                             ? colors.onPrimaryContainer
@@ -90,14 +88,17 @@ class ClientWarehouseStockCard extends StatelessWidget {
 
               const SizedBox(height: 6),
 
-              // --- ADDRESS ROW ---
               Row(
                 children: [
-                  Icon(Icons.location_on_outlined, size: 16, color: colors.outline),
+                  Icon(
+                    Icons.location_on_outlined,
+                    size: 16,
+                    color: colors.outline,
+                  ),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
-                      warehouseAddress,
+                      warehouse.address,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colors.outline,
                       ),
@@ -110,24 +111,23 @@ class ClientWarehouseStockCard extends StatelessWidget {
 
               const Divider(height: 20),
 
-              // --- PRICE & DISCOUNT ROW ---
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (hasDiscount) ...[
+                      if (warehouse.hasDiscount)
                         Text(
-                          "\$${price.toStringAsFixed(2)}",
+                          '\$${warehouse.unitPrice.toStringAsFixed(2)}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             decoration: TextDecoration.lineThrough,
                             color: colors.outline,
                           ),
                         ),
-                      ],
+
                       Text(
-                        "\$${discountedPrice.toStringAsFixed(2)}",
+                        '\$${warehouse.discountedPrice.toStringAsFixed(2)}',
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: colors.primary,
                           fontWeight: FontWeight.bold,
@@ -135,16 +135,22 @@ class ClientWarehouseStockCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (hasDiscount)
+
+                  if (warehouse.hasDiscount)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.red.withAlpha(25),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: Colors.red.shade300),
+                        border: Border.all(
+                          color: Colors.red.shade300,
+                        ),
                       ),
                       child: Text(
-                        "-${discountPercentage!.toStringAsFixed(0)}% OFF",
+                        '-${warehouse.discountPercentage!.toStringAsFixed(0)}% OFF',
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: Colors.red.shade700,
                           fontWeight: FontWeight.bold,
@@ -153,18 +159,6 @@ class ClientWarehouseStockCard extends StatelessWidget {
                     ),
                 ],
               ),
-
-              // --- OPTIONAL DISCOUNT NOTE ---
-              // if (hasDiscount != null && hasDiscount.isNotEmpty) ...[
-              //   const SizedBox(height: 6),
-              //   Text(
-              //     discountNote!,
-              //     style: theme.textTheme.bodySmall?.copyWith(
-              //       color: colors.secondary,
-              //       fontStyle: FontStyle.italic,
-              //     ),
-              //   ),
-              // ],
             ],
           ),
         ),

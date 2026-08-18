@@ -17,11 +17,10 @@ class ClientRootView extends GetView<RootController> {
     final theme = Theme.of(context).colorScheme;
 
     final pages = [
-      const ClientHomeView(),
-
+      ClientHomeView(),
       ClientCartView(),
       ClientOrdersView(),
-      const ClientProfileView(),
+      ClientProfileView(),
     ];
 
     return Scaffold(

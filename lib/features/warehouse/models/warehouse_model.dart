@@ -1,5 +1,5 @@
 class Warehouse {
-  final String id;
+  final int id;
   final String name;
   final String address;
   final String city;
@@ -24,12 +24,16 @@ class Warehouse {
   });
 
   // Helper getter to calculate capacity percentage
-  double get occupancyPercentage =>
-      (currentOccupiedUnits / totalCapacityUnits) * 100;
+ double get occupancyPercentage {
+  if (totalCapacityUnits <= 0) {
+    return 0;
+  }
+  return (currentOccupiedUnits / totalCapacityUnits) * 100;
+}
 
   factory Warehouse.fromJson(Map<String, dynamic> json) {
     return Warehouse(
-      id: json['id'] ?? '',
+      id: json['id'] as int,
       name: json['name'] ?? '',
       address: json['address'] ?? '',
       city: json['city'] ?? '',

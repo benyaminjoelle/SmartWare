@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smartware/features/product/models/cart_item_model.dart';
+import 'package:smartware/features/client/cart/models/cart_item_model.dart';
 import 'package:smartware/features/product/models/product_model.dart';
 
 class CartController extends GetxController {
-  //  O(1), cz sku is better than looking for the whole object             
+ 
   final RxMap<String, CartItem> cartItems = <String, CartItem>{}.obs;
   static const String _cartKey = 'saved_cart_items';
   static const String _ordersKey = 'saved_orders';
@@ -14,73 +14,135 @@ class CartController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     _loadCartFromStorage();
-     cartItems.listen((_) => _saveCartToStorage());
+    cartItems.listen((_) => _saveCartToStorage());
   }
 
-  // Getters
-  double get rawSubtotal => cartItems.values.fold(
-        0.0,
-        (sum, item) => sum + (item.product.price * item.quantity),
-      );
+  double get rawSubtotal {
+  return cartItems.values.fold(
+    0.0,
+    (sum, item) => sum + item.total,
+  );
+}
 
-  // 2. Total amount saved across all discounted items
-  double get totalSavings => cartItems.values.fold(
-        0.0,
-        (sum, item) => sum + (item.product.savingsPerUnit * item.quantity)
-      );
-  double get finalTotal => rawSubtotal - totalSavings;
+ double get totalSavings {
+  return cartItems.values.fold(
+    0.0,
+    (sum, item) => sum + item.savings,
+  );
+}
+
+ double get finalTotal {
+  return cartItems.values.fold(
+    0.0,
+    (sum, item) => sum + item.discountedTotal,
+  );
+}
 
   int get itemCount => cartItems.length;
 
+  Map<int, List<CartItem>> get itemsByWarehouse {
+    final Map<int, List<CartItem>> grouped = {};
 
-  // ==================== ACTIONS ====================
+    for (final item in cartItems.values) {
+      grouped.putIfAbsent(item.warehouseId, () => []);
+      grouped[item.warehouseId]!.add(item);
+    }
 
-  void addToCart(Product product, int value) {
-    if (cartItems.containsKey(product.sku)) {
-      cartItems.update(
-        product.sku,
-        (existing) => CartItem(
-          product: existing.product,
-          quantity: existing.quantity + value,
-        ),
+    return grouped;
+  }
+
+ void addToCart(
+  Product product,
+  int value,
+  String warehouseName,
+  int warehouseId,
+  double unitPrice,
+  double? discountPercentage,
+) {
+  if (value <= 0) return;
+
+  final key = '${product.sku}|$warehouseId';
+
+  if (cartItems.containsKey(key)) {
+    final existing = cartItems[key]!;
+
+    cartItems[key] = CartItem(
+      product: existing.product,
+      warehouseId: existing.warehouseId,
+      warehouseName: existing.warehouseName,
+      unitPrice: existing.unitPrice,
+      discountPercentage: existing.discountPercentage,
+      quantity: existing.quantity + value,
+    );
+  } else {
+    cartItems[key] = CartItem(
+      product: product,
+      warehouseId: warehouseId,
+      warehouseName: warehouseName,
+      unitPrice: unitPrice,
+      discountPercentage: discountPercentage,
+      quantity: value,
+    );
+  }
+
+  cartItems.refresh();
+}
+   void removeSingleItem(
+    String sku,
+    int warehouseId,
+  ) {
+    final key = '$sku|$warehouseId';
+
+    if (!cartItems.containsKey(key)) return;
+
+    final existing = cartItems[key]!;
+
+    if (existing.quantity > 1) {
+      cartItems[key] = CartItem(
+        product: existing.product,
+        warehouseId: existing.warehouseId,
+        warehouseName: existing.warehouseName,
+        unitPrice: existing.unitPrice,
+        discountPercentage: existing.discountPercentage,
+        quantity: existing.quantity - 1,
       );
     } else {
-      cartItems[product.sku] = CartItem(product: product, quantity: value);
+      cartItems.remove(key);
     }
 
     cartItems.refresh();
   }
 
-  void removeSingleItem(String sku) {
-    if (!cartItems.containsKey(sku)) return;
 
-    if (cartItems[sku]!.quantity > 1) {
-      cartItems.update(
-        sku,
-        (existing) => CartItem(
-          product: existing.product,
-          quantity: existing.quantity - 1,
-        ),
-      );
-    } else {
-      cartItems.remove(sku);
-    }
-    cartItems.refresh();
-  }
+  
+  void removeItem(
+    String sku,
+    int warehouseId,
+  ) {
+    final key = '$sku|$warehouseId';
 
-  void removeItem(String sku) {
-    cartItems.remove(sku);
+    cartItems.remove(key);
     cartItems.refresh();
+
     _saveCartToStorage();
   }
+
+  void clearCart() {
+    cartItems.clear();
+  }
+
   Future<void> _saveCartToStorage() async {
     final prefs = await SharedPreferences.getInstance();
-    
-    // Map<String, CartItem> -> JSON String
+
     final Map<String, dynamic> rawMap = cartItems.map(
-      (key, value) => MapEntry(key, value.toJson()),
+      (key, value) => MapEntry(
+        key,
+        value.toJson(),
+      ),
     );
+
     final String encodedString = jsonEncode(rawMap);
 
     await prefs.setString(_cartKey, encodedString);
@@ -88,40 +150,55 @@ class CartController extends GetxController {
 
   Future<void> _loadCartFromStorage() async {
     final prefs = await SharedPreferences.getInstance();
+
     final String? encodedString = prefs.getString(_cartKey);
 
     if (encodedString != null && encodedString.isNotEmpty) {
       try {
-        final Map<String, dynamic> decodedMap = jsonDecode(encodedString);
+        final Map<String, dynamic> decodedMap =
+            Map<String, dynamic>.from(jsonDecode(encodedString));
+
         final Map<String, CartItem> loadedCart = decodedMap.map(
-          (key, value) => MapEntry(key, CartItem.fromJson(value)),
+          (key, value) {
+            final item = CartItem.fromJson(
+              Map<String, dynamic>.from(value),
+            );
+
+            // Rebuild the correct key using SKU + warehouse.
+            return MapEntry(
+              '${item.product.sku}|${item.warehouseId}',
+              item,
+            );
+          },
         );
+
         cartItems.assignAll(loadedCart);
       } catch (e) {
         print("Failed to load cart from storage: $e");
       }
     }
   }
-  Future<void> saveOrderHistory(Map<String, dynamic> orderData) async {
+
+  Future<void> saveOrderHistory(
+    Map<String, dynamic> orderData,
+  ) async {
     final prefs = await SharedPreferences.getInstance();
-    
-    // Fetch existing saved orders list
-    final String? existingOrdersJson = prefs.getString(_ordersKey);
+
+    final String? existingOrdersJson =
+        prefs.getString(_ordersKey);
+
     List<dynamic> ordersList = [];
 
-    if (existingOrdersJson != null) {
-      ordersList = jsonDecode(existingOrdersJson);
-    }
+   if (existingOrdersJson != null &&
+    existingOrdersJson.isNotEmpty) {
+    ordersList = jsonDecode(existingOrdersJson);
+  }
 
-    // Append new order
     ordersList.add(orderData);
 
-    // Save updated list
-    await prefs.setString(_ordersKey, jsonEncode(ordersList));
-  }
-  void clearCart() {
-    cartItems.clear();
+    await prefs.setString(
+      _ordersKey,
+      jsonEncode(ordersList),
+    );
   }
 }
-
-  

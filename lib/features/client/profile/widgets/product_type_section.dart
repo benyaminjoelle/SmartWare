@@ -15,11 +15,13 @@ class ProductTypeSection extends StatelessWidget {
     final cs = theme.colorScheme;
 
     return Obx(() {
-      final hasBusiness = controller.selectedBusinessType.value.isNotEmpty;
+      final hasBusiness =
+          controller.selectedBusinessType.value.isNotEmpty;
+
       final products = controller.availableProducts;
 
       if (!hasBusiness) {
-        return _EmptyProductState();
+        return const _EmptyProductState();
       }
 
       return LayoutBuilder(
@@ -43,19 +45,19 @@ class ProductTypeSection extends StatelessWidget {
                   color: cs.onSurfaceVariant.withValues(alpha: .7),
                   height: 1.5,
                 ),
-              
               ),
             ],
           );
 
-          // Reactive list that handles its own expansion state rebuilds localized
           final list = Obx(() {
-            // ignore: invalid_use_of_protected_member
-            final selectedProducts = controller.selectedProducts.value;
+            final selectedProducts =
+                controller.selectedProducts.toList();
 
-            final displayedProducts = (controller.isProductsExpanded.value || products.length <= 4)
-                ? products
-                : products.take(4).toList();
+            final displayedProducts =
+                (controller.isProductsExpanded.value ||
+                        products.length <= 4)
+                    ? products
+                    : products.take(4).toList();
 
             return Column(
               mainAxisSize: MainAxisSize.min,
@@ -63,24 +65,32 @@ class ProductTypeSection extends StatelessWidget {
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
-                    childAspectRatio: 1.0, // Keeps the tiles perfectly square
+                    childAspectRatio: 1.0,
                   ),
                   itemCount: displayedProducts.length,
                   itemBuilder: (_, index) {
                     final item = displayedProducts[index];
-                    final selected = selectedProducts.contains(item.id);
+
+                    // IMPORTANT:
+                    // Every selected product remains selected.
+                    final selected =
+                        selectedProducts.contains(item.id);
 
                     return _ProductTile(
                       item: item,
                       selected: selected,
-                      onTap: () => controller.toggleProduct(item.id),
+                      onTap: () {
+                        controller.toggleCategory(item.id);
+                      },
                     );
                   },
                 ),
+
                 if (products.length > 4)
                   Padding(
                     padding: const EdgeInsets.only(top: 16),
@@ -115,9 +125,15 @@ class ProductTypeSection extends StatelessWidget {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(flex: 4, child: header),
+                Expanded(
+                  flex: 4,
+                  child: header,
+                ),
                 const SizedBox(width: 64),
-                Expanded(flex: 5, child: list),
+                Expanded(
+                  flex: 5,
+                  child: list,
+                ),
               ],
             );
           }
@@ -137,6 +153,8 @@ class ProductTypeSection extends StatelessWidget {
 }
 
 class _EmptyProductState extends StatelessWidget {
+  const _EmptyProductState();
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -214,9 +232,11 @@ class _ProductTile extends StatelessWidget {
             ),
           ),
           child: Stack(
-            clipBehavior: Clip.none,
             children: [
-              // Checkbox Indicator
+              // =========================
+              // SELECTION INDICATOR
+              // =========================
+
               Positioned(
                 top: 12,
                 right: 12,
@@ -226,52 +246,61 @@ class _ProductTile extends StatelessWidget {
                   height: 22,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
+                    color: selected
+                        ? cs.primary
+                        : Colors.transparent,
                     border: Border.all(
                       color: selected
                           ? cs.primary
                           : cs.outline.withValues(alpha: .5),
                       width: 2,
                     ),
-                    color: selected ? cs.primary : Colors.transparent,
                   ),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 180),
                     child: selected
                         ? Icon(
                             Icons.check,
-                            key: const ValueKey(true),
+                            key: const ValueKey('selected'),
                             size: 13,
                             color: cs.onPrimary,
                           )
                         : const SizedBox(
-                            key: ValueKey(false),
+                            key: ValueKey('unselected'),
                           ),
                   ),
                 ),
               ),
 
-              // Content
+              // =========================
+              // CONTENT
+              // =========================
+
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16),
                 child: Align(
                   alignment: Alignment.center,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AnimatedContainer(
-                        duration: const Duration(milliseconds: 220),
+                        duration:
+                            const Duration(milliseconds: 220),
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
                           color: selected
                               ? cs.primary.withValues(alpha: .10)
                               : cs.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius:
+                              BorderRadius.circular(12),
                         ),
                         child: Icon(
                           item.icon,
                           size: 20,
-                          color: selected ? cs.primary : cs.onSurfaceVariant,
+                          color: selected
+                              ? cs.primary
+                              : cs.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -280,7 +309,8 @@ class _ProductTile extends StatelessWidget {
                         textAlign: TextAlign.center,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.titleSmall?.copyWith(
+                        style:
+                            theme.textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w400,
                           height: 1.2,
                         ),

@@ -6,9 +6,7 @@ import 'package:smartware/core/constants/business_product_mapping.dart';
 import 'package:smartware/core/constants/client_business_types.dart';
 import 'package:smartware/core/constants/client_products.dart';
 import 'package:smartware/core/network/api_error.dart';
-
 import 'package:smartware/core/utils/pref_helper.dart';
-
 import 'package:smartware/features/client/profile/models/client_documents_model.dart';
 import 'package:smartware/features/client/profile/models/client_onboarding_repo.dart';
 import 'package:smartware/features/client/profile/models/client_prefrences_model.dart';
@@ -18,25 +16,17 @@ import 'package:smartware/features/client/profile/widgets/product_type_model.dar
 import 'package:smartware/widgets/app_dialog.dart';
 
 class ClientProfileCompletionController extends GetxController {
-  // ============================================================
-  // CONTROLLERS
-  // ============================================================
+
+  // ============== CONTROLLERS ==============
 
   final businessNameController = TextEditingController();
 
-  // ============================================================
   // REPOSITORY
-  // ============================================================
-
   final ClientOnboardingRepo _onboardingRepo =
       ClientOnboardingRepo();
 
-  // ============================================================
-  // STEPS
-  // ============================================================
-
+  // ============ STEPS ==============
   final currentStep = 0.obs;
-
   final int totalSteps = 3;
 
   // 0  = nothing completed
@@ -69,10 +59,7 @@ class ClientProfileCompletionController extends GetxController {
     }
   }
 
-  // ============================================================
-  // INIT
-  // ============================================================
-
+  // ================ INIT ================
   @override
   void onInit() {
     super.onInit();
@@ -311,9 +298,7 @@ class ClientProfileCompletionController extends GetxController {
   // ============================================================
 
   final businessName = ''.obs;
-
   final selectedBusinessType = ''.obs;
-
   final isProductsExpanded = false.obs;
 
   final preferredLanguage =
@@ -353,7 +338,7 @@ class ClientProfileCompletionController extends GetxController {
   // PRODUCT SELECTION
   // ============================================================
 
-  void toggleProduct(String id) {
+  void toggleCategory(String id) {
     if (selectedProducts.contains(id)) {
       selectedProducts.remove(id);
     } else {
@@ -361,11 +346,11 @@ class ClientProfileCompletionController extends GetxController {
     }
 
     selectedProducts.refresh();
-  }
 
-  // ============================================================
-  // BUSINESS TYPE SELECTION
-  // ============================================================
+    print('📦 Selected categories: $selectedProducts',);
+  }
+ 
+  // ============= BUSINESS TYPE SELECTION ================ 
 
   void selectBusinessType(String id) {
     if (selectedBusinessType.value == id) {
@@ -373,9 +358,7 @@ class ClientProfileCompletionController extends GetxController {
     }
 
     selectedBusinessType.value = id;
-
     selectedProducts.clear();
-
     isProductsExpanded.value = false;
   }
 
@@ -439,6 +422,10 @@ class ClientProfileCompletionController extends GetxController {
         return false;
       }
 
+      // ========================================================
+      // VALIDATE PRODUCTS
+      // ========================================================
+
       if (selectedProducts.isEmpty) {
         Get.snackbar(
           'Missing Information',
@@ -448,9 +435,30 @@ class ClientProfileCompletionController extends GetxController {
         return false;
       }
 
-      // --------------------------------------------------------
-      // API
-      // --------------------------------------------------------
+      // ========================================================
+      // DEBUG REQUEST
+      // ========================================================
+
+      print('');
+      print('📤 Sending preferences to backend...');
+      print(
+        '🏢 Facility Name: $facilityName',
+      );
+      print(
+        '🎭 Role: client',
+      );
+      print(
+        '🏪 Business Type: '
+        '${selectedBusinessType.value}',
+      );
+      print(
+        '📦 Categories: '
+        '${selectedProducts.toList()}',
+      );
+
+      // ========================================================
+      // API CALL
+      // ========================================================
 
       final result =
           await _onboardingRepo.savePreferences(
@@ -467,6 +475,15 @@ class ClientProfileCompletionController extends GetxController {
       // --------------------------------------------------------
 
       savedPreferences.value = result;
+      await PrefHelper.saveBusinessType(
+      result.facility.businessType,
+      );
+
+      await PrefHelper.saveBusinessCategories(
+      result.facility.categories
+      .map((category) => category.name)
+      .toList(),
+      );
 
       businessName.value =
           result.facilityName;
@@ -981,43 +998,21 @@ class ClientProfileCompletionController extends GetxController {
     }
   }
 
-  // ============================================================
-  // RESET EVERYTHING
-  // ============================================================
-
-  Future<void> reset() async {
+  void reset() {
     currentStep.value = 0;
-
-    profileCompletion.value = 0;
-
+    profileCompletion.value = 33;
     businessNameController.clear();
 
     businessName.value = '';
-
-    selectedBusinessType.value =
-        '';
-
-    isProductsExpanded.value =
-        false;
-
-    preferredLanguage.value =
-        'English';
-
-    preferredCurrency.value =
-        'USD';
-
+    selectedBusinessType.value = '';
+    isProductsExpanded.value = false;
+    preferredLanguage.value = 'English';
+    preferredCurrency.value = 'USD';
     selectedProducts.clear();
-
-    savedPreferences.value =
-        null;
-
-    isSavingPreferences.value =
-        false;
-
+    savedPreferences.value = null;
+    isSavingPreferences.value = false;
     address.value = '';
-
     city.value = '';
-
     country.value = '';
 
     ownerIdPath.value =
@@ -1042,7 +1037,7 @@ class ClientProfileCompletionController extends GetxController {
     // CLEAR PERSISTED STATE
     // ----------------------------------------------------------
 
-    await PrefHelper
+     PrefHelper
         .clearClientOnboarding();
 
     debugPrint(
@@ -1057,10 +1052,6 @@ class ClientProfileCompletionController extends GetxController {
   Future<void> simulateProgress() async {
     await nextStep();
   }
-
-  // ============================================================
-  // DISPOSE
-  // ============================================================
 
   @override
   void onClose() {
