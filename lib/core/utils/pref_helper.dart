@@ -198,6 +198,18 @@ static Future<String?> getUserRole() async {
 
     await prefs.remove(_userPhotoKey);
   }
+  static const String _profileCompletedKey = 'profile_completed';
+
+  //=============== profile completion ===============
+  static Future<void> saveProfileCompleted(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_profileCompletedKey, value);
+  }
+
+  static Future<bool> getProfileCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_profileCompletedKey) ?? false;
+}
 
   // ============================================================
   // DEBUG EVERYTHING

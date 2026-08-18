@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/features/client/cart/controllers/client_cart_controller.dart';
 import 'package:smartware/features/client/root/controller/root_controller.dart';
 import 'package:smartware/features/client/cart/models/cart_item_model.dart';
 import 'package:smartware/features/product/widgets/build_cart_card.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
 import 'package:smartware/widgets/primary_button.dart';
 
 class ClientCartView extends StatelessWidget {
@@ -231,7 +233,18 @@ class ClientCartView extends StatelessWidget {
                       width: double.infinity,
                       height: 48,
                       child: PrimaryButton(
-                        onPressed: () => Get.toNamed('/checkout'),
+                        onPressed: () async {
+                        final completed = await PrefHelper.getProfileCompleted();
+                        if (!completed) {
+                          AppSnackbar.show(
+                            position: SnackPosition.TOP,
+                            title: "Complete Your Profile",
+                            message: "Please complete your profile setup before placing an order.",
+                          );
+                          return;
+                        }
+                        Get.toNamed('/checkout');
+                      },
                         isLoading: false,
                         text: 'Proceed to Checkout',
                       ),

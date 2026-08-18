@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/features/client/cart/controllers/client_cart_controller.dart';
 import 'package:smartware/features/client/cart/models/cart_item_model.dart';
 
@@ -7,9 +8,22 @@ class CheckoutController extends GetxController {
 
   final RxString selectedPaymentMethod = 'credit_card'.obs;
   final RxBool isLoading = false.obs;
+  final RxBool isProfileCompleted = false.obs;
+
 
   final double shippingFee = 5.00;
   final double taxRate = 0.08;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadProfileStatus();
+}
+
+Future<void> loadProfileStatus() async {
+  isProfileCompleted.value =
+      await PrefHelper.getProfileCompleted();
+}
 
   // ============================================================
   // WAREHOUSE INVOICES
@@ -66,6 +80,13 @@ class CheckoutController extends GetxController {
   // ============================================================
 
   Future<void> placeOrder() async {
+    if (!isProfileCompleted.value) {
+  Get.snackbar(
+    "Complete Your Profile",
+    "Please complete your profile setup before placing an order.",
+  );
+  return;
+}
     if (cartController.cartItems.isEmpty) {
       Get.snackbar(
         "Error",

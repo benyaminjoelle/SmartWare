@@ -15,7 +15,7 @@ class ProductController extends GetxController {
   final RxSet<String> selectedCategories = <String>{}.obs;
   final RxString searchQuery = ''.obs;
   final RxString businessType = ''.obs;
-
+  final RxBool isProfileCompleted = false.obs;
   final RxList<String> businessCategories = <String>[].obs;
 
   double minPossiblePrice = 0.0;
@@ -27,6 +27,7 @@ class ProductController extends GetxController {
   void onInit() {
     super.onInit();
 
+    loadProfileStatus();
     loadClientPreferences();
     loadProducts();
 
@@ -36,6 +37,10 @@ class ProductController extends GetxController {
       time: const Duration(milliseconds: 300),
     );
   }
+  Future<void> loadProfileStatus() async {
+  isProfileCompleted.value =
+      await PrefHelper.getProfileCompleted();
+}
 
   Future <void> loadClientPreferences() async {
     final savedBusinessType =
@@ -387,6 +392,10 @@ Product? getProductById(int productId) {
 }
  // ========== filtering logic =============
   void applyFilters() {
+     if (!isProfileCompleted.value) {
+    displayedProducts.assignAll(products);
+    return;
+  }
     final query =
         searchQuery.value.trim().toLowerCase();
 

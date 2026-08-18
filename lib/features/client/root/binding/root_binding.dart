@@ -12,13 +12,13 @@ import 'package:smartware/localization/local_controller.dart';
 class ClientRootBinding extends Bindings {
   @override
   void dependencies() {
+    print('client root binding running');
     Get.lazyPut<ClientSettingsController>(() => ClientSettingsController());
     Get.lazyPut<ClientHomeController>(()=> ClientHomeController());
     Get.put(AdsCarouselController(), permanent: true); // AdsCarouselController is now a singleton
     Get.lazyPut<LocaleController>(() => LocaleController());
     Get.lazyPut<RootController>(() => RootController());
     Get.lazyPut<ClientProfileController>(() => ClientProfileController());
-    Get.lazyPut<ClientSettingsController>(() => ClientSettingsController());
     Get.lazyPut<CartController>(() => CartController());
     Get.lazyPut<WarehouseController>(() => WarehouseController(),);
     // Get.lazyPut<productDetailsBinding>(() => productDetailsBinding());
