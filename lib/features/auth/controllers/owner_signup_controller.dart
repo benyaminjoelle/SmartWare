@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smartware/core/constants/app_colors.dart';
+import 'package:smartware/core/routes/app_routes.dart';
 import 'package:smartware/features/auth/models/auth_repo.dart';
 
 import 'package:smartware/widgets/app_dialog.dart';
@@ -119,16 +120,11 @@ class OwnerSignupController extends GetxController {
       print("PASSWORD = ${passwordController.text}");
 
       Get.toNamed(
-        '/userverification',
+        AppRoutes.userverification,
         arguments: {
           'email': user.email,
           'password': passwordController.text,
-          'isResendEnabled': isResendEnabled,
-          'secondsRemaining': secondsRemaining,
-          'controller':
-              this, // Passes instance for the dynamic bottom sheet type fallback
-          'onVerify': () => verifyEmail(),
-          'onResend': () => resendCode(),
+         
         },
       );
     } catch (e) {

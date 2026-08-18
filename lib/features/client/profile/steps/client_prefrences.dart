@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:smartware/core/utils/validators.dart';
 import 'package:smartware/features/client/profile/controllers/client_profile_completion_controller.dart';
 import 'package:smartware/features/client/profile/widgets/business_type_section.dart';
 import 'package:smartware/features/client/profile/widgets/product_type_section.dart';
+import 'package:smartware/widgets/custom_textfield.dart';
 
 import 'package:smartware/widgets/primary_button.dart';
 
@@ -25,7 +27,16 @@ class ClientPreferences extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                
+                  SizedBox(height: 20),
+                  CustomTextField(
+                    controller:
+                        controller.businessNameController,
+                    label: "Business Name:".tr,
+                    hint: "Enter your Business name".tr,
+                    textInputAction: TextInputAction.next,
+                    validator: Validators.nameValidation,
+                  ),
+                    SizedBox(height: 20),
                   // --- SECTION 1: BUSINESS TYPE ---
                  BusinessTypeSection(),
                   const SizedBox(height: 36),
@@ -45,7 +56,7 @@ class ClientPreferences extends StatelessWidget {
       "Business: ${controller.selectedBusinessType.value}"
     );
     print(
-      "Products: ${controller.selectedProducts}"
+      "Products: ${controller.selectedCategories}"
     );
     print(
       "Can next: ${controller.canGoNext}"

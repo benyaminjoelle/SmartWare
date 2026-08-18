@@ -1,39 +1,33 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/features/product/models/product_model.dart';
 import 'package:smartware/features/warehouse/controllers/warehouse_controller.dart';
-import 'package:smartware/core/constants/business_product_mapping.dart';
-class Category {
-  final String id;
-  final String name;
-
-  Category({
-    required this.id,
-    required this.name,
-  });
-}
+import 'package:smartware/features/warehouse/models/warehouse_product_model.dart';
 
 class ProductController extends GetxController {
   final RxList<Product> products = <Product>[].obs;
   final RxList<Product> displayedProducts = <Product>[].obs;
-
-  final WarehouseController warehouseController =
-      Get.find<WarehouseController>();
+  final WarehouseController warehouseController = Get.find<WarehouseController>();
 
   final RxSet<String> selectedUnit = <String>{}.obs;
-  final RxSet<String> selectedSubCategoryId = <String>{}.obs;
+  final RxSet<String> selectedCategories = <String>{}.obs;
   final RxString searchQuery = ''.obs;
+  final RxString businessType = ''.obs;
+
+  final RxList<String> businessCategories = <String>[].obs;
 
   double minPossiblePrice = 0.0;
   double maxPossiblePrice = 100.0;
+
   late Rx<RangeValues> priceRange;
 
- 
   @override
   void onInit() {
     super.onInit();
 
+    loadClientPreferences();
     loadProducts();
 
     debounce(
@@ -43,15 +37,293 @@ class ProductController extends GetxController {
     );
   }
 
+  Future <void> loadClientPreferences() async {
+    final savedBusinessType =
+        await PrefHelper.getBusinessType();
+
+    final savedCategories =
+        await PrefHelper.getBusinessCategories();
+
+    businessType.value =
+        savedBusinessType ?? '';
+
+    businessCategories.assignAll(
+      savedCategories,
+    );
+
+    print('🏪 Client business type: ${businessType.value}');
+    print('📦 Client categories: $businessCategories');
+
+    // If products have already been loaded,
+    // apply the preferences immediately.
+    if (products.isNotEmpty) {
+      applyFilters();
+    }
+  }
+
   void loadProducts() {
-    // Later this will come from ProductRepo/API.
+  products.assignAll([
+    // ============================================================
+    // RESTAURANT / SUPERMARKET
+    // ============================================================
 
-    products.assignAll([
-      // mock products
-    ]);
+    Product(
+      id: 1,
+      sku: 'RICE-001',
+      name: 'Premium Basmati Rice',
+      unit: 'bag',
+      companyName: 'Food Supply Co.',
+      categories: [
+        'fresh_foods',
+        'canned_foods',
+      ],
+    ),
 
+    Product(
+      id: 2,
+      sku: 'MILK-001',
+      name: 'Full Cream Milk',
+      unit: 'bottle',
+      companyName: 'Dairy Fresh',
+      categories: [
+        'dairy_products',
+        'refrigerated_foods',
+      ],
+    ),
+
+    Product(
+      id: 3,
+      sku: 'COLA-001',
+      name: 'Cola Soft Drink',
+      unit: 'can',
+      companyName: 'Beverage Company',
+      categories: [
+        'beverages',
+      ],
+    ),
+
+    Product(
+      id: 4,
+      sku: 'COFFEE-001',
+      name: 'Arabica Coffee',
+      unit: 'pack',
+      companyName: 'Coffee House Supplies',
+      categories: [
+        'coffee_tea',
+        'beverages',
+      ],
+    ),
+
+    Product(
+      id: 5,
+      sku: 'CHICKEN-001',
+      name: 'Frozen Chicken Breast',
+      unit: 'carton',
+      companyName: 'Fresh Foods Ltd',
+      categories: [
+        'meat_poultry',
+        'frozen_foods',
+      ],
+    ),
+
+    // ============================================================
+    // PHARMACY
+    // ============================================================
+
+    Product(
+      id: 6,
+      sku: 'PARA-001',
+      name: 'Paracetamol 500mg',
+      unit: 'box',
+      companyName: 'Med Supply',
+      categories: [
+        'over_the_counter_medicine',
+      ],
+    ),
+
+    Product(
+      id: 7,
+      sku: 'VIT-C-001',
+      name: 'Vitamin C Tablets',
+      unit: 'box',
+      companyName: 'Health Plus',
+      categories: [
+        'vitamins_supplements',
+        'health_products',
+      ],
+    ),
+
+    Product(
+      id: 8,
+      sku: 'FIRST-001',
+      name: 'First Aid Kit',
+      unit: 'piece',
+      companyName: 'Medical Supplies Co.',
+      categories: [
+        'first_aid_supplies',
+        'medical_equipment',
+      ],
+    ),
+
+    // ============================================================
+    // CLOTHING
+    // ============================================================
+
+    Product(
+      id: 9,
+      sku: 'SHIRT-001',
+      name: 'Men Cotton Shirt',
+      unit: 'piece',
+      companyName: 'Fashion Wholesale',
+      categories: [
+        'mens_clothing',
+        'seasonal_fashion',
+      ],
+    ),
+
+    Product(
+      id: 10,
+      sku: 'SHOE-001',
+      name: 'Running Shoes',
+      unit: 'piece',
+      companyName: 'Sports Fashion',
+      categories: [
+        'shoes',
+        'sportswear',
+      ],
+    ),
+
+    Product(
+      id: 11,
+      sku: 'BAG-001',
+      name: 'Leather Handbag',
+      unit: 'piece',
+      companyName: 'Fashion Wholesale',
+      categories: [
+        'bags',
+        'accessories',
+      ],
+    ),
+
+    // ============================================================
+    // ELECTRONICS
+    // ============================================================
+
+    Product(
+      id: 12,
+      sku: 'PHONE-001',
+      name: 'Smartphone Pro',
+      unit: 'piece',
+      companyName: 'Tech Distribution',
+      categories: [
+        'smartphones',
+      ],
+    ),
+
+    Product(
+      id: 13,
+      sku: 'LAPTOP-001',
+      name: 'Business Laptop',
+      unit: 'piece',
+      companyName: 'Tech Distribution',
+      categories: [
+        'laptops',
+        'desktop_computers',
+      ],
+    ),
+
+    Product(
+      id: 14,
+      sku: 'HEADSET-001',
+      name: 'Wireless Headphones',
+      unit: 'piece',
+      companyName: 'Audio Tech',
+      categories: [
+        'audio_devices',
+      ],
+    ),
+
+    Product(
+      id: 15,
+      sku: 'BATTERY-001',
+      name: 'AA Batteries',
+      unit: 'pack',
+      companyName: 'Power Electronics',
+      categories: [
+        'batteries',
+        'electronic_parts',
+      ],
+    ),
+
+    // ============================================================
+    // MAKEUP
+    // ============================================================
+
+    Product(
+      id: 16,
+      sku: 'LIP-001',
+      name: 'Matte Lipstick',
+      unit: 'piece',
+      companyName: 'Beauty Wholesale',
+      categories: [
+        'makeup',
+        'cosmetics',
+      ],
+    ),
+
+    Product(
+      id: 17,
+      sku: 'CREAM-001',
+      name: 'Hydrating Face Cream',
+      unit: 'jar',
+      companyName: 'Beauty Wholesale',
+      categories: [
+        'skincare',
+        'body_care',
+      ],
+    ),
+
+    Product(
+      id: 18,
+      sku: 'PERF-001',
+      name: 'Floral Perfume',
+      unit: 'bottle',
+      companyName: 'Beauty Distribution',
+      categories: [
+        'perfumes',
+      ],
+    ),
+
+    // ============================================================
+    // FURNITURE
+    // ============================================================
+
+    Product(
+      id: 19,
+      sku: 'TABLE-001',
+      name: 'Office Desk',
+      unit: 'piece',
+      companyName: 'Furniture Wholesale',
+      categories: [
+        'office_furniture',
+        'home_furniture',
+      ],
+    ),
+
+    Product(
+      id: 20,
+      sku: 'SOFA-001',
+      name: 'Modern Living Room Sofa',
+      unit: 'piece',
+      companyName: 'Furniture Wholesale',
+      categories: [
+        'living_room_furniture',
+        'home_furniture',
+      ],
+    ),
+  ].obs);
     calculatePriceBounds();
-    displayedProducts.assignAll(products);
+    applyFilters();
   }
 
   void calculatePriceBounds() {
@@ -76,7 +348,6 @@ class ProductController extends GetxController {
       maxPossiblePrice,
     ).obs;
   }
-
   void updateSearchQuery(String query) {
     searchQuery.value = query;
   }
@@ -88,10 +359,59 @@ class ProductController extends GetxController {
         .toList();
   }
 
+ List<String> get availableCategories {
+  return products
+      .expand((product) => product.categories)
+      .toSet()
+      .toList();
+}
+List<WarehouseProductModel> get specialSaleItems {
+  return warehouseController.warehouseProducts
+      .where(
+        (item) =>
+            item.discountPercentage != null &&
+            item.discountPercentage! > 0 &&
+            item.quantity > 0,
+      )
+      .toList();
+}
+// List<Product> get specialSaleProducts {
+//   final discountedProductIds = warehouseController.warehouseProducts
+//       .where(
+//         (item) =>
+//             item.discountPercentage != null &&
+//             item.discountPercentage! > 0 &&
+//             item.quantity > 0,
+//       )
+//       .map((item) => item.productId)
+//       .toSet();
+
+//   return products
+//       .where((product) => discountedProductIds.contains(product.id))
+//       .toList();
+// }
+Product? getProductById(int productId) {
+  try {
+    return products.firstWhere(
+      (product) => product.id == productId,
+    );
+  } catch (_) {
+    return null;
+  }
+}
+ // ========== filtering logic =============
   void applyFilters() {
-    final query = searchQuery.value.trim().toLowerCase();
+    final query =
+        searchQuery.value.trim().toLowerCase();
 
     final filtered = products.where((product) {
+      final matchesBusinessCategory =
+          businessCategories.isEmpty ||
+          product.categories.any(
+            (category) =>
+                businessCategories.contains(category),
+          );
+
       final matchesSearch =
           query.isEmpty ||
           product.name.toLowerCase().contains(query) ||
@@ -99,14 +419,14 @@ class ProductController extends GetxController {
 
       final matchesUnit =
           selectedUnit.isEmpty ||
-          selectedUnit.contains(
-            product.unit,
+          selectedUnit.contains(product.unit);
+
+      final matchesSelectedCategory =
+          selectedCategories.isEmpty ||
+          product.categories.any(
+            (category) =>
+                selectedCategories.contains(category),
           );
-      final matchesCategory =
-    selectedSubCategoryId.isEmpty ||
-    product.categories.any(
-      (category) => selectedSubCategoryId.contains(category),
-    );
 
       final matchesPrice =
           warehouseController.warehouseProducts.any(
@@ -118,45 +438,53 @@ class ProductController extends GetxController {
                 priceRange.value.end,
       );
 
-      return matchesSearch &&
+      return matchesBusinessCategory &&
+          matchesSearch &&
           matchesUnit &&
-          matchesCategory &&
+          matchesSelectedCategory &&
           matchesPrice;
     }).toList();
 
     displayedProducts.assignAll(filtered);
+
+    print(
+      '📦 Displayed products: ${displayedProducts.length}',
+    );
   }
 
-  void toggleUnit(String type) {
-    if (selectedUnit.contains(type)) {
-      selectedUnit.remove(type);
+  void toggleUnit(String unit) {
+    if (selectedUnit.contains(unit)) {
+      selectedUnit.remove(unit);
     } else {
-      selectedUnit.add(type);
+      selectedUnit.add(unit);
     }
 
     applyFilters();
   }
 
   void toggleCategory(String category) {
-  if (selectedSubCategoryId.contains(category)) {
-    selectedSubCategoryId.remove(category);
-  } else {
-    selectedSubCategoryId.add(category);
+    if (selectedCategories.contains(category)) {
+      selectedCategories.remove(category);
+    } else {
+      selectedCategories.add(category);
+    }
+
+    applyFilters();
   }
 
-  applyFilters();
-}
- void resetFilters() {
-    selectedUnit.clear();
-    selectedSubCategoryId.clear();
+  void updatePriceRange(RangeValues values) {
+    priceRange.value = values;
+    applyFilters();
+  }
 
+  void resetFilters() {
+    selectedUnit.clear();
+    selectedCategories.clear();
     priceRange.value = RangeValues(
       minPossiblePrice,
       maxPossiblePrice,
     );
-
     searchQuery.value = '';
-
     applyFilters();
   }
 }

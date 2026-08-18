@@ -6,6 +6,8 @@ import 'package:smartware/features/client/home/views/ads_carousel_view.dart';
 import 'package:smartware/features/client/home/views/filtering_menu.dart';
 import 'package:smartware/features/client/widgets/product_card.dart';
 import 'package:smartware/features/client/widgets/horizontal_product_row.dart';
+import 'package:smartware/features/client/widgets/special_sales_row.dart';
+import 'package:smartware/features/product/controllers/product_controller.dart';
 import 'package:smartware/widgets/custom_textfield.dart';
 import 'package:smartware/widgets/dynamic_filter_row.dart';
 
@@ -18,9 +20,9 @@ class ClientHomeView extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final media = MediaQuery.of(context).size;
-    final controller = Get.find<ClientHomeController>();
-    final products = controller.displayedProducts; // Assuming you have a list of displayed products in your controller
-
+    final homeController = Get.find<ClientHomeController>();
+    final productController = Get.find<ProductController>();
+   
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -53,7 +55,7 @@ class ClientHomeView extends StatelessWidget {
                           ),
                           Text(
                             "Welcome back, @userName!".trParams({
-                              "userName": controller.userName,
+                              "userName": homeController.userName,
                             }),
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: colors.onSurface.withOpacity(0.8),
@@ -113,9 +115,9 @@ class ClientHomeView extends StatelessWidget {
                   title: CustomTextField(
                    isSearch: true,
                    hint: "Search for products".tr,
-                   onChanged: (Value) {
-                     controller.searchQuery.value = Value;
-                     controller.applyFilters(); 
+                   onChanged: (value) {
+                     productController.updateSearchQuery(value);
+                     productController.applyFilters(); 
                    },
                    prefixIcon: Icon(
                     Icons.search,
@@ -148,24 +150,7 @@ class ClientHomeView extends StatelessWidget {
               SliverToBoxAdapter(
                 child: DynamicFilterRow(),
               ),
-            //========= Most Selling ==========
-
-          //   SliverToBoxAdapter(
-          //   child: Obx(() {
-          //     // 1. Directly read/access the reactive list inside Obx
-          //     final items = controller.products; 
-
-          //     return Padding(
-          //       padding: const EdgeInsets.only(top: 8.0),
-          //       child: HorizontalProductRow(
-          //         title: "Top Selling".tr,
-          //         onSeeAllPressed: () {},
-          //         products: items, // Pass the reactive list directly
-          //       ),
-          //     );
-          //   }),
-          // ),
-        
+       
            SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.only(top: 8.0),
@@ -173,24 +158,24 @@ class ClientHomeView extends StatelessWidget {
                HorizontalProductRow(
                 title: "Top Selling".tr,
                 onSeeAllPressed: () {},
-                products: controller.products,
+                products: productController.products,
               ),
             )
             ),
            
          
-             SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: HorizontalProductRow(
-                  title: "Special Sales".tr,
-                  onSeeAllPressed: () {
-                    // Handle view routing
-                  },
-                  products: controller.products,
-                ),
+            SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: SpecialSalesRow(
+                title: "Special Sales".tr,
+                onSeeAllPressed: () {
+                  // Handle view routing
+                },
+                items: productController.specialSaleItems,
               ),
             ),
+          ),
           
          
           
@@ -211,6 +196,7 @@ class ClientHomeView extends StatelessWidget {
 
         //========= Main Product Grid ==========
         Obx(() {
+          final products = productController.displayedProducts;
           return SliverPadding(
             padding: EdgeInsets.only(left: media.width * 0.03),
             sliver: SliverGrid.builder(

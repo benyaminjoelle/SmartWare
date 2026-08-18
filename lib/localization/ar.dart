@@ -211,7 +211,7 @@ const Map<String, String> ar = {
   "View Photo": "عرض الصورة",
   "Visit Website": "زيارة الموقع الإلكتروني",
   "Visit our official website": "زر موقعنا الرسمي",
-
+'verification_link_sent': 'تم إرسال رابط التحقق إلى @email',
   // W
   "Warehouse Owner": "صاحب مستودع",
   "Warehouse Staff": "موظف مستودع",

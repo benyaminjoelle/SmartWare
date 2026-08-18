@@ -13,20 +13,17 @@ import 'package:smartware/features/client/home/widgets/warehouse_selection.dart'
 import 'package:smartware/features/product/models/product_model.dart';
 
 class ProductDetailsView extends StatelessWidget {
-  final Product product;
-
   const ProductDetailsView({
     super.key,
-    required this.product,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
-
     final controller = Get.find<ProductDetailsController>();
-
+    final product = controller.product;
+    
     return Scaffold(
       backgroundColor: colors.surface,
       body: SafeArea(

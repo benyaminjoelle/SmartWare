@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smartware/core/constants/app_colors.dart';
+import 'package:smartware/core/routes/app_routes.dart';
 
 import 'package:smartware/features/auth/models/auth_repo.dart';
 import 'package:smartware/features/auth/models/user_model.dart';
@@ -25,7 +26,7 @@ class ClientSignupController extends GetxController {
   /// =========================================================
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
-  final businessNameController = TextEditingController();
+ 
 
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
@@ -95,7 +96,7 @@ class ClientSignupController extends GetxController {
         'last_name': lastNameController.text.trim(),
         'email': emailController.text.trim(),
         'phone_number': phoneController.text.trim(),
-        'business_name': businessNameController.text.trim(),
+        
         'password': passwordController.text,
 
         /// IMPORTANT
@@ -106,7 +107,7 @@ class ClientSignupController extends GetxController {
       print("📤 Sending:");
       print(userData);
 
-      final user = await _authRepo.clientRegister(userData);
+    user = await _authRepo.clientRegister(userData);
 
       print("✅ Registration Success");
       print("🆔 User ID: ${user.id}");
@@ -120,19 +121,17 @@ class ClientSignupController extends GetxController {
         iconColor: Colors.green,
       );
 
-      Get.toNamed(
-        '/userverification',
-        arguments: {
-          'email': user.email,
-          'password': user.password,
-          'isResendEnabled': isResendEnabled,
-          'secondsRemaining': secondsRemaining,
-          'controller':
-              this, // Passes instance for the dynamic bottom sheet type fallback
-          'onVerify': () => verifyEmail(),
-          'onResend': () => resendCode(),
-        },
-      );
+   print("🚨 BEFORE NAVIGATION");
+
+Get.toNamed(
+  AppRoutes.userverification,
+  arguments: {
+    'email': user.email,
+    'password': passwordController.text,
+  },
+);
+
+print("🚨 AFTER NAVIGATION");
     } catch (e) {
       print("❌ Registration Error: $e");
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:smartware/features/client/home/views/filtering_menu.dart';
 import 'package:smartware/features/product/controllers/product_controller.dart';
 
 class DynamicFilterRow extends StatelessWidget {
@@ -12,27 +13,32 @@ class DynamicFilterRow extends StatelessWidget {
     final colors = theme.colorScheme;
 
     return Obx(() {
-      if (controller.selectedSubCategoryId.isEmpty) {
+      final selectedCategories =
+          controller.selectedCategories.toList();
+
+      if (selectedCategories.isEmpty) {
         return const SizedBox.shrink();
       }
-     
-      final int totalItemCount = controller.selectedSubCategoryId.length + 1;
 
       return SizedBox(
         height: 40,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: totalItemCount,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           physics: const BouncingScrollPhysics(),
+          itemCount: selectedCategories.length + 1,
           itemBuilder: (context, index) {
-            // Check if this position is the very last item in the row loop
-            if (index == totalItemCount - 1) {
+            // Edit categories button
+            if (index == selectedCategories.length) {
               return Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: ActionChip(
-                  avatar: Icon(Icons.tune_outlined, size: 14, color: colors.primary),
-                  label: const Text("Edit Niches"),
+                  avatar: Icon(
+                    Icons.tune_outlined,
+                    size: 14,
+                    color: colors.primary,
+                  ),
+                  label: const Text("Edit Categories"),
                   backgroundColor: colors.surface,
                   labelStyle: TextStyle(
                     color: colors.primary,
@@ -41,51 +47,50 @@ class DynamicFilterRow extends StatelessWidget {
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
-                    side: BorderSide(color: colors.primary.withOpacity(0.3)),
+                    side: BorderSide(
+                      color: colors.primary.withOpacity(0.3),
+                    ),
                   ),
                   onPressed: () {
-                    // Navigate cleanly to the Profile configuration screen using GetX
-                    Get.toNamed('/profile/manage-sectors');
+                    Get.bottomSheet(
+                      const FilteringMenu(),
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                    );
                   },
                 ),
               );
             }
 
-            // Otherwise, render the standard sub-category filter chips as normal
-            final subCategory = controller.selectedSubCategoryId[index];
-            return Obx (() {
-                final bool isSelected = controller.selectedSubCategoryId.contains(subCategory.id);
+            final category = selectedCategories[index];
 
             return Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: FilterChip(
-                label: Text(subCategory.name),
-                selected: isSelected,
+                label: Text(category),
+                selected: true,
                 selectedColor: colors.primary,
                 labelStyle: TextStyle(
-                  color: isSelected ? colors.onPrimary : colors.onSurface,
-                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
+                  color: colors.onPrimary,
+                  fontWeight: FontWeight.w800,
                   fontSize: 13,
                 ),
                 backgroundColor: colors.surfaceContainerLow,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                   side: BorderSide(
-                    color: isSelected ? colors.primary : colors.outline.withOpacity(0.15),
+                    color: colors.primary,
                   ),
                 ),
                 showCheckmark: false,
-                onSelected: (bool selected) => controller.toggleSubCategory(subCategory.id),
+                onSelected: (_) {
+                  controller.toggleCategory(category);
+                },
               ),
             );
-            });
           },
         ),
       );
     });
   }
-}
-
-extension on RxSet<String> {
-  operator [](int other) {}
 }

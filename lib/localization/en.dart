@@ -209,7 +209,7 @@ const Map<String, String> en = {
   "View Photo": "View Photo",
   "Visit Website": "Visit Website",
   "Visit our official website": "Visit our official website",
-
+'verification_link_sent': 'Verification link sent to @email',
   // W
   "Warehouse Owner": "Warehouse Owner",
   "Warehouse Staff": "Warehouse Staff",

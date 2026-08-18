@@ -113,7 +113,7 @@ class ClientCartView extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final CartItem item = cartItemsList[index];
                   return Dismissible(
-                    key: Key(item.product.sku),
+                    key: Key('${item.product.sku}|${item.warehouseId}'),
                     direction: DismissDirection.endToStart,
                     background: Container(
                       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -138,8 +138,11 @@ class ClientCartView extends StatelessWidget {
                     confirmDismiss: (direction) async {
                       return true;
                     },
-                    onDismissed: (direction) {
-                      controller.removeItem(item.product.sku, item.product.name);
+                  onDismissed: (direction) {
+                      controller.removeItem(
+                        item.product.sku,
+                        item.warehouseId,
+                      );
                     },
                     child: CartCard(
                       cartItem: item,

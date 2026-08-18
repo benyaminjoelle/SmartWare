@@ -6,12 +6,11 @@ import 'package:smartware/features/warehouse/models/warehouse_product_model.dart
 import 'package:smartware/widgets/app_snackbar.dart';
 
 class ProductDetailsController extends GetxController {
-  final Product product;
+    final Product product;
 
   ProductDetailsController({
     required this.product,
   });
-
   final WarehouseController warehouseController =
       Get.find<WarehouseController>();
 

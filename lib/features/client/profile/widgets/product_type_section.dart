@@ -51,7 +51,7 @@ class ProductTypeSection extends StatelessWidget {
           // Reactive list that handles its own expansion state rebuilds localized
           final list = Obx(() {
             // ignore: invalid_use_of_protected_member
-            final selectedProducts = controller.selectedProducts.value;
+            final selectedProducts = controller.selectedCategories;
 
             final displayedProducts = (controller.isProductsExpanded.value || products.length <= 4)
                 ? products
@@ -77,7 +77,7 @@ class ProductTypeSection extends StatelessWidget {
                     return _ProductTile(
                       item: item,
                       selected: selected,
-                      onTap: () => controller.toggleProduct(item.id),
+                      onTap: () => controller.toggleCategory(item.id),
                     );
                   },
                 ),
