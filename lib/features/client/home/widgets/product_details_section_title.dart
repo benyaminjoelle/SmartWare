@@ -26,7 +26,7 @@ class SectionTitle extends StatelessWidget {
         const SizedBox(height: 3),
         Text(
           subtitle,
-          style: theme.textTheme.bodySmall?.copyWith(
+          style: theme.textTheme.bodyMedium?.copyWith(
             color: colors.onSurfaceVariant,
           ),
         ),

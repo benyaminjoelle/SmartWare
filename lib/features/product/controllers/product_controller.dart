@@ -365,7 +365,7 @@ class ProductController extends GetxController {
       .toSet()
       .toList();
 }
-List<WarehouseProductModel> get specialSaleItems {
+RxList<WarehouseProductModel> get specialSaleItems {
   return warehouseController.warehouseProducts
       .where(
         (item) =>
@@ -373,23 +373,9 @@ List<WarehouseProductModel> get specialSaleItems {
             item.discountPercentage! > 0 &&
             item.quantity > 0,
       )
-      .toList();
+      .toList().obs;
 }
-// List<Product> get specialSaleProducts {
-//   final discountedProductIds = warehouseController.warehouseProducts
-//       .where(
-//         (item) =>
-//             item.discountPercentage != null &&
-//             item.discountPercentage! > 0 &&
-//             item.quantity > 0,
-//       )
-//       .map((item) => item.productId)
-//       .toSet();
 
-//   return products
-//       .where((product) => discountedProductIds.contains(product.id))
-//       .toList();
-// }
 Product? getProductById(int productId) {
   try {
     return products.firstWhere(

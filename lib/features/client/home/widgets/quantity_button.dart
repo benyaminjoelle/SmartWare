@@ -5,6 +5,7 @@ class QuantityButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const QuantityButton({
+    super.key,
     required this.icon,
     required this.onTap,
   });
@@ -14,16 +15,18 @@ class QuantityButton extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return Material(
-      color: Colors.transparent,
+      color: colors.primary.withOpacity(0.08),
+      borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         child: SizedBox(
           width: 54,
           height: 56,
           child: Icon(
             icon,
             color: colors.primary,
+            size: 24,
           ),
         ),
       ),

@@ -35,7 +35,7 @@ class WarehouseAvailabilityButton extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.warehouse_outlined,
-                    color: colors.primary,
+                    color: colors.surface,
                   ),
 
                   const SizedBox(width: 12),
@@ -55,7 +55,7 @@ class WarehouseAvailabilityButton extends StatelessWidget {
                               .textTheme
                               .bodyMedium
                               ?.copyWith(
-                                color: colors.primary,
+                                color: colors.surface,
                                 fontWeight: FontWeight.w800,
                               ),
                         ),
@@ -68,7 +68,7 @@ class WarehouseAvailabilityButton extends StatelessWidget {
                               .textTheme
                               .bodySmall
                               ?.copyWith(
-                                color: colors.primary.withOpacity(0.75),
+                                color: colors.surface.withOpacity(0.75),
                               ),
                         ),
                       ],

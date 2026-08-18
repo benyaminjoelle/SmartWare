@@ -10,7 +10,6 @@ import 'package:smartware/features/client/home/widgets/product_hero_image.dart';
 import 'package:smartware/features/client/home/widgets/quantity_selector.dart';
 import 'package:smartware/features/client/home/widgets/warehouse_availabilty_button.dart';
 import 'package:smartware/features/client/home/widgets/warehouse_selection.dart';
-import 'package:smartware/features/product/models/product_model.dart';
 
 class ProductDetailsView extends StatelessWidget {
   const ProductDetailsView({
@@ -100,7 +99,7 @@ class ProductDetailsView extends StatelessWidget {
                                     category,
                                     style: theme.textTheme.labelSmall
                                         ?.copyWith(
-                                      color: colors.primary,
+                                      color: colors.surface,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
@@ -124,7 +123,7 @@ class ProductDetailsView extends StatelessWidget {
                         title: 'Quantity',
                         subtitle: 'Choose how much you need',
                       ),
-
+                
                       const SizedBox(height: 12),
 
                       QuantitySelector(

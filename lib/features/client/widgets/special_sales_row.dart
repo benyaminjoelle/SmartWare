@@ -10,7 +10,7 @@ import 'package:smartware/features/warehouse/models/warehouse_product_model.dart
 class SpecialSalesRow extends StatelessWidget {
   final String title;
   final VoidCallback? onSeeAllPressed;
-  final List<WarehouseProductModel> items;
+  final RxList<WarehouseProductModel> items;
 
   const SpecialSalesRow({
     super.key,
@@ -69,15 +69,13 @@ class SpecialSalesRow extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 final warehouseProduct = items[index];
-
                 final product = productController.getProductById(
                   warehouseProduct.productId,
                 );
-
                 if (product == null) {
-                  return const SizedBox.shrink();
+                  Center(child: Text("No items available".tr));
+                  return const SizedBox.shrink();    
                 }
-
                 return SpecialSaleProductCard(
                   warehouseProduct: warehouseProduct,
                   product: product,

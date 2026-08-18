@@ -44,10 +44,6 @@ class ProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // =========================
-            // PRODUCT IMAGE
-            // =========================
-
             Expanded(
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(
@@ -81,10 +77,6 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
             ),
-
-            // =========================
-            // PRODUCT INFO
-            // =========================
 
             Padding(
               padding: const EdgeInsets.all(10),
