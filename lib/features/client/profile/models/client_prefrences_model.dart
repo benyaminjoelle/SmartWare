@@ -1,9 +1,11 @@
 class ClientPreferencesModel {
   final String message;
+  final String facilityName;
   final FacilityModel facility;
 
   ClientPreferencesModel({
     required this.message,
+    required this.facilityName,
     required this.facility,
   });
 
@@ -12,6 +14,7 @@ class ClientPreferencesModel {
   ) {
     return ClientPreferencesModel(
       message: json['message'] ?? '',
+      facilityName: json['facility_name'] ?? '',
       facility: FacilityModel.fromJson(
         json['facility'] ?? {},
       ),
@@ -21,7 +24,6 @@ class ClientPreferencesModel {
 
 class FacilityModel {
   final int userId;
-  final String facilityName;
   final String facilityType;
   final String businessType;
   final String facilityStatus;
@@ -32,7 +34,6 @@ class FacilityModel {
 
   FacilityModel({
     required this.userId,
-    required this.facilityName,
     required this.facilityType,
     required this.businessType,
     required this.facilityStatus,
@@ -47,7 +48,6 @@ class FacilityModel {
   ) {
     return FacilityModel(
       userId: json['user_id'] ?? 0,
-      facilityName: json['facility_name'] ?? '',
       facilityType: json['facility_type'] ?? '',
       businessType: json['business_type'] ?? '',
       facilityStatus: json['facility_status'] ?? '',

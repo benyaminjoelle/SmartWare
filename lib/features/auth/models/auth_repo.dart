@@ -585,4 +585,34 @@ Future<void> logout() async {
     throw ApiError(message: 'Logout failed');
   }
 }
+/// ================= CHANGE CLIENT EMAIL =================
+Future<void> requestClientEmailChange({
+  required String email,
+}) async {
+  try {
+    final response = await _api.post(
+      '$baseUrl/api/changeEmail',
+      {
+        'email': email.trim(),
+      },
+    );
+
+    print('📥 CHANGE EMAIL RESPONSE: $response');
+
+    if (response is ApiError) {
+      throw response;
+    }
+  } on DioException catch (e) {
+    throw ApiError(
+      message: e.response?.data?['message'] ??
+          'Failed to change email',
+    );
+  } catch (e) {
+    if (e is ApiError) rethrow;
+
+    throw ApiError(
+      message: 'Failed to change email',
+    );
+  }
+}
 }
