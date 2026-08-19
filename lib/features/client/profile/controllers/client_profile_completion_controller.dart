@@ -12,8 +12,10 @@ import 'package:smartware/features/client/profile/models/client_onboarding_repo.
 import 'package:smartware/features/client/profile/models/client_prefrences_model.dart';
 
 import 'package:smartware/features/client/profile/widgets/product_type_model.dart';
+import 'package:smartware/features/product/controllers/product_controller.dart';
 
 import 'package:smartware/widgets/app_dialog.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
 
 class ClientProfileCompletionController extends GetxController {
 
@@ -22,38 +24,25 @@ class ClientProfileCompletionController extends GetxController {
   final businessNameController = TextEditingController();
 
   // REPOSITORY
-  final ClientOnboardingRepo _onboardingRepo =
-      ClientOnboardingRepo();
+  final ClientOnboardingRepo _onboardingRepo = ClientOnboardingRepo();
+  final ProductController productController = Get.find<ProductController>();
 
   // ============ STEPS ==============
   final currentStep = 0.obs;
   final int totalSteps = 3;
-
-  // 0  = nothing completed
-  // 33 = preferences completed
-  // 66 = documents completed
-  // 100 = final step completed
   final profileCompletion = 0.obs;
-
   static const int maxCompletion = 100;
-
-  double get completionPercent =>
-      profileCompletion.value / maxCompletion;
-
-  bool get isProfileComplete =>
-      profileCompletion.value >= maxCompletion;
+  double get completionPercent => profileCompletion.value / maxCompletion;
+  bool get isProfileComplete => profileCompletion.value >= maxCompletion;
 
   String get completionText {
     switch (profileCompletion.value) {
       case 100:
         return 'Profile Complete';
-
       case 66:
         return 'Almost Done';
-
       case 33:
         return 'Keep Going';
-
       default:
         return 'Complete Your Profile';
     }
@@ -61,15 +50,28 @@ class ClientProfileCompletionController extends GetxController {
 
   // ================ INIT ================
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
 
     businessNameController.addListener(
       _onBusinessNameChanged,
     );
-
-    restoreOnboardingProgress();
+    initializedProfile();
   }
+  Future<void> initializedProfile() async {
+  await restoreOnboardingProgress();
+}
+
+  // Future<void> initializedProfile() async {
+  //    await restoreOnboardingProgress();
+  //    final facilityId = await PrefHelper.getClientFacilityId();
+  //    if(facilityId != null && facilityId > 0){
+  //     await getPreferences();
+  //    } else {
+  //     debugPrint('no facility yet.');
+  //    }
+    
+  // }
 
   void _onBusinessNameChanged() {
     businessName.value =
@@ -110,18 +112,10 @@ class ClientProfileCompletionController extends GetxController {
       // RESTORE BASIC DATA
       // ----------------------------------------------------------
 
-      businessName.value =
-          savedBusinessName;
-
-      businessNameController.text =
-          savedBusinessName;
-
-      selectedBusinessType.value =
-          savedBusinessType;
-
-      selectedProducts.assignAll(
-        savedProducts,
-      );
+      businessName.value = savedBusinessName;
+      businessNameController.text = savedBusinessName;
+      selectedBusinessType.value = savedBusinessType;
+      selectedProducts.assignAll( savedProducts,);
 
       // ----------------------------------------------------------
       // RESTORE REAL COMPLETION STATE
@@ -185,7 +179,6 @@ class ClientProfileCompletionController extends GetxController {
     if (currentStep.value == 0) {
       final success =
           await savePreferences();
-
       if (!success) {
         return;
       }
@@ -219,16 +212,9 @@ class ClientProfileCompletionController extends GetxController {
 
       profileCompletion.value = 66;
 
-      await PrefHelper.saveClientProfileCompletion(
-        66,
-      );
-
-      await PrefHelper.saveClientOnboardingStep(
-        2,
-      );
-
+      await PrefHelper.saveClientProfileCompletion(66,);
+      await PrefHelper.saveClientOnboardingStep(2,);
       currentStep.value = 2;
-
       return;
     }
 
@@ -313,12 +299,17 @@ class ClientProfileCompletionController extends GetxController {
   // ============================================================
   // PREFERENCES API STATE
   // ============================================================
-
   final isSavingPreferences =
       false.obs;
 
   final savedPreferences =
       Rxn<ClientPreferencesModel>();
+
+  final isLoadingPreferences =
+    false.obs;
+
+  final currentPreferences =
+    <FacilityCategoryModel>[].obs;
 
   // ============================================================
   // BUSINESS TYPES / PRODUCTS
@@ -397,26 +388,25 @@ class ClientProfileCompletionController extends GetxController {
     try {
       isSavingPreferences.value = true;
 
-      final facilityName =
-          businessNameController.text.trim();
+      final facilityName = businessNameController.text.trim();
 
       // --------------------------------------------------------
       // VALIDATION
       // --------------------------------------------------------
 
       if (facilityName.isEmpty) {
-        Get.snackbar(
-          'Missing Information',
-          'Please enter your business name.',
+        AppSnackbar.show(
+          title:'Missing Information',
+          message:'Please enter your business name.',
         );
 
         return false;
       }
 
       if (selectedBusinessType.value.isEmpty) {
-        Get.snackbar(
-          'Missing Information',
-          'Please select your business type.',
+        AppSnackbar.show(
+          title:'Missing Information',
+          message:'Please select your business type.',
         );
 
         return false;
@@ -427,9 +417,9 @@ class ClientProfileCompletionController extends GetxController {
       // ========================================================
 
       if (selectedProducts.isEmpty) {
-        Get.snackbar(
-          'Missing Information',
-          'Please select at least one product category.',
+        AppSnackbar.show(
+          title:'Missing Information',
+          message: 'Please select at least one product category.',
         );
 
         return false;
@@ -460,15 +450,23 @@ class ClientProfileCompletionController extends GetxController {
       // API CALL
       // ========================================================
 
-      final result =
-          await _onboardingRepo.savePreferences(
+      // final result =
+      //     await _onboardingRepo.savePreferences(
+      //   facilityName: facilityName,
+      //   role: 'client',
+      //   businessType:
+      //       selectedBusinessType.value,
+      //   categories:
+      //       selectedProducts.toList(),
+      // );
+        final result =
+        await _onboardingRepo.savePreferences(
         facilityName: facilityName,
         role: 'client',
-        businessType:
-            selectedBusinessType.value,
-        categories:
-            selectedProducts.toList(),
-      );
+        businessType: selectedBusinessType.value,
+        categories: selectedProducts.toList(),
+        facilityId: await PrefHelper.getClientFacilityId(),
+        );
 
       // --------------------------------------------------------
       // SAVE RESPONSE IN MEMORY
@@ -484,22 +482,18 @@ class ClientProfileCompletionController extends GetxController {
       .map((category) => category.name)
       .toList(),
       );
-
       businessName.value =
           result.facilityName;
 
       // --------------------------------------------------------
       // PERSIST IMPORTANT DATA
       // --------------------------------------------------------
-
       await PrefHelper.saveClientFacilityId(
         result.facility.id,
       );
-
       await PrefHelper.saveClientBusinessName(
         result.facilityName,
       );
-
       await PrefHelper.saveClientBusinessType(
         selectedBusinessType.value,
       );
@@ -508,6 +502,16 @@ class ClientProfileCompletionController extends GetxController {
         selectedProducts.toList(),
       );
 
+      productController.businessType.value =
+          result.facility.businessType;
+
+      productController.businessCategories.assignAll(
+        result.facility.categories
+            .map((category) => category.name)
+            .toList(),
+      );
+
+      productController.applyFilters();
       await PrefHelper.setClientPreferencesCompleted(
         true,
       );
@@ -532,14 +536,14 @@ class ClientProfileCompletionController extends GetxController {
       );
 
       if (e is ApiError) {
-        Get.snackbar(
-          'Error',
-          e.message,
+        AppSnackbar.show(
+          title:'Error',
+          message: e.message,
         );
       } else {
-        Get.snackbar(
-          'Error',
-          'Failed to save preferences.',
+        AppSnackbar.show(
+        title:'Error',
+        message:'Failed to save preferences.',
         );
       }
 
@@ -622,9 +626,9 @@ class ClientProfileCompletionController extends GetxController {
 
       if (filePath == null ||
           filePath.isEmpty) {
-        Get.snackbar(
-          'Error',
-          'Could not access the selected file.',
+        AppSnackbar.show(
+          title:'Error',
+          message:'Could not access the selected file.',
         );
 
         return;
@@ -660,9 +664,9 @@ class ClientProfileCompletionController extends GetxController {
         'Document picker failed: $e',
       );
 
-      Get.snackbar(
-        'Error',
-        'Failed to select the document.',
+      AppSnackbar.show(
+         title:'Error',
+         message:'Failed to select the document.',
       );
     }
   }
@@ -699,9 +703,9 @@ class ClientProfileCompletionController extends GetxController {
 
       if (facilityId == null ||
           facilityId <= 0) {
-        Get.snackbar(
-          'Error',
-          'Facility information was not found.',
+        AppSnackbar.show(
+        title:'Error',
+         message:'Facility information was not found.',
         );
 
         return false;
@@ -719,9 +723,9 @@ class ClientProfileCompletionController extends GetxController {
 
       if (identityPath == null ||
           identityPath.trim().isEmpty) {
-        Get.snackbar(
-          'Missing Document',
-          'Please upload your identity document.',
+        AppSnackbar.show(
+          title:'Missing Do title',
+          message:'Please upload your identity document.',
         );
 
         return false;
@@ -729,9 +733,9 @@ class ClientProfileCompletionController extends GetxController {
 
       if (facilityPath == null ||
           facilityPath.trim().isEmpty) {
-        Get.snackbar(
-          'Missing Document',
-          'Please upload the facility document.',
+        AppSnackbar.show(
+          title:'Missing Document',
+          message:'Please upload the facility document.',
         );
 
         return false;
@@ -762,20 +766,9 @@ class ClientProfileCompletionController extends GetxController {
       // PERSIST COMPLETION
       // --------------------------------------------------------
 
-      await PrefHelper
-          .setClientDocumentsCompleted(
-        true,
-      );
-
-      await PrefHelper
-          .saveClientProfileCompletion(
-        66,
-      );
-
-      await PrefHelper
-          .saveClientOnboardingStep(
-        2,
-      );
+      await PrefHelper.setClientDocumentsCompleted(true,);
+      await PrefHelper.saveClientProfileCompletion(66,);
+      await PrefHelper.saveClientOnboardingStep(2,);
 
       debugPrint(
         'Documents uploaded successfully.',
@@ -788,14 +781,14 @@ class ClientProfileCompletionController extends GetxController {
       );
 
       if (e is ApiError) {
-        Get.snackbar(
-          'Error',
-          e.message,
+        AppSnackbar.show(
+         title:'Error',
+         message: e.message,
         );
       } else {
-        Get.snackbar(
-          'Error',
-          'Failed to upload onboarding documents.',
+        AppSnackbar.show(
+         title:'Error',
+         message:'Failed to upload onboarding documents.',
         );
       }
 
@@ -818,18 +811,18 @@ class ClientProfileCompletionController extends GetxController {
       // --------------------------------------------------------
 
       if (address.value.trim().isEmpty) {
-        Get.snackbar(
-          'Missing Information',
-          'Please enter your address.',
+        AppSnackbar.show(
+          title:'Missing Information',
+          message: 'Please enter your address.',
         );
 
         return false;
       }
 
       if (city.value.trim().isEmpty) {
-        Get.snackbar(
-          'Missing Information',
-          'Please enter your city.',
+        AppSnackbar.show(
+          title:'Missing Information',
+          message: 'Please enter your city.',
         );
 
         return false;
@@ -844,23 +837,10 @@ class ClientProfileCompletionController extends GetxController {
       // call it here BEFORE saving 100%.
       // --------------------------------------------------------
 
-      await PrefHelper
-          .setClientProfileCompleted(
-        true,
-      );
-
-      await PrefHelper
-          .saveClientProfileCompletion(
-        100,
-      );
-
-      await PrefHelper
-          .saveClientOnboardingStep(
-        2,
-      );
-
-      profileCompletion.value =
-          100;
+      await PrefHelper.setClientProfileCompleted(true,);
+      await PrefHelper.saveClientProfileCompletion(100,);
+      await PrefHelper.saveClientOnboardingStep(2,);
+      profileCompletion.value =100;
 
       debugPrint(
         'Client profile completed: 100%',
@@ -873,14 +853,14 @@ class ClientProfileCompletionController extends GetxController {
       );
 
       if (e is ApiError) {
-        Get.snackbar(
-          'Error',
-          e.message,
+        AppSnackbar.show(
+         title:'Error',
+         message:e.message,
         );
       } else {
-        Get.snackbar(
-          'Error',
-          'Failed to complete your profile.',
+        AppSnackbar.show(
+         title:'Error',
+         message: 'Failed to complete your profile.',
         );
       }
 
@@ -904,7 +884,6 @@ class ClientProfileCompletionController extends GetxController {
 
   void removeOwnerId() {
     ownerIdPath.value = null;
-
     ownerIdUploaded.value =
         false;
   }
@@ -912,7 +891,6 @@ class ClientProfileCompletionController extends GetxController {
   void removeOwnershipProof() {
     ownershipProofPath.value =
         null;
-
     ownershipProofUploaded.value =
         false;
   }
@@ -967,6 +945,71 @@ class ClientProfileCompletionController extends GetxController {
         return false;
     }
   }
+  // ============================================================
+// GET CURRENT PREFERENCES
+// ============================================================
+
+// Future<bool> getPreferences() async {
+//   try {
+//     isLoadingPreferences.value = true;
+
+//     print('');
+//     print('📥 Getting client preferences...');
+
+//     final result =
+//         await _onboardingRepo.getPreferences();
+
+//     // ----------------------------------------------------------
+//     // SAVE IN MEMORY
+//     // ----------------------------------------------------------
+
+//     currentPreferences.assignAll(
+//       result.preferences,
+//     );
+
+//     // ----------------------------------------------------------
+//     // RESTORE SELECTED PRODUCTS
+//     // ----------------------------------------------------------
+
+//     selectedProducts.assignAll(
+//       result.preferences
+//           .map((preference) => preference.name)
+//           .toList(),
+//     );
+
+//     print(
+//       '📦 Current preferences: '
+//       '${currentPreferences.map((e) => e.name).toList()}',
+//     );
+
+//     print(
+//       '📦 Selected products restored: '
+//       '$selectedProducts',
+//     );
+
+//     return true;
+//   } catch (e) {
+//     debugPrint(
+//       'Get preferences failed: $e',
+//     );
+
+//     if (e is ApiError) {
+//       AppSnackbar.show(
+//          title:'Error',
+//          message:e.message,
+//       );
+//     } else {
+//       AppSnackbar.show(
+//          title:'Error',
+//          message:'Failed to load your preferences.',
+//       );
+//     }
+
+//     return false;
+//   } finally {
+//     isLoadingPreferences.value = false;
+//   }
+// }
 
   // ============================================================
   // BACK HANDLING
@@ -979,8 +1022,7 @@ class ClientProfileCompletionController extends GetxController {
     }
 
     final leave =
-        await AppDialogs
-            .showConfirmDialog(
+        await AppDialogs.showConfirmDialog(
       title:
           'Leave Profile Completion?',
       message:
@@ -1036,19 +1078,9 @@ class ClientProfileCompletionController extends GetxController {
     // ----------------------------------------------------------
     // CLEAR PERSISTED STATE
     // ----------------------------------------------------------
-
-     PrefHelper
-        .clearClientOnboarding();
-
-    debugPrint(
-      'Client onboarding reset.',
-    );
+     PrefHelper.clearClientOnboarding();
+    debugPrint('Client onboarding reset.',);
   }
-
-  // ============================================================
-  // DEMO
-  // ============================================================
-
   Future<void> simulateProgress() async {
     await nextStep();
   }

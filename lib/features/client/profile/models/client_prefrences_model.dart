@@ -113,3 +113,25 @@ class CategoryPivotModel {
     );
   }
 }
+
+class ClientPreferencesResponseModel {
+  final List<FacilityCategoryModel> preferences;
+
+  ClientPreferencesResponseModel({
+    required this.preferences,
+  });
+
+  factory ClientPreferencesResponseModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
+    return ClientPreferencesResponseModel(
+      preferences: (json['preferences'] as List? ?? [])
+          .map(
+            (preference) => FacilityCategoryModel.fromJson(
+              preference,
+            ),
+          )
+          .toList(),
+    );
+  }
+}

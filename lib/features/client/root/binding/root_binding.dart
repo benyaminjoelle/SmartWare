@@ -19,9 +19,8 @@ class ClientRootBinding extends Bindings {
     Get.lazyPut<LocaleController>(() => LocaleController());
     Get.lazyPut<RootController>(() => RootController());
     Get.lazyPut<ClientProfileController>(() => ClientProfileController());
-    Get.lazyPut<CartController>(() => CartController());
+    Get.lazyPut<CartController>(() => CartController(), fenix: true);
     Get.lazyPut<WarehouseController>(() => WarehouseController(),);
-    // Get.lazyPut<productDetailsBinding>(() => productDetailsBinding());
     Get.lazyPut<ProductController>(()=>ProductController(),);
   }
 }

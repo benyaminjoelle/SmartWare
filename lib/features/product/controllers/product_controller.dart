@@ -28,7 +28,7 @@ class ProductController extends GetxController {
     super.onInit();
 
     loadProfileStatus();
-    loadClientPreferences();
+    // loadClientPreferences();
     loadProducts();
 
     debounce(
@@ -42,29 +42,25 @@ class ProductController extends GetxController {
       await PrefHelper.getProfileCompleted();
 }
 
-  Future <void> loadClientPreferences() async {
-    final savedBusinessType =
-        await PrefHelper.getBusinessType();
+  // Future <void> loadClientPreferences() async {
 
-    final savedCategories =
-        await PrefHelper.getBusinessCategories();
+  //   final savedBusinessType = await PrefHelper.getBusinessType();
+  //   final savedCategories = await PrefHelper.getBusinessCategories();
+  //   businessType.value = savedBusinessType ?? '';
 
-    businessType.value =
-        savedBusinessType ?? '';
+    // businessCategories.assignAll(
+    //   savedCategories,
+    // );
 
-    businessCategories.assignAll(
-      savedCategories,
-    );
-
-    print('🏪 Client business type: ${businessType.value}');
-    print('📦 Client categories: $businessCategories');
+    // print('🏪 Client business type: ${businessType.value}');
+    // print('📦 Client categories: $businessCategories');
 
     // If products have already been loaded,
     // apply the preferences immediately.
-    if (products.isNotEmpty) {
-      applyFilters();
-    }
-  }
+    // if (products.isNotEmpty) {
+      // applyFilters();
+    // }
+  // }
 
   void loadProducts() {
   products.assignAll([
@@ -332,8 +328,7 @@ class ProductController extends GetxController {
   }
 
   void calculatePriceBounds() {
-    final warehouseProducts =
-        warehouseController.warehouseProducts;
+    final warehouseProducts = warehouseController.warehouseProducts;
 
     if (warehouseProducts.isEmpty) {
       minPossiblePrice = 0.0;
@@ -373,12 +368,31 @@ class ProductController extends GetxController {
 RxList<WarehouseProductModel> get specialSaleItems {
   return warehouseController.warehouseProducts
       .where(
-        (item) =>
-            item.discountPercentage != null &&
+        (item) {
+           final product = getProductById(item.productId);
+
+        if (product == null) return false;
+
+        final matchesPreference =
+            businessCategories.isEmpty ||
+            product.categories.any(
+              (category) => businessCategories.contains(category),
+            );
+
+        return item.discountPercentage != null &&
             item.discountPercentage! > 0 &&
-            item.quantity > 0,
+            item.quantity > 0 &&
+            matchesPreference;
+        }
+            
       )
       .toList().obs;
+}
+List<String> get filterCategories {
+  if (businessCategories.isEmpty) {
+    return availableCategories;
+  }
+  return businessCategories;
 }
 
 Product? getProductById(int productId) {
@@ -392,19 +406,19 @@ Product? getProductById(int productId) {
 }
  // ========== filtering logic =============
   void applyFilters() {
-     if (!isProfileCompleted.value) {
-    displayedProducts.assignAll(products);
-    return;
-  }
+  //    if (!isProfileCompleted.value) {
+  //   displayedProducts.assignAll(products);
+  //   return;
+  // }
     final query =
         searchQuery.value.trim().toLowerCase();
 
     final filtered = products.where((product) {
+
       final matchesBusinessCategory =
           businessCategories.isEmpty ||
           product.categories.any(
-            (category) =>
-                businessCategories.contains(category),
+            (category) => businessCategories.contains(category),
           );
 
       final matchesSearch =

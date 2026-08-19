@@ -91,7 +91,7 @@ class FilteringMenu extends StatelessWidget {
                         () => Wrap(
                           spacing: 8,
                           runSpacing: 8,
-                          children: controller.businessCategories.map(
+                          children: controller.filterCategories.map(
                             (category) {
                               final isSelected =
                                   controller.selectedCategories.contains(
