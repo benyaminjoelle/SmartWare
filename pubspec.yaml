@@ -43,6 +43,8 @@ dependencies:
   dio: ^5.9.2
   get_storage: ^2.1.1
   syncfusion_flutter_charts: ^34.2.3
+  google_maps_flutter: ^2.14.2
+  geocoding: ^5.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
