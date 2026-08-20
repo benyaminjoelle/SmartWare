@@ -11,8 +11,6 @@ class ChangePassword extends StatelessWidget {
 
   final controller = Get.find<ClientEditProfileController>();
 
-  final oldPasswordController = TextEditingController();
-  final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
   final obscureOldPassword = true.obs;
@@ -20,11 +18,17 @@ class ChangePassword extends StatelessWidget {
   final obscureConfirmPassword = true.obs;
 
   void updatePassword() {
-    final oldPassword = oldPasswordController.text.trim();
-    final newPassword = newPasswordController.text.trim();
-    final confirmPassword = confirmPasswordController.text.trim();
+    final currentPassword =
+        controller.currentPasswordController.text.trim();
 
-    if (oldPassword.isEmpty) {
+    final newPassword =
+        controller.newPasswordController.text.trim();
+
+    final confirmPassword =
+        confirmPasswordController.text.trim();
+
+    // Current password
+    if (currentPassword.isEmpty) {
       AppSnackbar.show(
         title: 'Required'.tr,
         message: 'Please enter your current password'.tr,
@@ -33,6 +37,7 @@ class ChangePassword extends StatelessWidget {
       return;
     }
 
+    // New password
     if (newPassword.isEmpty) {
       AppSnackbar.show(
         title: 'Required'.tr,
@@ -42,15 +47,18 @@ class ChangePassword extends StatelessWidget {
       return;
     }
 
+    // Password length
     if (newPassword.length < 8) {
       AppSnackbar.show(
         title: 'Weak Password'.tr,
-        message: 'Your new password must be at least 8 characters'.tr,
+        message:
+            'Your new password must be at least 8 characters'.tr,
         icon: Icons.lock_outline,
       );
       return;
     }
 
+    // Confirm password
     if (confirmPassword.isEmpty) {
       AppSnackbar.show(
         title: 'Required'.tr,
@@ -60,31 +68,19 @@ class ChangePassword extends StatelessWidget {
       return;
     }
 
+    // Passwords match
     if (newPassword != confirmPassword) {
       AppSnackbar.show(
         title: 'Passwords Do Not Match'.tr,
-        message: 'Please make sure both new passwords match'.tr,
+        message:
+            'Please make sure both new passwords match'.tr,
         icon: Icons.error_outline,
       );
       return;
     }
 
-    // TODO:
-    // Call your backend here.
-    //
-    // Example:
-    // await controller.changePassword(
-    //   oldPassword: oldPassword,
-    //   newPassword: newPassword,
-    // );
-
-    Get.back();
-
-    AppSnackbar.show(
-      title: 'Password Updated'.tr,
-      message: 'Your password has been changed successfully'.tr,
-      icon: Icons.check_circle_outline,
-    );
+    // Send request to backend
+    controller.changePassword();
   }
 
   void resetPassword() {
@@ -92,9 +88,6 @@ class ChangePassword extends StatelessWidget {
       'Reset Password'.tr,
       'Password reset flow will be opened here.'.tr,
     );
-
-    // TODO:
-    // Navigate to your forgot-password flow.
   }
 
   @override
@@ -125,80 +118,62 @@ class ChangePassword extends StatelessWidget {
                 'Enter your current password and choose a new secure password.'
                     .tr,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.65),
+                  color: theme.textTheme.bodyMedium?.color
+                      ?.withOpacity(0.65),
                 ),
               ),
 
               const SizedBox(height: 28),
 
-              /// Current Password
+              // ============ CURRENT PASSWORD ==============
+               
               Obx(
-                () => CustomTextField(
-                  controller: oldPasswordController,
-                  label: 'Current Password:'.tr,
-                  hint: 'Enter your current password'.tr,
-                  
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      obscureOldPassword.toggle();
-                    },
-                    icon: Icon(
-                      obscureOldPassword.value
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                    ),
-                  ),
-                ),
+              () => CustomTextField(
+                controller: controller.currentPasswordController,
+                label: 'Current Password:'.tr,
+                hint: 'Enter your current password'.tr,
+                isPassword: true,
+                isObscure: obscureOldPassword.value,
+                onToggleVisibility: obscureOldPassword.toggle,
               ),
+            ),
 
               const SizedBox(height: 18),
 
-              /// New Password
-              Obx(
-                () => CustomTextField(
-                  controller: newPasswordController,
-                  label: 'New Password:'.tr,
-                  hint: 'Enter your new password'.tr,
-                 
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      obscureNewPassword.toggle();
-                    },
-                    icon: Icon(
-                      obscureNewPassword.value
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                    ),
-                  ),
-                ),
+              // ============ NEW PASSWORD ===============
+             Obx(
+              () => CustomTextField(
+                controller: controller.newPasswordController,
+                label: 'New Password:'.tr,
+                hint: 'Enter your new password'.tr,
+                isPassword: true,
+                isObscure: obscureNewPassword.value,
+                onToggleVisibility: obscureNewPassword.toggle,
               ),
-
+            ),
               const SizedBox(height: 18),
 
-              /// Confirm Password
+              // ============================================================
+              // CONFIRM PASSWORD
+              // ============================================================
+
               Obx(
-                () => CustomTextField(
-                  controller: confirmPasswordController,
-                  label: 'Confirm New Password:'.tr,
-                  hint: 'Confirm your new password'.tr,
-                 
-                  
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      obscureConfirmPassword.toggle();
-                    },
-                    icon: Icon(
-                      obscureConfirmPassword.value
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                    ),
-                  ),
-                ),
+              () => CustomTextField(
+                controller: confirmPasswordController,
+                label: 'Confirm New Password:'.tr,
+                hint: 'Confirm your new password'.tr,
+                isPassword: true,
+                isObscure: obscureConfirmPassword.value,
+                onToggleVisibility: obscureConfirmPassword.toggle,
               ),
+            ),
 
               const SizedBox(height: 20),
 
-              /// Forgot Password
+              // ============================================================
+              // FORGOT PASSWORD
+              // ============================================================
+
               Center(
                 child: TextButton(
                   onPressed: resetPassword,
@@ -214,7 +189,10 @@ class ChangePassword extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              /// Update Button
+              // ============================================================
+              // UPDATE BUTTON
+              // ============================================================
+
               PrimaryButton(
                 text: 'Update Password'.tr,
                 onPressed: updatePassword,

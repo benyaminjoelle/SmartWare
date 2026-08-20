@@ -1,16 +1,11 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:smartware/core/network/api_error.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
-
 import 'package:smartware/features/auth/models/auth_repo.dart';
 import 'package:smartware/features/client/profile/models/client_onboarding_repo.dart';
-
 import 'package:smartware/features/client/profile/controllers/client_profile_completion_controller.dart';
-
 import 'package:smartware/features/client/profile/widgets/change_business_name.dart';
 import 'package:smartware/features/client/profile/widgets/change_email.dart';
 import 'package:smartware/features/client/profile/widgets/change_password.dart';
@@ -27,8 +22,7 @@ class ClientEditProfileController extends GetxController {
 
   final AuthRepo _authRepo = AuthRepo();
 
-  final ClientOnboardingRepo _clientOnboardingRepo =
-      ClientOnboardingRepo();
+  final ClientOnboardingRepo _clientOnboardingRepo = ClientOnboardingRepo();
 
   // ============================================================
   // PROFILE DATA
@@ -64,9 +58,7 @@ class ClientEditProfileController extends GetxController {
   // ============================================================
 
   final changeEmailFormKey = GlobalKey<FormState>();
-
   final personalInfoFormKey = GlobalKey<FormState>();
-
   final contactSecurityFormKey = GlobalKey<FormState>();
 
   // ============================================================
@@ -74,15 +66,11 @@ class ClientEditProfileController extends GetxController {
   // ============================================================
 
   late final TextEditingController businessNameController;
-
   late final TextEditingController emailController;
-
   late final TextEditingController newEmailController;
-
   late final TextEditingController phoneController;
-
-  final passwordController = TextEditingController();
-
+  late final TextEditingController currentPasswordController;
+  late final TextEditingController newPasswordController;
   final verificationCodeController = TextEditingController();
 
   // ============================================================
@@ -119,19 +107,12 @@ class ClientEditProfileController extends GetxController {
   void onInit() {
     super.onInit();
 
-    businessNameController = TextEditingController(
-      text: businessName.value,
-    );
-
-    emailController = TextEditingController(
-      text: email.value,
-    );
-
+    businessNameController = TextEditingController(text: businessName.value,);
+    emailController = TextEditingController(text: email.value,);
     newEmailController = TextEditingController();
-
-    phoneController = TextEditingController(
-      text: phone.value,
-    );
+    phoneController = TextEditingController(text: phone.value,);
+    currentPasswordController = TextEditingController();
+    newPasswordController = TextEditingController();
   }
 
   // ============================================================
@@ -1056,6 +1037,7 @@ class ClientEditProfileController extends GetxController {
     }
   }
 
+
   // ============================================================
   // SAVE CONTACT & SECURITY
   // ============================================================
@@ -1068,13 +1050,9 @@ class ClientEditProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-      email.value =
-          emailController.text.trim();
-
-      phone.value =
-          phoneController.text.trim();
-
-      passwordController.clear();
+      email.value = emailController.text.trim();
+      phone.value = phoneController.text.trim();
+      // passwordController.clear();
 
       Get.back();
 
@@ -1094,7 +1072,75 @@ class ClientEditProfileController extends GetxController {
       isLoading.value = false;
     }
   }
+  //=============== Change Password ================
+  Future<void> changePassword() async {
+  final currentPassword =
+      currentPasswordController.text.trim();
 
+  final newPassword =
+      newPasswordController.text.trim();
+
+  if (currentPassword.isEmpty) {
+    AppSnackbar.show(
+      title: 'Required'.tr,
+      message: 'Please enter your current password'.tr,
+      icon: Icons.warning_amber_rounded,
+    );
+    return;
+  }
+
+  if (newPassword.isEmpty) {
+    AppSnackbar.show(
+      title: 'Required'.tr,
+      message: 'Please enter your new password'.tr,
+      icon: Icons.warning_amber_rounded,
+    );
+    return;
+  }
+
+  if (currentPassword == newPassword) {
+    AppSnackbar.show(
+      title: 'No Changes'.tr,
+      message:
+          'Your new password must be different from your current password'
+              .tr,
+      icon: Icons.info_outline,
+    );
+    return;
+  }
+
+  if (isLoading.value) {
+    return;
+  }
+
+  isLoading.value = true;
+
+  try {
+    await _clientOnboardingRepo.changePassword(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+    );
+
+    currentPasswordController.clear();
+    newPasswordController.clear();
+
+    Get.back();
+
+    AppSnackbar.show(
+      title: 'Password Updated'.tr,
+      message: 'Your password has been changed successfully'.tr,
+      icon: Icons.check_circle_outline,
+    );
+  } catch (e) {
+    AppSnackbar.show(
+      title: 'Password Update Failed'.tr,
+      message: _getFriendlyErrorMessage(e),
+      icon: Icons.error_outline,
+    );
+  } finally {
+    isLoading.value = false;
+  }
+}
   // ============================================================
   // SAVE PREFERENCES
   // ============================================================
@@ -1253,14 +1299,9 @@ Future<void> updateBusinessName() async {
     // UPDATE CONTROLLER
     // ==========================================================
 
-    businessName.value =
-        finalBusinessName;
-
-    selectedBusinessName.value =
-        finalBusinessName;
-
-    businessNameController.text =
-        finalBusinessName;
+    businessName.value = finalBusinessName;
+    selectedBusinessName.value = finalBusinessName;
+    businessNameController.text = finalBusinessName;
 
     // ==========================================================
     // UPDATE LOCAL STORAGE
@@ -1332,7 +1373,8 @@ Future<void> updateBusinessName() async {
     emailController.dispose();
     newEmailController.dispose();
     phoneController.dispose();
-    passwordController.dispose();
+    currentPasswordController.dispose();
+    newPasswordController.dispose();
     verificationCodeController.dispose();
 
     timer?.cancel();
