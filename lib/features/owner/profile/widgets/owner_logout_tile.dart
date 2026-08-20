@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:smartware/features/client/profile/widgets/glass_container.dart';
+import 'package:smartware/features/owner/profile/controllers/owner_profile_controller.dart';
+import 'package:smartware/widgets/app_dialog.dart';
+
 
 
 class OwnerLogoutTile extends StatelessWidget {
@@ -11,15 +15,27 @@ class OwnerLogoutTile extends StatelessWidget {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
 
+    final controller = Get.find<OwnerProfileController>();
     return GlassContainer(
       padding: EdgeInsets.zero,
       borderRadius: BorderRadius.circular(20),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {},
-          borderRadius:
-              BorderRadius.circular(20),
+          onTap: () async {
+  final confirmed = await AppDialogs.showConfirmDialog(
+    title: "Logout".tr,
+    message: "Are you sure you want to logout?".tr,
+    confirmText: "Logout".tr,
+    cancelText: "Cancel".tr,
+    confirmColor: cs.error,
+  );
+
+  if (confirmed == true) {
+    controller.logout();
+  }
+},
+          borderRadius: BorderRadius.circular(20),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 20,
@@ -28,13 +44,10 @@ class OwnerLogoutTile extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: cs.error
-                        .withValues(alpha: 0.08),
-                    borderRadius:
-                        BorderRadius.circular(12),
+                    color: cs.error.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.logout_rounded,
@@ -47,20 +60,16 @@ class OwnerLogoutTile extends StatelessWidget {
                 Expanded(
                   child: Text(
                     "Sign Out".tr,
-                    style: theme
-                        .textTheme.bodyMedium
-                        ?.copyWith(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       color: cs.error,
-                      fontWeight:
-                          FontWeight.w700,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
 
                 Icon(
                   Icons.chevron_right_rounded,
-                  color: cs.error
-                      .withValues(alpha: 0.4),
+                  color: cs.error.withValues(alpha: 0.4),
                 ),
               ],
             ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class ActionTile extends StatelessWidget {
   final IconData icon;
+  final Color? iconColor;
+  
   final String title;
   final String? subtitle;
   final VoidCallback onTap;
@@ -16,6 +18,7 @@ class ActionTile extends StatelessWidget {
     this.subtitle,
     this.isLast = false,
     this.trailing,
+    this.iconColor
   });
 
   @override
@@ -30,10 +33,7 @@ class ActionTile extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 18,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               child: Row(
                 children: [
                   Container(
@@ -42,11 +42,7 @@ class ActionTile extends StatelessWidget {
                       color: cs.primary.withValues(alpha: 0.07),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(
-                      icon,
-                      color: cs.primary,
-                      size: 22,
-                    ),
+                    child: Icon(icon, color: iconColor??cs.primary, size: 22),
                   ),
 
                   const SizedBox(width: 16),

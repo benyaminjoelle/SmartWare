@@ -25,7 +25,7 @@ class OwnerProfileHeader extends StatelessWidget {
 
         Obx(
           () => Text(
-            controller.businessName.value,
+            controller.userName.value,
             textAlign: TextAlign.center,
 
             style: theme.textTheme.titleLarge?.copyWith(

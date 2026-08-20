@@ -4,6 +4,7 @@ import 'package:smartware/features/owner/home/controllers/owner_home_controller.
 import 'package:smartware/features/owner/notifications/controllers/owner_notifications_controller.dart';
 import 'package:smartware/features/owner/orders/controllers/owner_orders_controller.dart';
 import 'package:smartware/features/owner/products/controllers/owner_products_controller.dart';
+import 'package:smartware/features/owner/profile/controllers/owner_edit_profile_controller.dart';
 import 'package:smartware/features/owner/profile/controllers/owner_profile_controller.dart';
 import 'package:smartware/features/owner/profile/controllers/owner_settings_controller.dart';
 import 'package:smartware/features/owner/profile/controllers/owner_workers_controller.dart';
@@ -21,6 +22,7 @@ class OwnerRootBinding extends Bindings {
    Get.lazyPut<OwnerSettingsController>(() => OwnerSettingsController());
     Get.lazyPut<OwnerWorkersController>(() => OwnerWorkersController());
         Get.lazyPut<OwnerProductsController>(() => OwnerProductsController());
+           Get.lazyPut<OwnerEditProfileController>(() => OwnerEditProfileController());
 
   }
 }

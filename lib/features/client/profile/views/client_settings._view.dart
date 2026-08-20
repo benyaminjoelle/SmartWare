@@ -7,6 +7,7 @@ import 'package:smartware/features/client/profile/widgets/glass_container.dart';
 import 'package:smartware/features/client/profile/widgets/privacy_policy.dart';
 import 'package:smartware/features/client/profile/widgets/support_options_tile.dart';
 import 'package:smartware/localization/local_controller.dart';
+import 'package:smartware/widgets/app_dialog.dart';
 
 class ClientSettings extends StatelessWidget {
   const ClientSettings({super.key});
@@ -182,6 +183,35 @@ class ClientSettings extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 24),
+ // ===================================================
+                        // DELETE ACCOUNT
+                        // ===================================================
+
+                      ActionTile(
+  icon: Icons.delete_forever_outlined,
+  title: "Delete Account".tr,
+  subtitle: "Delete your account permanently".tr,
+  iconColor: Colors.red,
+ 
+  onTap: () async {
+    final confirmed = await AppDialogs.showConfirmDialog(
+      title: "Delete Account",
+      message:
+          "Are you sure you want to delete your account? "
+          "This action is permanent and your account will be deleted forever.",
+      confirmText: "Delete Forever",
+      cancelText: "Cancel",
+      confirmColor: Colors.red,
+      cancelColor: Theme.of(context).colorScheme.primary,
+    );
+
+    if (confirmed == true) {
+      // Backend will be connected here later.
+      //
+      // controller.deleteAccount();
+    }
+  },
+),
 
                   /// =========================
                   /// APP INFO

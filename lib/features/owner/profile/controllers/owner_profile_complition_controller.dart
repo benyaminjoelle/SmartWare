@@ -4,245 +4,793 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:smartware/core/constants/business_product_mapping.dart';
-import 'package:smartware/core/constants/client_business_types.dart';
 import 'package:smartware/core/constants/client_products.dart';
+import 'package:smartware/core/network/api_error.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
+
+import 'package:smartware/features/owner/profile/models/owner_documents_model.dart';
+import 'package:smartware/features/owner/profile/models/owner_import_excel_model.dart';
+import 'package:smartware/features/owner/profile/models/owner_onboarding_repo.dart';
+import 'package:smartware/features/owner/profile/models/owner_prefrences_model.dart';
+
 import 'package:smartware/features/client/profile/widgets/product_type_model.dart';
+
 import 'package:smartware/widgets/app_dialog.dart';
 
 class OwnerProfileComplitionController extends GetxController {
-  // ===========================================================================
+  // ============================================================
+  // REPOSITORY
+  // ============================================================
+
+  final OwnerOnboardingRepo _onboardingRepo =
+      OwnerOnboardingRepo();
+
+  // ============================================================
+  // OWNER BUSINESS TYPE
+  // ============================================================
+
+  /// OWNER IS ALWAYS A WAREHOUSE.
+  /// THERE IS NO BUSINESS TYPE SELECTION FOR OWNER.
+  static const String ownerBusinessType = 'warehouse';
+
+  // ============================================================
   // STEP MANAGEMENT
-  // ===========================================================================
+  // ============================================================
 
   final currentStep = 0.obs;
 
-  /// Total number of profile completion steps.
   final int totalSteps = 4;
 
-  /// Completion percentage for each step.
-  final List<int> stepProgress = const [
-    25,
-    50,
-    75,
-    100,
-  ];
+  /*
+   * STEP 0 = Warehouse Preferences
+   * STEP 1 = Inventory
+   * STEP 2 = Documents
+   * STEP 3 = Location
+   *
+   * Completion:
+   *
+   * Step 0 = 0%
+   * Step 1 = 25%
+   * Step 2 = 50%
+   * Step 3 = 75%
+   * Done   = 100%
+   */
 
-  /// Move to the next step.
-  void nextStep() {
-    if (currentStep.value < totalSteps - 1) {
-      currentStep.value++;
-      _syncProgress();
-    }
-  }
-
-  /// Move to the previous step.
-  void previousStep() {
-    if (currentStep.value > 0) {
-      currentStep.value--;
-      _syncProgress();
-    }
-  }
-
-  /// Whether the user is currently on the first step.
-  bool get isFirstStep => currentStep.value == 0;
-
-  /// Whether the user is currently on the last step.
-  bool get isLastStep => currentStep.value == totalSteps - 1;
-
-  // ===========================================================================
-  // PROFILE COMPLETION
-  // ===========================================================================
-
-  final profileCompletion = 25.obs;
+  final profileCompletion = 0.obs;
 
   static const int maxCompletion = 100;
 
-  double get completionPercent =>
-      profileCompletion.value / maxCompletion;
+  double get completionPercent {
+    return profileCompletion.value / maxCompletion;
+  }
 
-  bool get isProfileComplete =>
-      profileCompletion.value >= maxCompletion;
+  bool get isProfileComplete {
+    return profileCompletion.value >= maxCompletion;
+  }
 
   String get completionText {
-    final value = profileCompletion.value;
+    switch (profileCompletion.value) {
+      case 100:
+        return 'Profile Complete';
 
-    if (value >= 100) {
-      return 'Profile Complete';
-    }
+      case 75:
+        return 'Almost Done';
 
-    if (value >= 80) {
-      return 'Almost Done';
-    }
+      case 50:
+      case 25:
+        return 'Keep Going';
 
-    if (value >= 50) {
-      return 'Keep Going';
-    }
-
-    return 'Complete Your Profile';
-  }
-
-  // ===========================================================================
-  // STEP → PROGRESS SYNC
-  // ===========================================================================
-
-  void _syncProgress() {
-    if (currentStep.value >= 0 &&
-        currentStep.value < stepProgress.length) {
-      profileCompletion.value =
-          stepProgress[currentStep.value];
+      default:
+        return 'Complete Your Profile';
     }
   }
 
-  // ===========================================================================
-  // STEP 1 - BUSINESS PREFERENCES
-  // ===========================================================================
+  // ============================================================
+  // INIT
+  // ============================================================
 
-  /// Selected business type.
-  final selectedBusinessType = ''.obs;
+  @override
+  void onInit() {
+    super.onInit();
 
-  /// Whether the products section is expanded.
+    businessNameController.addListener(
+      _onBusinessNameChanged,
+    );
+
+    restoreOnboardingProgress();
+  }
+
+  void _onBusinessNameChanged() {
+    businessName.value =
+        businessNameController.text.trim();
+  }
+
+  // ============================================================
+  // RESTORE ONBOARDING
+  // ============================================================
+
+  Future<void> restoreOnboardingProgress() async {
+    try {
+      final completion =
+          await PrefHelper.getOwnerProfileCompletion();
+
+      final savedStep =
+          await PrefHelper.getOwnerOnboardingStep();
+
+      final preferencesCompleted =
+          await PrefHelper.isOwnerPreferencesCompleted();
+
+      final documentsCompleted =
+          await PrefHelper.areOwnerDocumentsCompleted();
+
+      final profileCompleted =
+          await PrefHelper.isOwnerProfileCompleted();
+
+      final savedBusinessName =
+          await PrefHelper.getOwnerBusinessName();
+
+      final savedProducts =
+          await PrefHelper.getOwnerSelectedProducts();
+
+      // ==========================================================
+      // RESTORE DATA
+      // ==========================================================
+
+      businessName.value = savedBusinessName;
+
+      businessNameController.text =
+          savedBusinessName;
+
+      selectedProducts.assignAll(
+        savedProducts,
+      );
+
+      // ==========================================================
+      // RESTORE OWNER BUSINESS TYPE
+      // ==========================================================
+
+      // Always warehouse.
+      await PrefHelper.saveOwnerBusinessType(
+        ownerBusinessType,
+      );
+
+      // ==========================================================
+      // RESTORE STEP
+      // ==========================================================
+
+      if (profileCompleted) {
+        profileCompletion.value = 100;
+        currentStep.value = 3;
+      } else if (documentsCompleted) {
+        profileCompletion.value = 75;
+        currentStep.value = 3;
+      } else if (savedStep >= 2) {
+        profileCompletion.value = 50;
+        currentStep.value = 2;
+      } else if (preferencesCompleted) {
+        profileCompletion.value = 25;
+        currentStep.value = 1;
+      } else {
+        profileCompletion.value =
+            completion >= 0 ? completion : 0;
+
+        currentStep.value = savedStep;
+      }
+
+      // ==========================================================
+      // SAFETY
+      // ==========================================================
+
+      if (currentStep.value < 0) {
+        currentStep.value = 0;
+      }
+
+      if (currentStep.value >= totalSteps) {
+        currentStep.value = totalSteps - 1;
+      }
+
+      debugPrint(
+        '════════ OWNER ONBOARDING RESTORED ════════',
+      );
+
+      debugPrint(
+        '🏢 Warehouse: ${businessName.value}',
+      );
+
+      debugPrint(
+        '🏪 Business Type: $ownerBusinessType',
+      );
+
+      debugPrint(
+        '📦 Products: ${selectedProducts.toList()}',
+      );
+
+      debugPrint(
+        '📊 Progress: ${profileCompletion.value}%',
+      );
+
+      debugPrint(
+        '📍 Step: ${currentStep.value + 1}',
+      );
+
+      debugPrint(
+        '══════════════════════════════════════════',
+      );
+    } catch (e) {
+      debugPrint(
+        '❌ Failed to restore owner onboarding: $e',
+      );
+
+      currentStep.value = 0;
+      profileCompletion.value = 0;
+    }
+  }
+
+  // ============================================================
+  // STEP NAVIGATION
+  // ============================================================
+
+  Future<void> nextStep() async {
+    if (!canGoNext) {
+      return;
+    }
+
+    // ==========================================================
+    // STEP 1 - WAREHOUSE PREFERENCES
+    // ==========================================================
+
+    if (currentStep.value == 0) {
+      final success = await savePreferences();
+
+      if (!success) {
+        return;
+      }
+
+      profileCompletion.value = 25;
+
+      await PrefHelper.saveOwnerProfileCompletion(25);
+      await PrefHelper.saveOwnerOnboardingStep(1);
+
+      currentStep.value = 1;
+
+      return;
+    }
+
+    // ==========================================================
+    // STEP 2 - INVENTORY
+    // ==========================================================
+
+    if (currentStep.value == 1) {
+      final success = await importInventory();
+
+      if (!success) {
+        return;
+      }
+
+      profileCompletion.value = 50;
+
+      await PrefHelper.saveOwnerProfileCompletion(50);
+      await PrefHelper.saveOwnerOnboardingStep(2);
+
+      currentStep.value = 2;
+
+      return;
+    }
+
+    // ==========================================================
+    // STEP 3 - DOCUMENTS
+    // ==========================================================
+
+    if (currentStep.value == 2) {
+      final success =
+          await uploadOnboardingDocuments();
+
+      if (!success) {
+        return;
+      }
+
+      profileCompletion.value = 75;
+
+      await PrefHelper.saveOwnerProfileCompletion(75);
+      await PrefHelper.saveOwnerOnboardingStep(3);
+
+      currentStep.value = 3;
+
+      return;
+    }
+
+    // ==========================================================
+    // STEP 4 - LOCATION
+    // ==========================================================
+
+    if (currentStep.value == 3) {
+      final success =
+          await completeFinalStep();
+
+      if (!success) {
+        return;
+      }
+
+      profileCompletion.value = 100;
+
+      await PrefHelper.saveOwnerProfileCompletion(100);
+
+      return;
+    }
+  }
+
+  // ============================================================
+  // PREVIOUS STEP
+  // ============================================================
+
+  void previousStep() {
+    if (currentStep.value <= 0) {
+      return;
+    }
+
+    currentStep.value--;
+
+    switch (currentStep.value) {
+      case 0:
+        profileCompletion.value = 0;
+        break;
+
+      case 1:
+        profileCompletion.value = 25;
+        break;
+
+      case 2:
+        profileCompletion.value = 50;
+        break;
+
+      case 3:
+        profileCompletion.value = 75;
+        break;
+    }
+
+    debugPrint(
+      'Back to owner step '
+      '${currentStep.value + 1} | '
+      'Progress: ${profileCompletion.value}%',
+    );
+  }
+
+  // ============================================================
+  // STEP HELPERS
+  // ============================================================
+
+  bool get isFirstStep {
+    return currentStep.value == 0;
+  }
+
+  bool get isLastStep {
+    return currentStep.value == totalSteps - 1;
+  }
+
+  // ============================================================
+  // OWNER PREFERENCES
+  // ============================================================
+
+  final businessNameController =
+      TextEditingController();
+
+  final businessName = ''.obs;
+
   final isProductsExpanded = false.obs;
 
-  /// Preferred language.
-  final preferredLanguage = 'English'.obs;
+  final preferredLanguage =
+      'English'.obs;
 
-  /// Preferred currency.
-  final preferredCurrency = 'USD'.obs;
+  final preferredCurrency =
+      'USD'.obs;
 
-  /// Facility / warehouse name.
-  final RxString facilityName = ''.obs;
+  final RxList<String> selectedProducts =
+      <String>[].obs;
 
-  /// Products selected by the owner.
-  final selectedProducts = <String>[].obs;
+  // ============================================================
+  // PRODUCTS
+  // ============================================================
 
-  /// Available business types.
-  final businessTypes = BusinessTypes.all;
+  final List<ProductTypeModel> allProducts =
+      ProductTypes.all;
 
-  /// All available products.
-  final List<ProductTypeModel> allProducts = ProductTypes.all;
+  // ============================================================
+  // PRODUCT SELECTION
+  // ============================================================
 
-  /// Business type → allowed products mapping.
-  final Map<String, List<String>> businessProductMap =
-      BusinessProductMapping.map;
-
-  /// Toggle a product selection.
   void toggleProduct(String id) {
     if (selectedProducts.contains(id)) {
       selectedProducts.remove(id);
     } else {
       selectedProducts.add(id);
     }
+
+    debugPrint(
+      '📦 Owner selected products: '
+      '${selectedProducts.toList()}',
+    );
   }
 
-  /// Select a business type.
-  void selectBusinessType(String id) {
-    if (selectedBusinessType.value == id) {
-      return;
+  void toggleCategory(String id) {
+    toggleProduct(id);
+  }
+
+  // ============================================================
+  // API STATE
+  // ============================================================
+
+  final isSavingPreferences = false.obs;
+
+  final savedPreferences =
+      Rxn<OwnerPrefrencesModel>();
+
+  // ============================================================
+  // SAVE OWNER PREFERENCES
+  // ============================================================
+
+  Future<bool> savePreferences() async {
+    try {
+      isSavingPreferences.value = true;
+
+      final facilityName =
+          businessNameController.text.trim();
+
+      // ========================================================
+      // VALIDATION
+      // ========================================================
+
+      if (facilityName.isEmpty) {
+        Get.snackbar(
+          'Missing Information',
+          'Please enter your warehouse name.',
+        );
+
+        return false;
+      }
+
+      if (selectedProducts.isEmpty) {
+        Get.snackbar(
+          'Missing Information',
+          'Please select at least one product category.',
+        );
+
+        return false;
+      }
+
+      // ========================================================
+      // DEBUG
+      // ========================================================
+
+      debugPrint('');
+
+      debugPrint(
+        '════════ OWNER PREFERENCES ════════',
+      );
+
+      debugPrint(
+        '🏢 Warehouse Name: $facilityName',
+      );
+
+      debugPrint(
+        '🎭 Role: warehouse_admin',
+      );
+
+      debugPrint(
+        '🏪 Business Type: $ownerBusinessType',
+      );
+
+      debugPrint(
+        '📦 Products: '
+        '${selectedProducts.toList()}',
+      );
+
+      // ========================================================
+      // API
+      // ========================================================
+
+      final result =
+          await _onboardingRepo.savePreferences(
+        facilityName: facilityName,
+
+        role: 'warehouse_admin',
+
+       
+
+        categories:
+            selectedProducts.toList(),
+      );
+
+      savedPreferences.value = result;
+
+      businessName.value =
+          result.facilityName;
+
+      businessNameController.text =
+          result.facilityName;
+
+      // ========================================================
+      // SAVE LOCAL DATA
+      // ========================================================
+
+      await PrefHelper.saveOwnerBusinessName(
+        result.facilityName,
+      );
+
+      // ALWAYS WAREHOUSE
+      await PrefHelper.saveOwnerBusinessType(
+        ownerBusinessType,
+      );
+
+      await PrefHelper.saveOwnerBusinessCategories(
+        result.facility.categories
+            .map(
+              (category) => category.name,
+            )
+            .toList(),
+      );
+
+      await PrefHelper.saveOwnerFacilityId(
+        result.facility.id,
+      );
+
+      await PrefHelper.saveOwnerSelectedProducts(
+        selectedProducts.toList(),
+      );
+
+      await PrefHelper.setOwnerPreferencesCompleted(
+        true,
+      );
+
+      await PrefHelper.saveOwnerProfileCompletion(
+        25,
+      );
+
+      await PrefHelper.saveOwnerOnboardingStep(
+        1,
+      );
+
+      debugPrint(
+        '✅ Owner preferences saved.',
+      );
+
+      debugPrint(
+        '🏢 Facility ID: '
+        '${result.facility.id}',
+      );
+
+      debugPrint(
+        '🏪 Business Type: $ownerBusinessType',
+      );
+
+      return true;
+    } catch (e) {
+      debugPrint(
+        '❌ Owner save preferences failed: $e',
+      );
+
+      if (e is ApiError) {
+        Get.snackbar(
+          'Error',
+          e.message,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'Failed to save owner preferences.',
+        );
+      }
+
+      return false;
+    } finally {
+      isSavingPreferences.value = false;
     }
-
-    selectedBusinessType.value = id;
-
-    /// Products depend on the selected business type,
-    /// so previous selections must be cleared.
-    selectedProducts.clear();
-
-    /// Collapse the products section when the business changes.
-    isProductsExpanded.value = false;
   }
 
-  /// Clear the selected business type and products.
-  void clearBusinessType() {
-    selectedBusinessType.value = '';
-    selectedProducts.clear();
-    isProductsExpanded.value = false;
+  // ============================================================
+  // INVENTORY
+  // ============================================================
+
+  final inventoryFile = Rxn<File>();
+
+  final inventoryFileName = ''.obs;
+
+  final selectedSectionId = 1.obs;
+
+  final isImportingInventory = false.obs;
+
+  final importedInventory =
+      Rxn<OwnerImportExcelModel>();
+
+  void selectSection(int sectionId) {
+    selectedSectionId.value = sectionId;
   }
 
-  /// Products available for the currently selected business type.
-  List<ProductTypeModel> get availableProducts {
-    final allowedIds =
-        businessProductMap[selectedBusinessType.value] ?? [];
-
-    return allProducts
-        .where(
-          (product) => allowedIds.contains(product.id),
-        )
-        .toList();
-  }
-
-  // ===========================================================================
-  // STEP 2 - FACILITY INFORMATION
-  // ===========================================================================
-
-  /// Controller for the warehouse / business name.
-  final TextEditingController facilityNameController =
-      TextEditingController();
-
-  /// Excel file containing the warehouse inventory.
-  File? inventoryFile;
-
-  /// Name of the selected inventory file.
-  final RxString inventoryFileName = ''.obs;
-
-  /// Update the facility name.
-  void updateFacilityName(String value) {
-    facilityName.value = value.trim();
-  }
-
-  /// Pick the Excel inventory file.
   Future<void> pickInventoryFile() async {
     try {
-      final result = await FilePicker.pickFiles(
+      final result =
+          await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: [
           'xlsx',
           'xls',
-          'csv'
+          'csv',
         ],
         allowMultiple: false,
       );
 
-      if (result == null || result.files.isEmpty) {
+      if (result == null ||
+          result.files.isEmpty) {
         return;
       }
 
-      final pickedFile = result.files.single;
+      final pickedFile =
+          result.files.single;
 
-      if (pickedFile.path == null) {
+      final path =
+          pickedFile.path;
+
+      if (path == null ||
+          path.isEmpty) {
+        Get.snackbar(
+          'Error',
+          'Could not access the selected file.',
+        );
+
         return;
       }
 
-      inventoryFile = File(pickedFile.path!);
-      inventoryFileName.value = pickedFile.name;
+      inventoryFile.value = File(path);
+
+      inventoryFileName.value =
+          pickedFile.name;
+
+      debugPrint(
+        '📄 Inventory file selected: '
+        '${pickedFile.name}',
+      );
     } catch (e) {
+      debugPrint(
+        '❌ Inventory file picker failed: $e',
+      );
+
       _showErrorSnackbar(
         title: 'File Selection Failed',
         message:
-            'Unable to select the Excel file. Please try again.',
+            'Unable to select the inventory file. Please try again.',
       );
     }
   }
 
-  /// Remove the selected inventory file.
   void removeInventoryFile() {
-    inventoryFile = null;
+    inventoryFile.value = null;
     inventoryFileName.value = '';
+    importedInventory.value = null;
   }
 
-  // ===========================================================================
-  // STEP 3 - DOCUMENTATION
-  // ===========================================================================
+  Future<bool> importInventory() async {
+    try {
+      isImportingInventory.value = true;
 
-  /// Whether the owner's ID has been uploaded.
+      if (inventoryFile.value == null) {
+        Get.snackbar(
+          'Missing File',
+          'Please select an Excel inventory file.',
+        );
+
+        return false;
+      }
+
+      final sectionId =
+          selectedSectionId.value;
+
+      if (sectionId <= 0) {
+        Get.snackbar(
+          'Missing Section',
+          'Please select a warehouse section.',
+        );
+
+        return false;
+      }
+
+      int? facilityId;
+
+      if (savedPreferences.value != null) {
+        facilityId =
+            savedPreferences.value!.facility.id;
+      }
+
+      facilityId ??=
+          await PrefHelper.getOwnerFacilityId();
+
+      if (facilityId == null ||
+          facilityId <= 0) {
+        Get.snackbar(
+          'Error',
+          'Facility information was not found.',
+        );
+
+        return false;
+      }
+
+      final filePath =
+          inventoryFile.value!.path;
+
+      if (filePath.trim().isEmpty) {
+        Get.snackbar(
+          'Error',
+          'The selected inventory file is not accessible.',
+        );
+
+        return false;
+      }
+
+      final result =
+          await _onboardingRepo.importInventoryExcel(
+        facilityId: facilityId,
+        sectionId: sectionId,
+        excelFilePath: filePath,
+      );
+
+      importedInventory.value = result;
+
+      Get.snackbar(
+        'Success',
+        result.message,
+        snackPosition:
+            SnackPosition.BOTTOM,
+      );
+
+      return true;
+    } catch (e) {
+      debugPrint(
+        '❌ Inventory import failed: $e',
+      );
+
+      if (e is ApiError) {
+        Get.snackbar(
+          'Import Failed',
+          e.message,
+          snackPosition:
+              SnackPosition.BOTTOM,
+        );
+      } else {
+        Get.snackbar(
+          'Import Failed',
+          'Failed to import the inventory file.',
+          snackPosition:
+              SnackPosition.BOTTOM,
+        );
+      }
+
+      return false;
+    } finally {
+      isImportingInventory.value = false;
+    }
+  }
+
+  // ============================================================
+  // DOCUMENTS
+  // ============================================================
+
+  final ownerIdPath = RxnString();
+
+  final ownershipProofPath = RxnString();
+
   final ownerIdUploaded = false.obs;
 
-  /// Whether the ownership proof has been uploaded.
   final ownershipProofUploaded = false.obs;
 
-  /// Pick an owner document.
-  Future<void> pickDocument(String type) async {
+  final isUploadingDocuments = false.obs;
+
+  final uploadedDocuments =
+      Rxn<OnboardingDocumentsResponse>();
+
+  Future<void> pickDocument(
+    String type,
+  ) async {
     try {
-      final result = await FilePicker.pickFiles(
+      final result =
+          await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: [
           'pdf',
@@ -255,57 +803,157 @@ class OwnerProfileComplitionController extends GetxController {
         allowMultiple: false,
       );
 
-      if (result == null || result.files.isEmpty) {
+      if (result == null ||
+          result.files.isEmpty) {
         return;
       }
 
-      final pickedFile = result.files.single;
+      final pickedFile =
+          result.files.single;
 
-      if (pickedFile.path == null) {
+      final filePath =
+          pickedFile.path;
+
+      if (filePath == null ||
+          filePath.isEmpty) {
+        Get.snackbar(
+          'Error',
+          'Could not access the selected file.',
+        );
+
         return;
       }
 
       switch (type) {
         case 'owner_id':
+          ownerIdPath.value = filePath;
           ownerIdUploaded.value = true;
           break;
 
         case 'ownership_proof':
-          ownershipProofUploaded.value = true;
+          ownershipProofPath.value =
+              filePath;
+          ownershipProofUploaded.value =
+              true;
           break;
       }
     } catch (e) {
-      _showErrorSnackbar(
-        title: 'File Selection Failed',
-        message:
-            'Unable to select the document. Please try again.',
+      debugPrint(
+        '❌ Owner document picker failed: $e',
+      );
+
+      Get.snackbar(
+        'Error',
+        'Failed to select the document.',
       );
     }
   }
 
-  /// Manually mark the owner's ID as uploaded.
-  void markOwnerIdUploaded() {
-    ownerIdUploaded.value = true;
+  Future<bool> uploadOnboardingDocuments() async {
+    try {
+      isUploadingDocuments.value = true;
+
+      int? facilityId;
+
+      if (savedPreferences.value != null) {
+        facilityId =
+            savedPreferences.value!.facility.id;
+      }
+
+      facilityId ??=
+          await PrefHelper.getOwnerFacilityId();
+
+      if (facilityId == null ||
+          facilityId <= 0) {
+        Get.snackbar(
+          'Error',
+          'Facility information was not found.',
+        );
+
+        return false;
+      }
+
+      final identityPath =
+          ownerIdPath.value;
+
+      final facilityPath =
+          ownershipProofPath.value;
+
+      if (identityPath == null ||
+          identityPath.trim().isEmpty) {
+        Get.snackbar(
+          'Missing Document',
+          'Please upload your identity document.',
+        );
+
+        return false;
+      }
+
+      if (facilityPath == null ||
+          facilityPath.trim().isEmpty) {
+        Get.snackbar(
+          'Missing Document',
+          'Please upload the ownership document.',
+        );
+
+        return false;
+      }
+
+      final result =
+          await _onboardingRepo
+              .uploadOnboardingDocuments(
+        facilityId: facilityId,
+        identityDocumentPath:
+            identityPath,
+        facilityDocumentPath:
+            facilityPath,
+      );
+
+      uploadedDocuments.value = result;
+
+      await PrefHelper.setOwnerDocumentsCompleted(
+        true,
+      );
+
+      await PrefHelper.saveOwnerProfileCompletion(
+        75,
+      );
+
+      await PrefHelper.saveOwnerOnboardingStep(
+        3,
+      );
+
+      debugPrint(
+        '✅ Owner documents uploaded successfully.',
+      );
+
+      return true;
+    } catch (e) {
+      debugPrint(
+        '❌ Owner document upload failed: $e',
+      );
+
+      if (e is ApiError) {
+        Get.snackbar(
+          'Error',
+          e.message,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'Failed to upload owner documents.',
+        );
+      }
+
+      return false;
+    } finally {
+      isUploadingDocuments.value = false;
+    }
   }
 
-  /// Manually mark the ownership proof as uploaded.
-  void markOwnershipProofUploaded() {
-    ownershipProofUploaded.value = true;
-  }
-
-  /// Remove the owner's ID.
-  void removeOwnerId() {
-    ownerIdUploaded.value = false;
-  }
-
-  /// Remove the ownership proof.
-  void removeOwnershipProof() {
-    ownershipProofUploaded.value = false;
-  }
-
-  // ===========================================================================
-  // STEP 4 - LOCATION
-  // ===========================================================================
+  // ============================================================
+  // LOCATION
+  // ============================================================
 
   final address = ''.obs;
 
@@ -313,39 +961,128 @@ class OwnerProfileComplitionController extends GetxController {
 
   final country = ''.obs;
 
-  // ===========================================================================
+  Future<bool> completeFinalStep() async {
+    try {
+      if (address.value.trim().isEmpty) {
+        Get.snackbar(
+          'Missing Information',
+          'Please enter your address.',
+        );
+
+        return false;
+      }
+
+      if (city.value.trim().isEmpty) {
+        Get.snackbar(
+          'Missing Information',
+          'Please enter your city.',
+        );
+
+        return false;
+      }
+
+      await PrefHelper.setOwnerProfileCompleted(
+        true,
+      );
+
+      await PrefHelper.saveOwnerProfileCompletion(
+        100,
+      );
+
+      await PrefHelper.saveOwnerOnboardingStep(
+        3,
+      );
+
+      profileCompletion.value = 100;
+
+      debugPrint(
+        '✅ Owner profile completed: 100%',
+      );
+
+      return true;
+    } catch (e) {
+      debugPrint(
+        '❌ Owner final step failed: $e',
+      );
+
+      if (e is ApiError) {
+        Get.snackbar(
+          'Error',
+          e.message,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'Failed to complete your profile.',
+        );
+      }
+
+      return false;
+    }
+  }
+
+  // ============================================================
+  // DOCUMENT ACTIONS
+  // ============================================================
+
+  void markOwnerIdUploaded() {
+    ownerIdUploaded.value = true;
+  }
+
+  void markOwnershipProofUploaded() {
+    ownershipProofUploaded.value = true;
+  }
+
+  void removeOwnerId() {
+    ownerIdPath.value = null;
+    ownerIdUploaded.value = false;
+  }
+
+  void removeOwnershipProof() {
+    ownershipProofPath.value = null;
+    ownershipProofUploaded.value = false;
+  }
+
+  // ============================================================
   // VALIDATION
-  // ===========================================================================
+  // ============================================================
 
   bool get canGoNext {
     switch (currentStep.value) {
-      // -----------------------------------------------------------------------
-      // STEP 1 - BUSINESS PREFERENCES
-      // -----------------------------------------------------------------------
+      // ========================================================
+      // STEP 1
+      // WAREHOUSE NAME + PRODUCTS ONLY
+      // ========================================================
 
       case 0:
-        return selectedBusinessType.value.isNotEmpty &&
+        return businessNameController.text
+                .trim()
+                .isNotEmpty &&
             selectedProducts.isNotEmpty;
 
-      // -----------------------------------------------------------------------
-      // STEP 2 - FACILITY INFORMATION
-      // -----------------------------------------------------------------------
+      // ========================================================
+      // STEP 2
+      // INVENTORY
+      // ========================================================
 
       case 1:
-         return facilityNameController.text.trim().isNotEmpty &&
-            inventoryFile != null;
+        return inventoryFile.value != null;
 
-      // -----------------------------------------------------------------------
-      // STEP 3 - DOCUMENTATION
-      // -----------------------------------------------------------------------
+      // ========================================================
+      // STEP 3
+      // DOCUMENTS
+      // ========================================================
 
       case 2:
-        return ownerIdUploaded.value &&
-            ownershipProofUploaded.value;
+        return ownerIdPath.value != null &&
+            ownerIdPath.value!.isNotEmpty &&
+            ownershipProofPath.value != null &&
+            ownershipProofPath.value!.isNotEmpty;
 
-      // -----------------------------------------------------------------------
-      // STEP 4 - LOCATION
-      // -----------------------------------------------------------------------
+      // ========================================================
+      // STEP 4
+      // LOCATION
+      // ========================================================
 
       case 3:
         return address.value.trim().isNotEmpty &&
@@ -356,22 +1093,23 @@ class OwnerProfileComplitionController extends GetxController {
     }
   }
 
-  // ===========================================================================
-  // BACK BUTTON
-  // ===========================================================================
+  // ============================================================
+  // BACK
+  // ============================================================
 
   Future<void> handleBack() async {
-    /// If the user is on the first step,
-    /// leave the profile completion screen.
-    if (isFirstStep) {
+    if (currentStep.value == 0) {
       Get.back();
       return;
     }
 
-    final leave = await AppDialogs.showConfirmDialog(
+    final leave =
+        await AppDialogs.showConfirmDialog(
       title: 'Leave Profile Completion?',
       message:
-          'Your progress will remain saved. Do you want to leave the profile completion process or return to the previous step?',
+          'Your progress will remain saved. '
+          'Do you want to leave the profile completion '
+          'process or return to the previous step?',
       confirmText: 'Leave',
       cancelText: 'Previous Step',
     );
@@ -383,24 +1121,18 @@ class OwnerProfileComplitionController extends GetxController {
     }
   }
 
-  // ===========================================================================
+  // ============================================================
   // RESET
-  // ===========================================================================
+  // ============================================================
 
   void reset() {
-    // -------------------------------------------------------------------------
-    // Step
-    // -------------------------------------------------------------------------
-
     currentStep.value = 0;
 
-    _syncProgress();
+    profileCompletion.value = 0;
 
-    // -------------------------------------------------------------------------
-    // Step 1 - Preferences
-    // -------------------------------------------------------------------------
+    businessNameController.clear();
 
-    selectedBusinessType.value = '';
+    businessName.value = '';
 
     isProductsExpanded.value = false;
 
@@ -410,46 +1142,54 @@ class OwnerProfileComplitionController extends GetxController {
 
     selectedProducts.clear();
 
-    // -------------------------------------------------------------------------
-    // Step 2 - Facility
-    // -------------------------------------------------------------------------
+    savedPreferences.value = null;
 
-    facilityName.value = '';
-
-    facilityNameController.clear();
+    isSavingPreferences.value = false;
 
     removeInventoryFile();
 
-    // -------------------------------------------------------------------------
-    // Step 3 - Documentation
-    // -------------------------------------------------------------------------
+    selectedSectionId.value = 1;
+
+    isImportingInventory.value = false;
+
+    importedInventory.value = null;
+
+    ownerIdPath.value = null;
+
+    ownershipProofPath.value = null;
 
     ownerIdUploaded.value = false;
 
     ownershipProofUploaded.value = false;
 
-    // -------------------------------------------------------------------------
-    // Step 4 - Location
-    // -------------------------------------------------------------------------
+    uploadedDocuments.value = null;
+
+    isUploadingDocuments.value = false;
 
     address.value = '';
 
     city.value = '';
 
     country.value = '';
+
+    PrefHelper.clearOwnerOnboarding();
+
+    debugPrint(
+      'Owner onboarding reset.',
+    );
   }
 
-  // ===========================================================================
-  // DEMO / TESTING
-  // ===========================================================================
+  // ============================================================
+  // DEMO
+  // ============================================================
 
-  void simulateProgress() {
-    nextStep();
+  Future<void> simulateProgress() async {
+    await nextStep();
   }
 
-  // ===========================================================================
-  // PRIVATE HELPERS
-  // ===========================================================================
+  // ============================================================
+  // ERROR
+  // ============================================================
 
   void _showErrorSnackbar({
     required String title,
@@ -458,17 +1198,18 @@ class OwnerProfileComplitionController extends GetxController {
     Get.snackbar(
       title,
       message,
-      snackPosition: SnackPosition.BOTTOM,
+      snackPosition:
+          SnackPosition.BOTTOM,
     );
   }
 
-  // ===========================================================================
-  // LIFECYCLE
-  // ===========================================================================
+  // ============================================================
+  // CLOSE
+  // ============================================================
 
   @override
   void onClose() {
-    facilityNameController.dispose();
+    businessNameController.dispose();
 
     super.onClose();
   }

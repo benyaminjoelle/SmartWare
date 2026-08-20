@@ -18,7 +18,7 @@ class InventoryExcelUploadSection extends StatelessWidget {
       children: [
         Text(
           'Import Your Products',
-          style: theme.textTheme.titleMedium?.copyWith(
+          style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),
