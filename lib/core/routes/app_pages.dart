@@ -207,6 +207,7 @@ class AppPages {
     GetPage(
       name: AppRoutes.ownerEditPofile,
       page: () => OwnerEditProfileView(),
+      binding: OwnerRootBinding()
     ),
     GetPage(
       name: AppRoutes.ownerSettings,

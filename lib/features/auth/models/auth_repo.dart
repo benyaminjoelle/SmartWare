@@ -613,4 +613,58 @@ Future<void> requestClientEmailChange({
     );
   }
 }
+/// ================= DELETE ACCOUNT =================
+Future<void> deleteAccount() async {
+  try {
+    print('════════ DELETE ACCOUNT START ════════');
+
+    final token = await PrefHelper.getToken();
+
+    if (token == null || token.isEmpty) {
+      throw ApiError(
+        message: 'No authentication token found',
+      );
+    }
+
+    print('🔑 Authentication token found');
+    print('📤 Sending delete account request...');
+
+    final response = await _api.delete(
+      '$baseUrl/api/delete',
+    );
+
+    print('📥 Delete Account Response:');
+    print(response);
+
+    if (response is ApiError) {
+      throw response;
+    }
+
+    print('✅ DELETE ACCOUNT SUCCESS');
+    print('════════ DELETE ACCOUNT END ════════');
+  } on DioException catch (e) {
+    print('════════ DELETE ACCOUNT DIO ERROR ════════');
+    print('❌ Status Code: ${e.response?.statusCode}');
+    print('❌ Response Data: ${e.response?.data}');
+    print('════════════════════════════════════════');
+
+    throw ApiError(
+      message:
+          e.response?.data?['message'] ??
+          'Failed to delete account',
+    );
+  } catch (e) {
+    print('════════ DELETE ACCOUNT ERROR ════════');
+    print('❌ Error: $e');
+    print('══════════════════════════════════════');
+
+    if (e is ApiError) {
+      rethrow;
+    }
+
+    throw ApiError(
+      message: 'Failed to delete account',
+    );
+  }
+}
 }

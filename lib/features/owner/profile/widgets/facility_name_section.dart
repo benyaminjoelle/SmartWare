@@ -24,9 +24,9 @@ class FacilityNameSection extends StatelessWidget {
 
 
 CustomTextField(
-   controller: controller.facilityNameController,
+  // controller: controller.facilityNameController,
    hint: "Enter business name",
-   onChanged: controller.updateFacilityName,
+  // onChanged: controller.updateFacilityName,
 
 )
   

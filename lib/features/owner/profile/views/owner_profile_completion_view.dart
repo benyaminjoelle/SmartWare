@@ -96,7 +96,7 @@ class OwnerProfileCompletionView extends StatelessWidget {
       return const OwnerDocumentation();
       
       case 3:
-          return const OwnerLocation();
+          return  OwnerLocation();
       default:
         return const SizedBox();
     }

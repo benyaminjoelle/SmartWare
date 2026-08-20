@@ -133,7 +133,7 @@ class LoginController extends GetxController {
         return 'worker';
 
       case UserRole.warehouseAdmin:
-        return 'warehouseAdmin';
+        return 'warehouse_admin';
     }
   }
 
