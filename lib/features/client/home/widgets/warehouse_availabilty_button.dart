@@ -59,18 +59,18 @@ class WarehouseAvailabilityButton extends StatelessWidget {
                                 fontWeight: FontWeight.w800,
                               ),
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          'For ${controller.quantity.value} unit${controller.quantity.value == 1 ? '' : 's'}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                color: colors.surface.withOpacity(0.75),
-                              ),
-                        ),
+                        // const SizedBox(height: 2),
+                        // Text(
+                        //   'For ${controller.quantity.value} unit${controller.quantity.value == 1 ? '' : 's'}',
+                        //   maxLines: 1,
+                        //   overflow: TextOverflow.ellipsis,
+                        //   style: Theme.of(context)
+                        //       .textTheme
+                        //       .bodySmall
+                        //       ?.copyWith(
+                        //         color: colors.surface.withOpacity(0.75),
+                        //       ),
+                        // ),
                       ],
                     ),
                   ),

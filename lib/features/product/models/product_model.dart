@@ -20,14 +20,19 @@ class Product {
  
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
-      sku: json['sku'] as String,
-      name: json['name'] as String,
-      unit: json['unit'] as String,
-      companyName: json['company']['name'] as String,
+      id: json['id'] as int,
+      sku: json['sku']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      unit: json['unit']?.toString() ?? '',
+      companyName: json['company']?['name']?.toString() ?? '',
       categories: (json['categories'] as List<dynamic>? ?? [])
-        .map((category) => category['name'].toString())
-        .toList(),
+          .map(
+            (category) =>
+                _normalizeCategory(
+                  category['name']?.toString() ?? '',
+                ),
+          )
+          .toList(),
       imageUrl: json['product_image'] as String?,
     );
   }
@@ -41,5 +46,11 @@ class Product {
       'categories': categories,
       'product_image': imageUrl,
     };
+  }
+  static String _normalizeCategory(String category) {
+    return category
+        .trim()
+        .toLowerCase()
+        .replaceAll(' ', '_');
   }
 }

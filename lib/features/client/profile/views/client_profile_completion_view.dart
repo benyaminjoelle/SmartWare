@@ -92,7 +92,7 @@ class ClientProfileCompletionView extends StatelessWidget {
         return const ClientDocumentations();
 
       case 2:
-        return const ClientLocation();
+        return  ClientLocation();
       default:
         return const SizedBox();
     }

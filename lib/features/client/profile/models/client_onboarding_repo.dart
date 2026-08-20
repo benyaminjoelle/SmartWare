@@ -7,6 +7,7 @@ import 'package:smartware/features/client/profile/models/change_phone_number_mod
 import 'package:smartware/features/client/profile/models/client_documents_model.dart';
 import 'package:smartware/features/client/profile/models/client_prefrences_model.dart';
 import 'package:smartware/features/client/profile/models/client_profile_image_model.dart';
+import 'package:smartware/features/client/profile/models/update_business_name_model.dart';
 
 class ClientOnboardingRepo {
   final ApiService _api = ApiService();
@@ -111,7 +112,6 @@ class ClientOnboardingRepo {
       if (e is ApiError) {
         rethrow;
       }
-
       throw ApiError(message: 'Failed to save preferences');
     }
   }
@@ -563,6 +563,123 @@ Future<ClientPreferencesResponseModel> getPreferences() async {
 
     throw ApiError(
       message: 'Failed to get preferences',
+    );
+  }
+}
+// ============================================================
+// UPDATE BUSINESS NAME
+// ============================================================
+
+Future<UpdateBusinessNameModel> updateBusinessName({
+  required String businessName,
+  required int facilityId,
+}) async {
+  try {
+    print('');
+    print('════════ UPDATE BUSINESS NAME START ════════');
+
+    final data = {
+      'business_name': businessName,
+      'facility_id': facilityId,
+    };
+
+    print('📤 Request Data: $data');
+
+    final response = await _api.post(
+      '$baseUrl/api/editBusinessName',
+      data,
+    );
+
+    print('');
+    print('📥 Raw Business Name Response:');
+    print(response);
+
+    // ApiService already returns the response body.
+    if (response is ApiError) {
+      throw response;
+    }
+
+    if (response is! Map<String, dynamic>) {
+      throw ApiError(
+        message: 'Invalid response from server',
+      );
+    }
+
+    final result = UpdateBusinessNameModel.fromJson(
+      response,
+    );
+
+    print('');
+    print('════════ BUSINESS NAME RESPONSE ════════');
+
+    print('💬 Message: ${result.message}');
+
+    print(
+      '🏢 Facility ID: '
+      '${result.facility.id}',
+    );
+
+    print(
+      '🏢 Updated Business Name: '
+      '${result.facility.facilityNameEn}',
+    );
+
+    print(
+      '════════════════════════════════════════',
+    );
+
+    print('');
+    print(
+      '════════ UPDATE BUSINESS NAME SUCCESS ════════',
+    );
+
+    return result;
+  } on DioException catch (e) {
+    print('');
+    print(
+      '════════ UPDATE BUSINESS NAME DIO ERROR ════════',
+    );
+
+    print(
+      '❌ Status Code: '
+      '${e.response?.statusCode}',
+    );
+
+    print(
+      '❌ Response Data: '
+      '${e.response?.data}',
+    );
+
+    print(
+      '════════════════════════════════════════════',
+    );
+
+    throw ApiError(
+      message:
+          e.response?.data?['message'] ??
+          'Failed to update business name',
+    );
+  } catch (e, stackTrace) {
+    print('');
+    print(
+      '════════ UPDATE BUSINESS NAME ERROR ════════',
+    );
+
+    print('❌ Error: $e');
+    print('❌ Type: ${e.runtimeType}');
+    print('❌ StackTrace:');
+    print(stackTrace);
+
+    print(
+      '════════════════════════════════════════',
+    );
+
+    if (e is ApiError) {
+      rethrow;
+    }
+
+    throw ApiError(
+      message: 'Failed to update business name',
     );
   }
 }

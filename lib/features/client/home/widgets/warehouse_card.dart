@@ -27,33 +27,17 @@ class WarehouseCard extends StatelessWidget {
         child: Ink(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: isSelected
-                ? colors.primaryContainer.withOpacity(0.55)
-                : colors.surface,
+            color: colors.surface,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: isSelected
-                  ? colors.primary.withOpacity(0.35)
+                  ? colors.primary
                   : colors.surfaceContainerHighest,
-              width: isSelected ? 1.3 : 1,
+              width: isSelected ? 1.5 : 1,
             ),
           ),
           child: Row(
             children: [
-
-              const SizedBox(width: 12),
-              Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: colors.primaryContainer,
-                borderRadius: BorderRadius.circular(13),
-              ),
-              child: Icon(
-                Icons.warehouse_outlined,
-                color: colors.primary,
-              ),
-            ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

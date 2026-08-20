@@ -72,11 +72,7 @@ class ProductTypes {
       icon: Icons.egg_alt_rounded,
     ),
 
-    const ProductTypeModel(
-      id: 'packaging_supplies',
-      title: 'Packaging Supplies',
-      icon: Icons.inventory_rounded,
-    ),
+    
 
     const ProductTypeModel(
       id: 'cleaning_supplies',

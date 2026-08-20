@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smartware/features/client/cart/controllers/client_cart_controller.dart';
 import 'package:smartware/features/product/models/product_model.dart';
@@ -11,20 +12,12 @@ class ProductDetailsController extends GetxController {
   ProductDetailsController({
     required this.product,
   });
-  final WarehouseController warehouseController =
-      Get.find<WarehouseController>();
-
-  final CartController cartController =
-      Get.find<CartController>();
-
+  final WarehouseController warehouseController = Get.find<WarehouseController>();
+  final CartController cartController = Get.find<CartController>();
+  final quantityController = TextEditingController();
   final quantity = 1.obs;
-
-  final availableWarehouses =
-      <WarehouseProductModel>[].obs;
-
-  final Rxn<WarehouseProductModel> selectedWarehouse =
-      Rxn<WarehouseProductModel>();
-
+  final availableWarehouses = <WarehouseProductModel>[].obs;
+  final Rxn<WarehouseProductModel> selectedWarehouse = Rxn<WarehouseProductModel>();
   final isCheckingAvailability = false.obs;
   final hasCheckedAvailability = false.obs;
   final isAddingToCart = false.obs;
@@ -32,6 +25,8 @@ class ProductDetailsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    quantityController.text = quantity.value.toString();
+
   }
 
   Future<void> checkWarehouseAvailability() async {
@@ -41,14 +36,12 @@ class ProductDetailsController extends GetxController {
       await Future.delayed(
         const Duration(milliseconds: 300),
       );
-
       availableWarehouses.assignAll(
-        warehouseController.getWarehousesForProduct(
-          product.id,
-        ).where(
-          (warehouse) =>
-              warehouse.quantity >= quantity.value,
-        ),
+        warehouseController
+            .getWarehousesForProduct(product.id)
+            .where(
+              (warehouse) => warehouse.quantity > 0,
+            ),
       );
 
       hasCheckedAvailability.value = true;
@@ -71,34 +64,67 @@ class ProductDetailsController extends GetxController {
     return selectedPrice * quantity.value;
   }
 
-  void increaseQuantity() {
-    quantity.value++;
-    _resetWarehouseSelection();
+ void increaseQuantity() {
+  quantity.value++;
+  quantityController.text = quantity.value.toString();
+}
+
+void decreaseQuantity() {
+  if (quantity.value <= 1) return;
+
+  quantity.value--;
+  quantityController.text = quantity.value.toString();
+}
+
+void setQuantity(int value) {
+  if (value < 1) return;
+
+  quantity.value = value;
+  quantityController.text = value.toString();
+}
+
+void onQuantityChanged(String value) {
+  // Allow the field to temporarily be empty
+  // while the user is typing.
+  if (value.isEmpty) {
+    return;
   }
 
-  void decreaseQuantity() {
-    if (quantity.value <= 1) return;
+  final parsed = int.tryParse(value);
 
-    quantity.value--;
-    _resetWarehouseSelection();
+  if (parsed == null || parsed < 1) {
+    // Restore the previous valid quantity.
+    quantityController.text = quantity.value.toString();
+
+    quantityController.selection = TextSelection.collapsed(
+      offset: quantityController.text.length,
+    );
+
+    return;
   }
 
-  void setQuantity(int value) {
-    if (value < 1) return;
+  quantity.value = parsed;
+}
+void onQuantitySubmitted() {
+  if (quantityController.text.isEmpty) {
+    quantity.value = 1;
+    quantityController.text = '1';
 
-    quantity.value = value;
-    _resetWarehouseSelection();
+    quantityController.selection = TextSelection.collapsed(
+      offset: quantityController.text.length,
+    );
   }
+}
 
-  void selectWarehouse(
-    WarehouseProductModel warehouse,
-  ) {
-    if (warehouse.quantity < quantity.value) {
-      return;
-    }
+  void selectWarehouse(WarehouseProductModel warehouse) {
+  if (warehouse.quantity <= 0) return;
 
+  if (selectedWarehouse.value?.warehouseId == warehouse.warehouseId) {
+    selectedWarehouse.value = null;
+  } else {
     selectedWarehouse.value = warehouse;
   }
+}
 
   Future<void> addToCart() async {
     final warehouse = selectedWarehouse.value;
@@ -149,9 +175,9 @@ class ProductDetailsController extends GetxController {
   }
 
  
-  void _resetWarehouseSelection() {
-    hasCheckedAvailability.value = false;
-    selectedWarehouse.value = null;
-    availableWarehouses.clear();
-  }
+  // void _resetWarehouseSelection() {
+  //   hasCheckedAvailability.value = false;
+  //   selectedWarehouse.value = null;
+  //   availableWarehouses.clear();
+  // }
 }
