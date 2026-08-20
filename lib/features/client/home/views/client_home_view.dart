@@ -151,33 +151,27 @@ class ClientHomeView extends StatelessWidget {
                 child: DynamicFilterRow(),
               ),
        
-           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child:
-               HorizontalProductRow(
-                title: "Top Selling".tr,
-                onSeeAllPressed: () {},
-                products: productController.products,
-              ),
-            )
-            ),
-           
-         
-            SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: SpecialSalesRow(
-                title: "Special Sales".tr,
-                onSeeAllPressed: () {
-                  // Handle view routing
-                },
-                items: productController.specialSaleItems,
-              ),
+          SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: HorizontalProductRow(
+              title: "Top Selling".tr,
+              onSeeAllPressed: () {},
+              products: productController.displayedProducts,
             ),
           ),
-          
-         
+        ),
+                
+        Obx(() => SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: SpecialSalesRow(
+            title: "Special Sales".tr,
+            onSeeAllPressed: () {},
+            items: productController.specialSaleItems,
+          ),
+        ),
+      )),
           
 
         //========= Section Header for All Products ==========

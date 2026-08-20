@@ -35,6 +35,7 @@ class SpecialSaleProductCard extends StatelessWidget {
       },
       child: Container(
         width: 160,
+        // height: 230,
         margin: const EdgeInsets.only(
           right: 14,
           bottom: 8,
@@ -51,10 +52,11 @@ class SpecialSaleProductCard extends StatelessWidget {
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // IMAGE + DISCOUNT
-            Expanded(
+            SizedBox(
+              height: 155,
               child: Stack(
                 children: [
                   ClipRRect(
@@ -69,23 +71,27 @@ class SpecialSaleProductCard extends StatelessWidget {
                           ? Image.network(
                               product.imageUrl!,
                               fit: BoxFit.cover,
-                              errorBuilder: (
-                                context,
-                                error,
-                                stackTrace,
-                              ) {
-                                return Icon(
-                                  Icons.inventory_2_outlined,
-                                  size: 40,
-                                  color: colors.onSurface.withOpacity(0.4),
-                                );
-                              },
+                           errorBuilder: (
+                            context,
+                            error,
+                            stackTrace,
+                          ) {
+                            return Center(
+                              child: Icon(
+                                Icons.inventory_2_outlined,
+                                size: 40,
+                                color: colors.onSurface.withOpacity(0.4),
+                              ),
+                            );
+                          },
                             )
-                          : Icon(
+                          :  Center(
+                            child: Icon(
                               Icons.inventory_2_outlined,
                               size: 40,
                               color: colors.onSurface.withOpacity(0.4),
                             ),
+                          ),
                     ),
                   ),
 

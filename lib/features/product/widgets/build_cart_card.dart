@@ -110,13 +110,7 @@ class CartCard extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Text(
-                          //   'Quantity: ${cartItem.quantity}',
-                          //   style: theme.textTheme.bodyMedium,
-                          // ),
-
-                          // const SizedBox(height: 4),
-
+                         
                           Text(
                             'Total: \$${cartItem.discountedTotal.toStringAsFixed(2)}',
                             style: theme.textTheme.bodyMedium?.copyWith(

@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:smartware/features/client/home/controllers/product_details_controller.dart';
 import 'package:smartware/features/client/home/widgets/quantity_button.dart';
 
@@ -8,6 +6,7 @@ class QuantitySelector extends StatelessWidget {
   final ProductDetailsController controller;
 
   const QuantitySelector({
+    super.key,
     required this.controller,
   });
 
@@ -29,18 +28,24 @@ class QuantitySelector extends StatelessWidget {
           ),
 
           Expanded(
-            child: Center(
-              child: Obx(
-                () => Text(
-                  '${controller.quantity.value}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
-                      ?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                ),
+            child: TextField(
+              controller: controller.quantityController,
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
               ),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+              onChanged: controller.onQuantityChanged,
+              onSubmitted: (_) {
+                controller.onQuantitySubmitted();
+              },
             ),
           ),
 

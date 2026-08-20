@@ -10,6 +10,7 @@ import 'package:smartware/features/client/home/widgets/product_hero_image.dart';
 import 'package:smartware/features/client/home/widgets/quantity_selector.dart';
 import 'package:smartware/features/client/home/widgets/warehouse_availabilty_button.dart';
 import 'package:smartware/features/client/home/widgets/warehouse_selection.dart';
+import 'package:smartware/widgets/back_button.dart';
 
 class ProductDetailsView extends StatelessWidget {
   const ProductDetailsView({
@@ -125,13 +126,9 @@ class ProductDetailsView extends StatelessWidget {
                       ),
                 
                       const SizedBox(height: 12),
-
                       QuantitySelector(
-                        controller: controller,
-                      ),
-
+                        controller: controller,),
                       const SizedBox(height: 28),
-
                       WarehouseAvailabilityButton(
                         controller: controller,
                       ),
@@ -161,11 +158,9 @@ class ProductDetailsView extends StatelessWidget {
             Positioned(
               top: 14,
               left: 16,
-              child: FloatingButton(
-                icon: Icons.arrow_back_rounded,
-                onTap: () => Get.back(),
+              child: CustomBackButton(),               
               ),
-            ),
+            
             Positioned(
               top: 14,
               right: 16,

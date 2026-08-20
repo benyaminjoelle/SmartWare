@@ -455,8 +455,6 @@ class AuthRepo {
     }
   }
 
-  ///=============================================================
-
   ///=================FORGOT PASSWORD======================
   ///==================1st screen==================
   Future<Map<String, dynamic>> forgotPassword({required String email}) async {
