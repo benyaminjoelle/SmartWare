@@ -704,13 +704,9 @@ class OwnerLocationController extends GetxController {
       return;
     }
 
-    print('');
-    print('════════ OWNER LOCATION SELECTED ════════');
-    print('🏢 Facility ID: $facilityId');
-    print('📍 Latitude: ${location.latitude}');
-    print('📍 Longitude: ${location.longitude}');
-    print('📍 Address: ${selectedAddress.value}');
-    print('════════════════════════════════════════');
+    // ========================================================
+    // SEND LOCATION TO LARAVEL
+    // ========================================================
 
     await _repo.submitLocation(
       facilityId: facilityId,
@@ -719,15 +715,38 @@ class OwnerLocationController extends GetxController {
       address: selectedAddress.value.trim(),
     );
 
+    // ========================================================
+    // SAVE OWNER PROFILE COMPLETION
+    // ========================================================
+
+    await PrefHelper.setOwnerProfileCompleted(true);
+
+    await PrefHelper.saveOwnerProfileCompletion(100);
+
+    await PrefHelper.saveOwnerOnboardingStep(4);
+
+    debugPrint('');
+    debugPrint('════════ OWNER PROFILE COMPLETED ════════');
+    debugPrint('✅ Location saved to Laravel');
+    debugPrint('✅ Owner profile completed: 100%');
+    debugPrint('✅ Owner onboarding step: 4');
+    debugPrint('════════════════════════════════════════');
+    debugPrint('');
+
     AppSnackbar.show(
-      title: 'Location Saved',
-      message: 'Your facility location has been saved successfully.',
+      title: 'Profile Complete',
+      message: 'Your profile has been completed successfully.',
       position: SnackPosition.TOP,
     );
 
+    // ========================================================
+    // RETURN TO PROFILE PAGE
+    // ========================================================
+
     Get.back(result: true);
+
   } catch (e) {
-    debugPrint('❌ Save owner location error: $e');
+    debugPrint('❌ Save location error: $e');
 
     AppSnackbar.show(
       title: 'Error',

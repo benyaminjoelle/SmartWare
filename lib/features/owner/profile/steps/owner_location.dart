@@ -511,6 +511,6 @@ class OwnerLocation extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ); 
   }
 }

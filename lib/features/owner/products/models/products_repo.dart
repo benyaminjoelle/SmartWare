@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:smartware/core/constants/const_ip.dart';
 import 'package:smartware/core/network/api_error.dart';
 import 'package:smartware/core/network/api_service.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
 
 import 'package:smartware/features/owner/products/models/owner_inventory_model.dart';
 import 'package:smartware/features/owner/products/models/owner_product_create_model.dart';
@@ -49,8 +50,9 @@ class ProductsRepo {
       }
 
       final items = data['data'];
-
+      
       if (items is! List) {
+        print("items");
         throw ApiError(message: 'Invalid inventory list');
       }
 
@@ -103,11 +105,11 @@ class ProductsRepo {
     }
   }
 
-  // ============================================================
-  // CREATE PRODUCT + INVENTORY
-  // ============================================================
+// ============================================================
+// CREATE PRODUCT + INVENTORY
+// ============================================================
 
- Future<CreateProductResponse> createProduct({
+Future<CreateProductResponse> createProduct({
   required String sku,
   required String nameEn,
   required String unit,
@@ -122,6 +124,20 @@ class ProductsRepo {
     print('');
     print('════════ CREATE PRODUCT START ════════');
 
+    // ----------------------------------------------------------
+    // GET CURRENT WAREHOUSE ID
+    // ----------------------------------------------------------
+
+    final warehouseId = await PrefHelper.getOwnerFacilityId();
+
+    print('🏭 Warehouse ID: $warehouseId');
+
+    if (warehouseId == null) {
+      throw ApiError(
+        message: 'No warehouse/facility ID found.',
+      );
+    }
+
     print('📦 SKU: $sku');
     print('📝 Name: $nameEn');
     print('📏 Unit: $unit');
@@ -132,35 +148,71 @@ class ProductsRepo {
     print('📦 Quantity: $quantity');
     print('🖼 Image: ${productImage?.path}');
 
+    // ----------------------------------------------------------
+    // BUILD FORM DATA
+    // ----------------------------------------------------------
+
     final formData = FormData();
 
     formData.fields.add(
-      MapEntry('sku', sku.trim()),
+      MapEntry(
+        'warehouse_id',
+        warehouseId.toString(),
+      ),
     );
 
     formData.fields.add(
-      MapEntry('name_en', nameEn.trim()),
+      MapEntry(
+        'sku',
+        sku.trim(),
+      ),
     );
 
     formData.fields.add(
-      MapEntry('unit', unit.trim()),
+      MapEntry(
+        'name_en',
+        nameEn.trim(),
+      ),
     );
 
     formData.fields.add(
-      MapEntry('unit_price', unitPrice.toString()),
+      MapEntry(
+        'unit',
+        unit.trim(),
+      ),
     );
 
     formData.fields.add(
-      MapEntry('description_en', descriptionEn.trim()),
+      MapEntry(
+        'unit_price',
+        unitPrice.toString(),
+      ),
     );
 
     formData.fields.add(
-      MapEntry('section_id', sectionId.toString()),
+      MapEntry(
+        'description_en',
+        descriptionEn.trim(),
+      ),
     );
 
     formData.fields.add(
-      MapEntry('quantity', quantity.toString()),
+      MapEntry(
+        'section_id',
+        sectionId.toString(),
+      ),
     );
+
+    formData.fields.add(
+      MapEntry(
+        'quantity',
+        quantity.toString(),
+      ),
+    );
+
+    // ----------------------------------------------------------
+    // CATEGORIES
+    // ----------------------------------------------------------
 
     for (final categoryId in categories) {
       formData.fields.add(
@@ -170,6 +222,10 @@ class ProductsRepo {
         ),
       );
     }
+
+    // ----------------------------------------------------------
+    // IMAGE
+    // ----------------------------------------------------------
 
     if (productImage != null) {
       formData.files.add(
@@ -185,6 +241,10 @@ class ProductsRepo {
       );
     }
 
+    // ----------------------------------------------------------
+    // DEBUG FORM DATA
+    // ----------------------------------------------------------
+
     print('');
     print('📤 FORM DATA:');
 
@@ -198,6 +258,13 @@ class ProductsRepo {
         '${formData.files.first.value.filename}',
       );
     }
+
+    print('');
+    print('➡️ Sending POST /api/products');
+
+    // ----------------------------------------------------------
+    // API REQUEST
+    // ----------------------------------------------------------
 
     final response = await _api.post(
       '$baseUrl/api/products',
@@ -226,6 +293,7 @@ class ProductsRepo {
     print('🆔 Product ID: ${result.data.id}');
     print('📦 SKU: ${result.data.sku}');
     print('📝 Name: ${result.data.name}');
+    print('🏭 Warehouse ID: $warehouseId');
     print('════════════════════════════════');
 
     return result;
