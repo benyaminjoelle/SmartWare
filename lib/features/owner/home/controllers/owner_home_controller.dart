@@ -1,46 +1,47 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smartware/core/routes/app_routes.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
+import 'package:smartware/core/network/api_error.dart';
+
+import 'package:smartware/features/owner/analytics/models/warehouse_model.dart';
+import 'package:smartware/features/owner/analytics/models/warehouse_repo.dart';
 
 class OwnerHomeController extends GetxController {
   // ===========================================================================
+  // REPOSITORY
+  // ===========================================================================
+
+  final OwnerAnalyticsRepo _repo = OwnerAnalyticsRepo();
+
+  // ===========================================================================
   // STATE
   // ===========================================================================
+
   final userName = 'User name'.obs;
   final isLoading = false.obs;
 
   // ===========================================================================
-  // MAIN OVERVIEW
+  // ACTIVE WAREHOUSE
+  // ===========================================================================
+
+  final selectedWarehouse = Rxn<WarehouseModel>();
+
+  // ===========================================================================
+  // WAREHOUSES
+  // ===========================================================================
+
+  final warehouses = <WarehouseModel>[].obs;
+
+  // ===========================================================================
+  // OVERVIEW
   // ===========================================================================
 
   final warehouseCount = 0.obs;
+
   final productCount = 0.obs;
-  final pendingOrders = 0.obs;
+
   final lowStockCount = 0.obs;
-
-  // Additional useful dashboard information
-  final workerCount = 0.obs;
-  final totalInventoryUnits = 0.obs;
-  final todayOrders = 0.obs;
-  final ordersNeedingAttention = 0.obs;
-
-  // ===========================================================================
-  // OPERATION STATUS
-  // ===========================================================================
-
-  final systemOperational = true.obs;
-
-  /// 0.0 -> 1.0
-  /// Represents the overall warehouse capacity.
-  final overallCapacity = 0.0.obs;
-
-  // ===========================================================================
-  // HOME LISTS
-  // ===========================================================================
-
-  final warehouses = <OwnerWarehouseHomeModel>[].obs;
-  final lowStockProducts = <OwnerLowStockHomeModel>[].obs;
-  final recentOrders = <OwnerRecentOrderModel>[].obs;
 
   // ===========================================================================
   // GREETING
@@ -61,39 +62,14 @@ class OwnerHomeController extends GetxController {
   // COMPUTED VALUES
   // ===========================================================================
 
-  /// Number of warehouses that are almost full.
   int get warehousesNearCapacity {
-    return warehouses.where((warehouse) => warehouse.capacity >= 0.85).length;
+    // We do NOT have capacity information from the current backend model.
+    // Keep this at zero until backend provides capacity data.
+    return 0;
   }
 
-  /// Number of products that are critically low.
-  int get criticalStockCount {
-    return lowStockProducts
-        .where((product) => product.currentStock <= product.minimumStock * 0.5)
-        .length;
-  }
-
-  /// The warehouse using the most space.
-  OwnerWarehouseHomeModel? get busiestWarehouse {
-    if (warehouses.isEmpty) {
-      return null;
-    }
-
-    return warehouses.reduce(
-      (current, next) => current.capacity > next.capacity ? current : next,
-    );
-  }
-
-  /// Percentage of overall warehouse capacity.
-  int get overallCapacityPercentage {
-    return (overallCapacity.value * 100).round();
-  }
-
-  /// Whether there is something that needs owner's attention.
   bool get hasAlerts {
-    return lowStockCount.value > 0 ||
-        pendingOrders.value > 0 ||
-        warehousesNearCapacity > 0;
+    return lowStockCount.value > 0;
   }
 
   // ===========================================================================
@@ -103,9 +79,14 @@ class OwnerHomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     loadUserName();
     loadHome();
   }
+
+  // ===========================================================================
+  // USER
+  // ===========================================================================
 
   Future<void> loadUserName() async {
     final name = await PrefHelper.getUserName();
@@ -114,6 +95,7 @@ class OwnerHomeController extends GetxController {
       userName.value = name;
     }
   }
+
   // ===========================================================================
   // LOAD HOME
   // ===========================================================================
@@ -122,228 +104,59 @@ class OwnerHomeController extends GetxController {
     try {
       isLoading.value = true;
 
-      // ========================================================================
-      // TODO: BACKEND
-      // ========================================================================
-      //
-      // Replace the demo section below with your API call.
-      //
-      // Backend should eventually return:
-      //
-      // owner
-      // warehouses
-      // products
-      // workers
-      // orders
-      // inventory statistics
-      // low stock products
-      // recent orders
-      //
-      // ========================================================================
+      final result = await _repo.getWarehouses();
 
-      await Future.delayed(const Duration(milliseconds: 700));
-
-      _loadDemoData();
+      setWarehouseData(result);
     } catch (e) {
-      // TODO:
-      // Handle API error here.
-      //
-      // Example:
-      // Get.snackbar(
-      //   'Error',
-      //   'Unable to load dashboard data',
-      // );
+      debugPrint('Owner Home Error: $e');
+
+      if (e is ApiError) {
+        Get.snackbar('Error', e.message, snackPosition: SnackPosition.BOTTOM);
+      } else {
+        Get.snackbar(
+          'Error',
+          'Failed to load warehouses',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     } finally {
       isLoading.value = false;
     }
   }
 
   // ===========================================================================
-  // DEMO DATA
+  // SET WAREHOUSE DATA
   // ===========================================================================
 
-  void _loadDemoData() {
-    // -------------------------------------------------------------------------
-    // OWNER
-    // -------------------------------------------------------------------------
+  void setWarehouseData(List<WarehouseModel> data) {
+    warehouses.assignAll(data);
 
-    // -------------------------------------------------------------------------
-    // OVERVIEW
-    // -------------------------------------------------------------------------
+    warehouseCount.value = data.length;
 
-    warehouseCount.value = 4;
+    productCount.value = data.fold(
+      0,
+      (sum, warehouse) => sum + warehouse.productCount,
+    );
 
-    productCount.value = 248;
+    lowStockCount.value = data.fold(
+      0,
+      (sum, warehouse) => sum + warehouse.stockOutRiskCount,
+    );
 
-    pendingOrders.value = 7;
+    // Keep current warehouse if it still exists.
+    final currentId = selectedWarehouse.value?.id;
 
-    lowStockCount.value = 6;
+    if (data.isEmpty) {
+      selectedWarehouse.value = null;
+      return;
+    }
 
-    workerCount.value = 18;
+    final matchingWarehouse = data.cast<WarehouseModel?>().firstWhere(
+      (warehouse) => warehouse?.id == currentId,
+      orElse: () => null,
+    );
 
-    totalInventoryUnits.value = 12840;
-
-    todayOrders.value = 23;
-
-    ordersNeedingAttention.value = 4;
-
-    // -------------------------------------------------------------------------
-    // SYSTEM
-    // -------------------------------------------------------------------------
-
-    systemOperational.value = true;
-
-    overallCapacity.value = 0.68;
-
-    // -------------------------------------------------------------------------
-    // WAREHOUSES
-    // -------------------------------------------------------------------------
-
-    warehouses.assignAll([
-      OwnerWarehouseHomeModel(
-        name: 'Main Warehouse',
-        location: 'Damascus',
-        imageUrl: null,
-        capacity: 0.68,
-        productCount: 124,
-        workerCount: 8,
-        inventoryUnits: 6840,
-        status: WarehouseStatus.operational,
-      ),
-
-      OwnerWarehouseHomeModel(
-        name: 'North Warehouse',
-        location: 'Aleppo',
-        imageUrl: null,
-        capacity: 0.84,
-        productCount: 76,
-        workerCount: 5,
-        inventoryUnits: 3920,
-        status: WarehouseStatus.operational,
-      ),
-
-      OwnerWarehouseHomeModel(
-        name: 'Cold Storage',
-        location: 'Damascus',
-        imageUrl: null,
-        capacity: 0.47,
-        productCount: 31,
-        workerCount: 3,
-        inventoryUnits: 1450,
-        status: WarehouseStatus.operational,
-      ),
-
-      OwnerWarehouseHomeModel(
-        name: 'West Warehouse',
-        location: 'Homs',
-        imageUrl: null,
-        capacity: 0.91,
-        productCount: 17,
-        workerCount: 2,
-        inventoryUnits: 630,
-        status: WarehouseStatus.nearCapacity,
-      ),
-    ]);
-
-    // -------------------------------------------------------------------------
-    // LOW STOCK PRODUCTS
-    // -------------------------------------------------------------------------
-
-    lowStockProducts.assignAll([
-      OwnerLowStockHomeModel(
-        name: 'Coca Cola 330ml',
-        currentStock: 12,
-        minimumStock: 30,
-        imageUrl: null,
-        warehouseName: 'Main Warehouse',
-      ),
-
-      OwnerLowStockHomeModel(
-        name: 'Pepsi 330ml',
-        currentStock: 8,
-        minimumStock: 25,
-        imageUrl: null,
-        warehouseName: 'Main Warehouse',
-      ),
-
-      OwnerLowStockHomeModel(
-        name: 'Bottled Water 500ml',
-        currentStock: 14,
-        minimumStock: 40,
-        imageUrl: null,
-        warehouseName: 'North Warehouse',
-      ),
-
-      OwnerLowStockHomeModel(
-        name: 'Orange Juice 1L',
-        currentStock: 6,
-        minimumStock: 20,
-        imageUrl: null,
-        warehouseName: 'Cold Storage',
-      ),
-
-      OwnerLowStockHomeModel(
-        name: 'Energy Drink',
-        currentStock: 9,
-        minimumStock: 15,
-        imageUrl: null,
-        warehouseName: 'West Warehouse',
-      ),
-
-      OwnerLowStockHomeModel(
-        name: 'Chocolate Bars',
-        currentStock: 11,
-        minimumStock: 25,
-        imageUrl: null,
-        warehouseName: 'North Warehouse',
-      ),
-    ]);
-
-    // -------------------------------------------------------------------------
-    // RECENT ORDERS
-    // -------------------------------------------------------------------------
-
-    recentOrders.assignAll([
-      OwnerRecentOrderModel(
-        orderNumber: '#ORD-1048',
-        clientName: 'Al Sham Restaurant',
-        status: 'Pending',
-        totalItems: 24,
-        createdAt: DateTime.now().subtract(const Duration(minutes: 12)),
-      ),
-
-      OwnerRecentOrderModel(
-        orderNumber: '#ORD-1047',
-        clientName: 'Fresh Market',
-        status: 'Processing',
-        totalItems: 42,
-        createdAt: DateTime.now().subtract(const Duration(minutes: 38)),
-      ),
-
-      OwnerRecentOrderModel(
-        orderNumber: '#ORD-1046',
-        clientName: 'City Pharmacy',
-        status: 'Ready',
-        totalItems: 18,
-        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
-      ),
-
-      OwnerRecentOrderModel(
-        orderNumber: '#ORD-1045',
-        clientName: 'Daily Needs Store',
-        status: 'Completed',
-        totalItems: 31,
-        createdAt: DateTime.now().subtract(const Duration(hours: 2)),
-      ),
-
-      OwnerRecentOrderModel(
-        orderNumber: '#ORD-1044',
-        clientName: 'Al Noor Market',
-        status: 'Completed',
-        totalItems: 16,
-        createdAt: DateTime.now().subtract(const Duration(hours: 3)),
-      ),
-    ]);
+    selectedWarehouse.value = matchingWarehouse ?? data.first;
   }
 
   // ===========================================================================
@@ -355,17 +168,68 @@ class OwnerHomeController extends GetxController {
   }
 
   // ===========================================================================
+  // WAREHOUSE SWITCHER
+  // ===========================================================================
+
+  void openWarehouseSwitcher(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return _WarehouseSwitcherSheet(controller: this, colors: colors);
+      },
+    );
+  }
+
+  void selectWarehouse(WarehouseModel warehouse) {
+    selectedWarehouse.value = warehouse;
+
+    Get.back();
+  }
+
+  // ===========================================================================
   // QUICK ACTIONS
   // ===========================================================================
 
   void addProduct() {
+    final warehouse = selectedWarehouse.value;
+
+    if (warehouse == null) {
+      Get.snackbar(
+        'Warehouse required',
+        'Please select a warehouse first.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
     // TODO:
-    // Navigate to add product.
+    // Navigate to Add Product.
+    //
+    // Use:
+    // warehouse.id
+    //
+    // when the product API requires the facility/warehouse ID.
   }
 
   void addWorker() {
+    final warehouse = selectedWarehouse.value;
+
+    if (warehouse == null) {
+      Get.snackbar(
+        'Warehouse required',
+        'Please select a warehouse first.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
     // TODO:
-    // Navigate to add worker.
+    // Navigate to Add Worker.
+    // Pass warehouse.id when backend requires it.
   }
 
   // ===========================================================================
@@ -373,205 +237,322 @@ class OwnerHomeController extends GetxController {
   // ===========================================================================
 
   void openProducts() {
-    // TODO:
-    // Navigate to products.
+    // TODO: Navigate to products.
   }
 
   void openOrders() {
-    // TODO:
-    // Navigate to orders.
+    // TODO: Navigate to orders.
   }
 
   void openWarehouses() {
-    // TODO:
-    // Navigate to warehouses.
+    // TODO: Navigate to warehouses.
   }
 
- 
-  void openWarehouse(OwnerWarehouseHomeModel warehouse) {
+  void openWarehouse(WarehouseModel warehouse) {
+    selectedWarehouse.value = warehouse;
+
     // TODO:
-    // Open warehouse details.
+    // Navigate to warehouse details.
+    // warehouse.id is the real database ID.
   }
 
-  void openProduct(OwnerLowStockHomeModel product) {
-    // TODO:
-    // Open product details.
+  void addFacility() {
+    Get.toNamed(AppRoutes.ownerAddFacility);
   }
+}
 
-  // ===========================================================================
-  // FUTURE API HELPERS
-  // ===========================================================================
+// =============================================================================
+// WAREHOUSE SWITCHER SHEET
+// =============================================================================
 
-  /// This will be useful once the backend returns warehouse data.
-  void setWarehouseData(List<OwnerWarehouseHomeModel> data) {
-    warehouses.assignAll(data);
+class _WarehouseSwitcherSheet extends StatelessWidget {
+  final OwnerHomeController controller;
+  final ColorScheme colors;
 
-    warehouseCount.value = data.length;
+  const _WarehouseSwitcherSheet({
+    required this.controller,
+    required this.colors,
+  });
 
-    if (data.isEmpty) {
-      overallCapacity.value = 0;
-      return;
-    }
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+        padding: const EdgeInsets.fromLTRB(18, 12, 18, 18),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(28),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(.15),
+              blurRadius: 30,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: Obx(() {
+          final warehouses = controller.warehouses;
+          final selectedId = controller.selectedWarehouse.value?.id;
 
-    final totalCapacity = data.fold<double>(
-      0,
-      (sum, warehouse) => sum + warehouse.capacity,
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 38,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: colors.onSurface.withOpacity(.18),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Switch warehouse',
+                      style: TextStyle(
+                        fontSize: 19,
+                        fontWeight: FontWeight.w900,
+                        color: colors.onSurface,
+                      ),
+                    ),
+                  ),
+
+                  IconButton(
+                    onPressed: () => Get.back(),
+                    icon: Icon(
+                      Icons.close_rounded,
+                      color: colors.onSurface.withOpacity(.55),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 8),
+
+              if (warehouses.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Text(
+                    'No warehouses available.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: colors.onSurface.withOpacity(.55),
+                    ),
+                  ),
+                )
+              else
+                ...warehouses.map((warehouse) {
+                  final isSelected = warehouse.id == selectedId;
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 7),
+                    child: _WarehouseSwitchTile(
+                      warehouse: warehouse,
+                      isSelected: isSelected,
+                      colors: colors,
+                      onTap: () {
+                        controller.selectWarehouse(warehouse);
+                      },
+                    ),
+                  );
+                }),
+
+              const SizedBox(height: 8),
+
+              Material(
+                color: colors.primary.withOpacity(.08),
+                borderRadius: BorderRadius.circular(17),
+                child: InkWell(
+                  onTap: controller.addFacility,
+                  borderRadius: BorderRadius.circular(17),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(17),
+                      border: Border.all(
+                        color: colors.primary.withOpacity(.12),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            color: colors.primary.withOpacity(.10),
+                            borderRadius: BorderRadius.circular(11),
+                          ),
+                          child: Icon(
+                            Icons.add_rounded,
+                            color: colors.primary,
+                            size: 20,
+                          ),
+                        ),
+
+                        const SizedBox(width: 11),
+
+                        Expanded(
+                          child: Text(
+                            'Add Facility',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w900,
+                              color: colors.primary,
+                            ),
+                          ),
+                        ),
+
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 18,
+                          color: colors.primary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }),
+      ),
     );
-
-    overallCapacity.value = (totalCapacity / data.length).clamp(0.0, 1.0);
-  }
-
-  /// Update stock alerts after loading products.
-  void setLowStockData(List<OwnerLowStockHomeModel> data) {
-    lowStockProducts.assignAll(data);
-    lowStockCount.value = data.length;
-  }
-
-  /// Update orders after loading orders.
-  void setOrderData(List<OwnerRecentOrderModel> data) {
-    recentOrders.assignAll(data);
-
-    pendingOrders.value = data
-        .where((order) => order.status.toLowerCase() == 'pending')
-        .length;
   }
 }
 
 // =============================================================================
-// WAREHOUSE MODEL
+// WAREHOUSE SWITCH TILE
 // =============================================================================
 
-class OwnerWarehouseHomeModel {
-  final String name;
-  final String location;
-  final String? imageUrl;
-  final double capacity;
+class _WarehouseSwitchTile extends StatelessWidget {
+  final WarehouseModel warehouse;
+  final bool isSelected;
+  final ColorScheme colors;
+  final VoidCallback onTap;
 
-  // Extra information useful for the home screen
-  final int productCount;
-  final int workerCount;
-  final int inventoryUnits;
-  final WarehouseStatus status;
-
-  OwnerWarehouseHomeModel({
-    required this.name,
-    required this.location,
-    this.imageUrl,
-    required this.capacity,
-    this.productCount = 0,
-    this.workerCount = 0,
-    this.inventoryUnits = 0,
-    this.status = WarehouseStatus.operational,
-  });
-}
-
-// =============================================================================
-// WAREHOUSE STATUS
-// =============================================================================
-
-enum WarehouseStatus { operational, nearCapacity, maintenance, inactive }
-
-// =============================================================================
-// LOW STOCK MODEL
-// =============================================================================
-
-class OwnerLowStockHomeModel {
-  final String name;
-  final int currentStock;
-  final int minimumStock;
-  final String? imageUrl;
-
-  // Useful to tell the owner where the problem is.
-  final String warehouseName;
-
-  OwnerLowStockHomeModel({
-    required this.name,
-    required this.currentStock,
-    required this.minimumStock,
-    this.imageUrl,
-    this.warehouseName = '',
+  const _WarehouseSwitchTile({
+    required this.warehouse,
+    required this.isSelected,
+    required this.colors,
+    required this.onTap,
   });
 
-  // ---------------------------------------------------------------------------
-  // STOCK HELPERS
-  // ---------------------------------------------------------------------------
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: isSelected ? colors.primary.withOpacity(.08) : Colors.transparent,
+      borderRadius: BorderRadius.circular(17),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(17),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(17),
+            border: Border.all(
+              color: isSelected
+                  ? colors.primary.withOpacity(.18)
+                  : colors.outline.withOpacity(.15),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 43,
+                height: 43,
+                decoration: BoxDecoration(
+                  color: colors.primary.withOpacity(.08),
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: Icon(
+                  Icons.warehouse_rounded,
+                  size: 21,
+                  color: colors.primary,
+                ),
+              ),
 
-  double get stockPercentage {
-    if (minimumStock <= 0) {
-      return 0;
-    }
+              const SizedBox(width: 11),
 
-    return (currentStock / minimumStock).clamp(0.0, 1.0);
-  }
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      warehouse.nameEn,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        color: colors.onSurface,
+                      ),
+                    ),
 
-  bool get isCritical {
-    return currentStock <= minimumStock * 0.5;
-  }
+                    const SizedBox(height: 3),
 
-  bool get isOutOfStock {
-    return currentStock <= 0;
-  }
-}
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.location_on_rounded,
+                          size: 11,
+                          color: colors.onSurface.withOpacity(.45),
+                        ),
 
-// =============================================================================
-// RECENT ORDER MODEL
-// =============================================================================
+                        const SizedBox(width: 3),
 
-class OwnerRecentOrderModel {
-  final String orderNumber;
-  final String clientName;
-  final String status;
+                        Expanded(
+                          child: Text(
+                            warehouse.location.isNotEmpty
+                                ? warehouse.location
+                                : 'Location unavailable',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w500,
+                              color: colors.onSurface.withOpacity(.50),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
 
-  final int totalItems;
-  final DateTime createdAt;
-
-  OwnerRecentOrderModel({
-    required this.orderNumber,
-    required this.clientName,
-    required this.status,
-    this.totalItems = 0,
-    DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
-
-  // ---------------------------------------------------------------------------
-  // STATUS HELPERS
-  // ---------------------------------------------------------------------------
-
-  bool get isPending {
-    return status.toLowerCase() == 'pending';
-  }
-
-  bool get isProcessing {
-    return status.toLowerCase() == 'processing';
-  }
-
-  bool get isReady {
-    return status.toLowerCase() == 'ready';
-  }
-
-  bool get isCompleted {
-    return status.toLowerCase() == 'completed';
-  }
-
-  // ---------------------------------------------------------------------------
-  // TIME
-  // ---------------------------------------------------------------------------
-
-  String get timeAgo {
-    final difference = DateTime.now().difference(createdAt);
-
-    if (difference.inMinutes < 1) {
-      return 'Just now';
-    }
-
-    if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}m ago';
-    }
-
-    if (difference.inHours < 24) {
-      return '${difference.inHours}h ago';
-    }
-
-    return '${difference.inDays}d ago';
+              if (isSelected)
+                Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    color: colors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.check_rounded,
+                    color: colors.onPrimary,
+                    size: 17,
+                  ),
+                )
+              else
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: colors.onSurface.withOpacity(.22),
+                  size: 21,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

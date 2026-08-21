@@ -1,28 +1,7 @@
 import 'package:get/get.dart';
 
-class WarehouseModel {
-  final int id;
-  final String name;
-  final String location;
-  final int totalProducts;
-  final int totalStock;
-  final int lowStockProducts;
-  final int pendingOrders;
-  final double capacityPercentage;
-  final String? imageUrl;
-
-  WarehouseModel({
-    required this.id,
-    required this.name,
-    required this.location,
-    required this.totalProducts,
-    required this.totalStock,
-    required this.lowStockProducts,
-    required this.pendingOrders,
-    required this.capacityPercentage,
-    this.imageUrl
-  });
-}
+import 'package:smartware/features/owner/analytics/models/warehouse_model.dart';
+import 'package:smartware/features/owner/analytics/models/warehouse_repo.dart';
 
 class InventoryTrend {
   final String day;
@@ -41,6 +20,7 @@ class StockMovement {
 
   StockMovement({
     required this.day,
+   
     required this.incoming,
     required this.outgoing,
   });
@@ -80,6 +60,12 @@ class LowStockProduct {
 
 class OwnerAnalyticsController extends GetxController {
   // ------------------------------------------------------------
+  // REPOSITORY
+  // ------------------------------------------------------------
+
+  final OwnerAnalyticsRepo _repo = OwnerAnalyticsRepo();
+
+  // ------------------------------------------------------------
   // WAREHOUSES
   // ------------------------------------------------------------
 
@@ -114,9 +100,16 @@ class OwnerAnalyticsController extends GetxController {
   // ------------------------------------------------------------
 
   final totalProducts = 0.obs;
+
   final totalStock = 0.obs;
+
   final lowStockCount = 0.obs;
+
   final pendingOrders = 0.obs;
+
+  // ------------------------------------------------------------
+  // INIT
+  // ------------------------------------------------------------
 
   @override
   void onInit() {
@@ -126,221 +119,87 @@ class OwnerAnalyticsController extends GetxController {
   }
 
   // ------------------------------------------------------------
-  // LOAD WAREHOUSES
+  // LOAD OWNER WAREHOUSES
   // ------------------------------------------------------------
 
   Future<void> loadWarehouses() async {
     try {
       isLoadingWarehouses.value = true;
 
-      // TODO:
-      // Replace this section with your Laravel API call.
+      final result = await _repo.getWarehouses();
 
-      await Future.delayed(const Duration(milliseconds: 700));
+      warehouses.assignAll(result);
 
-      warehouses.assignAll([
-        WarehouseModel(
-          id: 1,
-          name: 'Main Warehouse',
-          location: 'Damascus',
-          totalProducts: 1248,
-          totalStock: 18420,
-          lowStockProducts: 17,
-          pendingOrders: 24,
-          capacityPercentage: 0.72,
-        ),
-        WarehouseModel(
-          id: 2,
-          name: 'North Warehouse',
-          location: 'Aleppo',
-          totalProducts: 856,
-          totalStock: 12680,
-          lowStockProducts: 9,
-          pendingOrders: 13,
-          capacityPercentage: 0.54,
-        ),
-        WarehouseModel(
-          id: 3,
-          name: 'Distribution Center',
-          location: 'Homs',
-          totalProducts: 642,
-          totalStock: 9340,
-          lowStockProducts: 5,
-          pendingOrders: 8,
-          capacityPercentage: 0.38,
-        ),
-      ]);
+      if (warehouses.isNotEmpty) {
+        await selectWarehouse(warehouses.first);
+      }
+    } catch (e) {
+      print('❌ Failed to load owner warehouses: $e');
     } finally {
       isLoadingWarehouses.value = false;
     }
   }
 
   // ------------------------------------------------------------
-  // OPEN WAREHOUSE ANALYTICS
+  // SELECT WAREHOUSE
   // ------------------------------------------------------------
 
-  Future<void> selectWarehouse(WarehouseModel warehouse) async {
+  Future<void> selectWarehouse(
+    WarehouseModel warehouse,
+  ) async {
     selectedWarehouse.value = warehouse;
 
     await loadWarehouseAnalytics(warehouse.id);
   }
 
   // ------------------------------------------------------------
-  // LOAD ANALYTICS
+  // LOAD WAREHOUSE ANALYTICS
   // ------------------------------------------------------------
 
-  Future<void> loadWarehouseAnalytics(int warehouseId) async {
+  Future<void> loadWarehouseAnalytics(
+    int warehouseId,
+  ) async {
     try {
       isLoadingAnalytics.value = true;
 
-      // TODO:
-      // Replace this with:
-      //
-      // final response = await apiService.get(
-      //   '/owner/warehouses/$warehouseId/analytics',
-      // );
-      //
-      // Then map the response into the models below.
+      final warehouse = warehouses.firstWhere(
+        (warehouse) => warehouse.id == warehouseId,
+      );
 
-      await Future.delayed(const Duration(milliseconds: 600));
+      // --------------------------------------------------------
+      // REAL DATA FROM /home_page/ownedFacilities
+      // --------------------------------------------------------
 
-      _loadMockAnalytics();
+      totalProducts.value = warehouse.productCount;
+
+      lowStockCount.value = warehouse.stockOutRiskCount;
+
+      // --------------------------------------------------------
+      // NOT PROVIDED BY CURRENT ENDPOINT
+      // --------------------------------------------------------
+
+      totalStock.value = 0;
+
+      pendingOrders.value = 0;
+
+      // --------------------------------------------------------
+      // ANALYTICS ENDPOINTS NOT CONNECTED YET
+      // --------------------------------------------------------
+
+      inventoryTrend.clear();
+
+      stockMovement.clear();
+
+      categoryInventory.clear();
+
+      topProducts.clear();
+
+      lowStockProducts.clear();
+    } catch (e) {
+      print('❌ Failed to load warehouse analytics: $e');
     } finally {
       isLoadingAnalytics.value = false;
     }
-  }
-
-  // ------------------------------------------------------------
-  // MOCK ANALYTICS
-  // ------------------------------------------------------------
-
-  void _loadMockAnalytics() {
-    totalProducts.value = selectedWarehouse.value?.totalProducts ?? 0;
-
-    totalStock.value = selectedWarehouse.value?.totalStock ?? 0;
-
-    lowStockCount.value =
-        selectedWarehouse.value?.lowStockProducts ?? 0;
-
-    pendingOrders.value =
-        selectedWarehouse.value?.pendingOrders ?? 0;
-
-    inventoryTrend.assignAll([
-      InventoryTrend(day: 'Mon', quantity: 15200),
-      InventoryTrend(day: 'Tue', quantity: 15800),
-      InventoryTrend(day: 'Wed', quantity: 14900),
-      InventoryTrend(day: 'Thu', quantity: 17100),
-      InventoryTrend(day: 'Fri', quantity: 16800),
-      InventoryTrend(day: 'Sat', quantity: 18100),
-      InventoryTrend(day: 'Sun', quantity: 18420),
-    ]);
-
-    stockMovement.assignAll([
-      StockMovement(
-        day: 'Mon',
-        incoming: 1200,
-        outgoing: 850,
-      ),
-      StockMovement(
-        day: 'Tue',
-        incoming: 1500,
-        outgoing: 900,
-      ),
-      StockMovement(
-        day: 'Wed',
-        incoming: 900,
-        outgoing: 1200,
-      ),
-      StockMovement(
-        day: 'Thu',
-        incoming: 1800,
-        outgoing: 1100,
-      ),
-      StockMovement(
-        day: 'Fri',
-        incoming: 1300,
-        outgoing: 1500,
-      ),
-      StockMovement(
-        day: 'Sat',
-        incoming: 1700,
-        outgoing: 900,
-      ),
-      StockMovement(
-        day: 'Sun',
-        incoming: 1200,
-        outgoing: 880,
-      ),
-    ]);
-
-    categoryInventory.assignAll([
-      CategoryInventory(
-        category: 'Food',
-        quantity: 6200,
-      ),
-      CategoryInventory(
-        category: 'Beverages',
-        quantity: 4800,
-      ),
-      CategoryInventory(
-        category: 'Cosmetics',
-        quantity: 3200,
-      ),
-      CategoryInventory(
-        category: 'Medical',
-        quantity: 2400,
-      ),
-      CategoryInventory(
-        category: 'Other',
-        quantity: 1820,
-      ),
-    ]);
-
-    topProducts.assignAll([
-      TopProduct(
-        name: 'Coca Cola',
-        quantity: 840,
-      ),
-      TopProduct(
-        name: 'Pepsi',
-        quantity: 720,
-      ),
-      TopProduct(
-        name: 'Mineral Water',
-        quantity: 610,
-      ),
-      TopProduct(
-        name: 'Orange Juice',
-        quantity: 490,
-      ),
-      TopProduct(
-        name: 'Potato Chips',
-        quantity: 380,
-      ),
-    ]);
-
-    lowStockProducts.assignAll([
-      LowStockProduct(
-        name: 'Coca Cola',
-        currentStock: 8,
-        minimumStock: 20,
-      ),
-      LowStockProduct(
-        name: 'Pepsi',
-        currentStock: 12,
-        minimumStock: 25,
-      ),
-      LowStockProduct(
-        name: 'Orange Juice',
-        currentStock: 5,
-        minimumStock: 15,
-      ),
-      LowStockProduct(
-        name: 'Mineral Water',
-        currentStock: 9,
-        minimumStock: 30,
-      ),
-    ]);
   }
 
   // ------------------------------------------------------------
@@ -348,10 +207,6 @@ class OwnerAnalyticsController extends GetxController {
   // ------------------------------------------------------------
 
   Future<void> refreshAnalytics() async {
-    final warehouse = selectedWarehouse.value;
-
-    if (warehouse == null) return;
-
-    await loadWarehouseAnalytics(warehouse.id);
+    await loadWarehouses();
   }
 }

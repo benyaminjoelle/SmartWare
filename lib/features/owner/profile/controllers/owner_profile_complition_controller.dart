@@ -21,8 +21,7 @@ class OwnerProfileComplitionController extends GetxController {
   // REPOSITORY
   // ============================================================
 
-  final OwnerOnboardingRepo _onboardingRepo =
-      OwnerOnboardingRepo();
+  final OwnerOnboardingRepo _onboardingRepo = OwnerOnboardingRepo();
 
   // ============================================================
   // OWNER BUSINESS TYPE
@@ -92,16 +91,13 @@ class OwnerProfileComplitionController extends GetxController {
   void onInit() {
     super.onInit();
 
-    businessNameController.addListener(
-      _onBusinessNameChanged,
-    );
+    businessNameController.addListener(_onBusinessNameChanged);
 
     restoreOnboardingProgress();
   }
 
   void _onBusinessNameChanged() {
-    businessName.value =
-        businessNameController.text.trim();
+    businessName.value = businessNameController.text.trim();
   }
 
   // ============================================================
@@ -110,26 +106,20 @@ class OwnerProfileComplitionController extends GetxController {
 
   Future<void> restoreOnboardingProgress() async {
     try {
-      final completion =
-          await PrefHelper.getOwnerProfileCompletion();
+      final completion = await PrefHelper.getOwnerProfileCompletion();
 
-      final savedStep =
-          await PrefHelper.getOwnerOnboardingStep();
+      final savedStep = await PrefHelper.getOwnerOnboardingStep();
 
       final preferencesCompleted =
           await PrefHelper.isOwnerPreferencesCompleted();
 
-      final documentsCompleted =
-          await PrefHelper.areOwnerDocumentsCompleted();
+      final documentsCompleted = await PrefHelper.areOwnerDocumentsCompleted();
 
-      final profileCompleted =
-          await PrefHelper.isOwnerProfileCompleted();
+      final profileCompleted = await PrefHelper.isOwnerProfileCompleted();
 
-      final savedBusinessName =
-          await PrefHelper.getOwnerBusinessName();
+      final savedBusinessName = await PrefHelper.getOwnerBusinessName();
 
-      final savedProducts =
-          await PrefHelper.getOwnerSelectedProducts();
+      final savedProducts = await PrefHelper.getOwnerSelectedProducts();
 
       // ==========================================================
       // RESTORE DATA
@@ -137,21 +127,16 @@ class OwnerProfileComplitionController extends GetxController {
 
       businessName.value = savedBusinessName;
 
-      businessNameController.text =
-          savedBusinessName;
+      businessNameController.text = savedBusinessName;
 
-      selectedProducts.assignAll(
-        savedProducts,
-      );
+      selectedProducts.assignAll(savedProducts);
 
       // ==========================================================
       // RESTORE OWNER BUSINESS TYPE
       // ==========================================================
 
       // Always warehouse.
-      await PrefHelper.saveOwnerBusinessType(
-        ownerBusinessType,
-      );
+      await PrefHelper.saveOwnerBusinessType(ownerBusinessType);
 
       // ==========================================================
       // RESTORE STEP
@@ -170,8 +155,7 @@ class OwnerProfileComplitionController extends GetxController {
         profileCompletion.value = 25;
         currentStep.value = 1;
       } else {
-        profileCompletion.value =
-            completion >= 0 ? completion : 0;
+        profileCompletion.value = completion >= 0 ? completion : 0;
 
         currentStep.value = savedStep;
       }
@@ -188,37 +172,21 @@ class OwnerProfileComplitionController extends GetxController {
         currentStep.value = totalSteps - 1;
       }
 
-      debugPrint(
-        '════════ OWNER ONBOARDING RESTORED ════════',
-      );
+      debugPrint('════════ OWNER ONBOARDING RESTORED ════════');
 
-      debugPrint(
-        '🏢 Warehouse: ${businessName.value}',
-      );
+      debugPrint('🏢 Warehouse: ${businessName.value}');
 
-      debugPrint(
-        '🏪 Business Type: $ownerBusinessType',
-      );
+      debugPrint('🏪 Business Type: $ownerBusinessType');
 
-      debugPrint(
-        '📦 Products: ${selectedProducts.toList()}',
-      );
+      debugPrint('📦 Products: ${selectedProducts.toList()}');
 
-      debugPrint(
-        '📊 Progress: ${profileCompletion.value}%',
-      );
+      debugPrint('📊 Progress: ${profileCompletion.value}%');
 
-      debugPrint(
-        '📍 Step: ${currentStep.value + 1}',
-      );
+      debugPrint('📍 Step: ${currentStep.value + 1}');
 
-      debugPrint(
-        '══════════════════════════════════════════',
-      );
+      debugPrint('══════════════════════════════════════════');
     } catch (e) {
-      debugPrint(
-        '❌ Failed to restore owner onboarding: $e',
-      );
+      debugPrint('❌ Failed to restore owner onboarding: $e');
 
       currentStep.value = 0;
       profileCompletion.value = 0;
@@ -281,8 +249,7 @@ class OwnerProfileComplitionController extends GetxController {
     // ==========================================================
 
     if (currentStep.value == 2) {
-      final success =
-          await uploadOnboardingDocuments();
+      final success = await uploadOnboardingDocuments();
 
       if (!success) {
         return;
@@ -303,8 +270,7 @@ class OwnerProfileComplitionController extends GetxController {
     // ==========================================================
 
     if (currentStep.value == 3) {
-      final success =
-          await completeFinalStep();
+      final success = await completeFinalStep();
 
       if (!success) {
         return;
@@ -370,28 +336,23 @@ class OwnerProfileComplitionController extends GetxController {
   // OWNER PREFERENCES
   // ============================================================
 
-  final businessNameController =
-      TextEditingController();
+  final businessNameController = TextEditingController();
 
   final businessName = ''.obs;
 
   final isProductsExpanded = false.obs;
 
-  final preferredLanguage =
-      'English'.obs;
+  final preferredLanguage = 'English'.obs;
 
-  final preferredCurrency =
-      'USD'.obs;
+  final preferredCurrency = 'USD'.obs;
 
-  final RxList<String> selectedProducts =
-      <String>[].obs;
+  final RxList<String> selectedProducts = <String>[].obs;
 
   // ============================================================
   // PRODUCTS
   // ============================================================
 
-  final List<ProductTypeModel> allProducts =
-      ProductTypes.all;
+  final List<ProductTypeModel> allProducts = ProductTypes.all;
 
   // ============================================================
   // PRODUCT SELECTION
@@ -420,8 +381,7 @@ class OwnerProfileComplitionController extends GetxController {
 
   final isSavingPreferences = false.obs;
 
-  final savedPreferences =
-      Rxn<OwnerPrefrencesModel>();
+  final savedPreferences = Rxn<OwnerPrefrencesModel>();
 
   // ============================================================
   // SAVE OWNER PREFERENCES
@@ -431,8 +391,7 @@ class OwnerProfileComplitionController extends GetxController {
     try {
       isSavingPreferences.value = true;
 
-      final facilityName =
-          businessNameController.text.trim();
+      final facilityName = businessNameController.text.trim();
 
       // ========================================================
       // VALIDATION
@@ -462,21 +421,13 @@ class OwnerProfileComplitionController extends GetxController {
 
       debugPrint('');
 
-      debugPrint(
-        '════════ OWNER PREFERENCES ════════',
-      );
+      debugPrint('════════ OWNER PREFERENCES ════════');
 
-      debugPrint(
-        '🏢 Warehouse Name: $facilityName',
-      );
+      debugPrint('🏢 Warehouse Name: $facilityName');
 
-      debugPrint(
-        '🎭 Role: warehouse_admin',
-      );
+      debugPrint('🎭 Role: warehouse_admin');
 
-      debugPrint(
-        '🏪 Business Type: $ownerBusinessType',
-      );
+      debugPrint('🏪 Business Type: $ownerBusinessType');
 
       debugPrint(
         '📦 Products: '
@@ -487,96 +438,60 @@ class OwnerProfileComplitionController extends GetxController {
       // API
       // ========================================================
 
-      final result =
-          await _onboardingRepo.savePreferences(
+      final result = await _onboardingRepo.savePreferences(
         facilityName: facilityName,
 
         role: 'warehouse_admin',
 
-       
-
-        categories:
-            selectedProducts.toList(),
+        categories: selectedProducts.toList(),
       );
 
       savedPreferences.value = result;
 
-      businessName.value =
-          result.facilityName;
+      businessName.value = result.facilityName;
 
-      businessNameController.text =
-          result.facilityName;
+      businessNameController.text = result.facilityName;
 
       // ========================================================
       // SAVE LOCAL DATA
       // ========================================================
 
-      await PrefHelper.saveOwnerBusinessName(
-        result.facilityName,
-      );
+      await PrefHelper.saveOwnerBusinessName(result.facilityName);
 
       // ALWAYS WAREHOUSE
-      await PrefHelper.saveOwnerBusinessType(
-        ownerBusinessType,
-      );
+      await PrefHelper.saveOwnerBusinessType(ownerBusinessType);
 
       await PrefHelper.saveOwnerBusinessCategories(
-        result.facility.categories
-            .map(
-              (category) => category.name,
-            )
-            .toList(),
+        result.facility.categories.map((category) => category.name).toList(),
       );
 
-      await PrefHelper.saveOwnerFacilityId(
-        result.facility.id,
-      );
+      await PrefHelper.saveOwnerFacilityId(result.facility.id);
 
-      await PrefHelper.saveOwnerSelectedProducts(
-        selectedProducts.toList(),
-      );
+      await PrefHelper.saveOwnerSelectedProducts(selectedProducts.toList());
 
-      await PrefHelper.setOwnerPreferencesCompleted(
-        true,
-      );
+      await PrefHelper.setOwnerPreferencesCompleted(true);
 
-      await PrefHelper.saveOwnerProfileCompletion(
-        25,
-      );
+      await PrefHelper.saveOwnerProfileCompletion(25);
 
-      await PrefHelper.saveOwnerOnboardingStep(
-        1,
-      );
+      await PrefHelper.saveOwnerOnboardingStep(1);
 
-      debugPrint(
-        '✅ Owner preferences saved.',
-      );
+      debugPrint('✅ Owner preferences saved.');
 
       debugPrint(
         '🏢 Facility ID: '
         '${result.facility.id}',
       );
 
-      debugPrint(
-        '🏪 Business Type: $ownerBusinessType',
-      );
+      debugPrint('🏪 Business Type: $ownerBusinessType');
 
       return true;
     } catch (e) {
-      debugPrint(
-        '❌ Owner save preferences failed: $e',
-      );
+      debugPrint('❌ Owner save preferences failed: $e');
 
       if (e is ApiError) {
-        Get.snackbar(
-          'Error',
-          e.message,
-        );
+        Get.snackbar('Error', e.message);
       } else {
-        Get.snackbar(
-          'Error',
-          'Failed to save owner preferences.',
-        );
+        Get.snackbar('Error', 'Failed to save owner preferences.');
       }
 
       return false;
@@ -597,8 +512,7 @@ class OwnerProfileComplitionController extends GetxController {
 
   final isImportingInventory = false.obs;
 
-  final importedInventory =
-      Rxn<OwnerImportExcelModel>();
+  final importedInventory = Rxn<OwnerImportExcelModel>();
 
   void selectSection(int sectionId) {
     selectedSectionId.value = sectionId;
@@ -606,56 +520,40 @@ class OwnerProfileComplitionController extends GetxController {
 
   Future<void> pickInventoryFile() async {
     try {
-      final result =
-          await FilePicker.pickFiles(
+      final result = await FilePicker.pickFiles(
         type: FileType.custom,
-        allowedExtensions: [
-          'xlsx',
-          'xls',
-          'csv',
-        ],
+        allowedExtensions: ['xlsx', 'xls', 'csv'],
         allowMultiple: false,
       );
 
-      if (result == null ||
-          result.files.isEmpty) {
+      if (result == null || result.files.isEmpty) {
         return;
       }
 
-      final pickedFile =
-          result.files.single;
+      final pickedFile = result.files.single;
 
-      final path =
-          pickedFile.path;
+      final path = pickedFile.path;
 
-      if (path == null ||
-          path.isEmpty) {
-        Get.snackbar(
-          'Error',
-          'Could not access the selected file.',
-        );
+      if (path == null || path.isEmpty) {
+        Get.snackbar('Error', 'Could not access the selected file.');
 
         return;
       }
 
       inventoryFile.value = File(path);
 
-      inventoryFileName.value =
-          pickedFile.name;
+      inventoryFileName.value = pickedFile.name;
 
       debugPrint(
         '📄 Inventory file selected: '
         '${pickedFile.name}',
       );
     } catch (e) {
-      debugPrint(
-        '❌ Inventory file picker failed: $e',
-      );
+      debugPrint('❌ Inventory file picker failed: $e');
 
       _showErrorSnackbar(
         title: 'File Selection Failed',
-        message:
-            'Unable to select the inventory file. Please try again.',
+        message: 'Unable to select the inventory file. Please try again.',
       );
     }
   }
@@ -671,22 +569,15 @@ class OwnerProfileComplitionController extends GetxController {
       isImportingInventory.value = true;
 
       if (inventoryFile.value == null) {
-        Get.snackbar(
-          'Missing File',
-          'Please select an Excel inventory file.',
-        );
+        Get.snackbar('Missing File', 'Please select an Excel inventory file.');
 
         return false;
       }
 
-      final sectionId =
-          selectedSectionId.value;
+      final sectionId = selectedSectionId.value;
 
       if (sectionId <= 0) {
-        Get.snackbar(
-          'Missing Section',
-          'Please select a warehouse section.',
-        );
+        Get.snackbar('Missing Section', 'Please select a warehouse section.');
 
         return false;
       }
@@ -694,37 +585,26 @@ class OwnerProfileComplitionController extends GetxController {
       int? facilityId;
 
       if (savedPreferences.value != null) {
-        facilityId =
-            savedPreferences.value!.facility.id;
+        facilityId = savedPreferences.value!.facility.id;
       }
 
-      facilityId ??=
-          await PrefHelper.getOwnerFacilityId();
+      facilityId ??= await PrefHelper.getOwnerFacilityId();
 
-      if (facilityId == null ||
-          facilityId <= 0) {
-        Get.snackbar(
-          'Error',
-          'Facility information was not found.',
-        );
+      if (facilityId == null || facilityId <= 0) {
+        Get.snackbar('Error', 'Facility information was not found.');
 
         return false;
       }
 
-      final filePath =
-          inventoryFile.value!.path;
+      final filePath = inventoryFile.value!.path;
 
       if (filePath.trim().isEmpty) {
-        Get.snackbar(
-          'Error',
-          'The selected inventory file is not accessible.',
-        );
+        Get.snackbar('Error', 'The selected inventory file is not accessible.');
 
         return false;
       }
 
-      final result =
-          await _onboardingRepo.importInventoryExcel(
+      final result = await _onboardingRepo.importInventoryExcel(
         facilityId: facilityId,
         sectionId: sectionId,
         excelFilePath: filePath,
@@ -735,29 +615,24 @@ class OwnerProfileComplitionController extends GetxController {
       Get.snackbar(
         'Success',
         result.message,
-        snackPosition:
-            SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.BOTTOM,
       );
 
       return true;
     } catch (e) {
-      debugPrint(
-        '❌ Inventory import failed: $e',
-      );
+      debugPrint('❌ Inventory import failed: $e');
 
       if (e is ApiError) {
         Get.snackbar(
           'Import Failed',
           e.message,
-          snackPosition:
-              SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.BOTTOM,
         );
       } else {
         Get.snackbar(
           'Import Failed',
           'Failed to import the inventory file.',
-          snackPosition:
-              SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.BOTTOM,
         );
       }
 
@@ -781,44 +656,26 @@ class OwnerProfileComplitionController extends GetxController {
 
   final isUploadingDocuments = false.obs;
 
-  final uploadedDocuments =
-      Rxn<OnboardingDocumentsResponse>();
+  final uploadedDocuments = Rxn<OnboardingDocumentsResponse>();
 
-  Future<void> pickDocument(
-    String type,
-  ) async {
+  Future<void> pickDocument(String type) async {
     try {
-      final result =
-          await FilePicker.pickFiles(
+      final result = await FilePicker.pickFiles(
         type: FileType.custom,
-        allowedExtensions: [
-          'pdf',
-          'doc',
-          'docx',
-          'jpg',
-          'jpeg',
-          'png',
-        ],
+        allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
         allowMultiple: false,
       );
 
-      if (result == null ||
-          result.files.isEmpty) {
+      if (result == null || result.files.isEmpty) {
         return;
       }
 
-      final pickedFile =
-          result.files.single;
+      final pickedFile = result.files.single;
 
-      final filePath =
-          pickedFile.path;
+      final filePath = pickedFile.path;
 
-      if (filePath == null ||
-          filePath.isEmpty) {
-        Get.snackbar(
-          'Error',
-          'Could not access the selected file.',
-        );
+      if (filePath == null || filePath.isEmpty) {
+        Get.snackbar('Error', 'Could not access the selected file.');
 
         return;
       }
@@ -830,21 +687,14 @@ class OwnerProfileComplitionController extends GetxController {
           break;
 
         case 'ownership_proof':
-          ownershipProofPath.value =
-              filePath;
-          ownershipProofUploaded.value =
-              true;
+          ownershipProofPath.value = filePath;
+          ownershipProofUploaded.value = true;
           break;
       }
     } catch (e) {
-      debugPrint(
-        '❌ Owner document picker failed: $e',
-      );
+      debugPrint('❌ Owner document picker failed: $e');
 
-      Get.snackbar(
-        'Error',
-        'Failed to select the document.',
-      );
+      Get.snackbar('Error', 'Failed to select the document.');
     }
   }
 
@@ -855,31 +705,22 @@ class OwnerProfileComplitionController extends GetxController {
       int? facilityId;
 
       if (savedPreferences.value != null) {
-        facilityId =
-            savedPreferences.value!.facility.id;
+        facilityId = savedPreferences.value!.facility.id;
       }
 
-      facilityId ??=
-          await PrefHelper.getOwnerFacilityId();
+      facilityId ??= await PrefHelper.getOwnerFacilityId();
 
-      if (facilityId == null ||
-          facilityId <= 0) {
-        Get.snackbar(
-          'Error',
-          'Facility information was not found.',
-        );
+      if (facilityId == null || facilityId <= 0) {
+        Get.snackbar('Error', 'Facility information was not found.');
 
         return false;
       }
 
-      final identityPath =
-          ownerIdPath.value;
+      final identityPath = ownerIdPath.value;
 
-      final facilityPath =
-          ownershipProofPath.value;
+      final facilityPath = ownershipProofPath.value;
 
-      if (identityPath == null ||
-          identityPath.trim().isEmpty) {
+      if (identityPath == null || identityPath.trim().isEmpty) {
         Get.snackbar(
           'Missing Document',
           'Please upload your identity document.',
@@ -888,8 +729,7 @@ class OwnerProfileComplitionController extends GetxController {
         return false;
       }
 
-      if (facilityPath == null ||
-          facilityPath.trim().isEmpty) {
+      if (facilityPath == null || facilityPath.trim().isEmpty) {
         Get.snackbar(
           'Missing Document',
           'Please upload the ownership document.',
@@ -898,50 +738,30 @@ class OwnerProfileComplitionController extends GetxController {
         return false;
       }
 
-      final result =
-          await _onboardingRepo
-              .uploadOnboardingDocuments(
+      final result = await _onboardingRepo.uploadOnboardingDocuments(
         facilityId: facilityId,
-        identityDocumentPath:
-            identityPath,
-        facilityDocumentPath:
-            facilityPath,
+        identityDocumentPath: identityPath,
+        facilityDocumentPath: facilityPath,
       );
 
       uploadedDocuments.value = result;
 
-      await PrefHelper.setOwnerDocumentsCompleted(
-        true,
-      );
+      await PrefHelper.setOwnerDocumentsCompleted(true);
 
-      await PrefHelper.saveOwnerProfileCompletion(
-        75,
-      );
+      await PrefHelper.saveOwnerProfileCompletion(75);
 
-      await PrefHelper.saveOwnerOnboardingStep(
-        3,
-      );
+      await PrefHelper.saveOwnerOnboardingStep(3);
 
-      debugPrint(
-        '✅ Owner documents uploaded successfully.',
-      );
+      debugPrint('✅ Owner documents uploaded successfully.');
 
       return true;
     } catch (e) {
-      debugPrint(
-        '❌ Owner document upload failed: $e',
-      );
+      debugPrint('❌ Owner document upload failed: $e');
 
       if (e is ApiError) {
-        Get.snackbar(
-          'Error',
-          e.message,
-        );
+        Get.snackbar('Error', e.message);
       } else {
-        Get.snackbar(
-          'Error',
-          'Failed to upload owner documents.',
-        );
+        Get.snackbar('Error', 'Failed to upload owner documents.');
       }
 
       return false;
@@ -963,57 +783,35 @@ class OwnerProfileComplitionController extends GetxController {
   Future<bool> completeFinalStep() async {
     try {
       if (address.value.trim().isEmpty) {
-        Get.snackbar(
-          'Missing Information',
-          'Please enter your address.',
-        );
+        Get.snackbar('Missing Information', 'Please enter your address.');
 
         return false;
       }
 
       if (city.value.trim().isEmpty) {
-        Get.snackbar(
-          'Missing Information',
-          'Please enter your city.',
-        );
+        Get.snackbar('Missing Information', 'Please enter your city.');
 
         return false;
       }
 
-      await PrefHelper.setOwnerProfileCompleted(
-        true,
-      );
+      await PrefHelper.setOwnerProfileCompleted(true);
 
-      await PrefHelper.saveOwnerProfileCompletion(
-        100,
-      );
+      await PrefHelper.saveOwnerProfileCompletion(100);
 
-      await PrefHelper.saveOwnerOnboardingStep(
-        3,
-      );
+      await PrefHelper.saveOwnerOnboardingStep(3);
 
       profileCompletion.value = 100;
 
-      debugPrint(
-        '✅ Owner profile completed: 100%',
-      );
+      debugPrint('✅ Owner profile completed: 100%');
 
       return true;
     } catch (e) {
-      debugPrint(
-        '❌ Owner final step failed: $e',
-      );
+      debugPrint('❌ Owner final step failed: $e');
 
       if (e is ApiError) {
-        Get.snackbar(
-          'Error',
-          e.message,
-        );
+        Get.snackbar('Error', e.message);
       } else {
-        Get.snackbar(
-          'Error',
-          'Failed to complete your profile.',
-        );
+        Get.snackbar('Error', 'Failed to complete your profile.');
       }
 
       return false;
@@ -1054,9 +852,7 @@ class OwnerProfileComplitionController extends GetxController {
       // ========================================================
 
       case 0:
-        return businessNameController.text
-                .trim()
-                .isNotEmpty &&
+        return businessNameController.text.trim().isNotEmpty &&
             selectedProducts.isNotEmpty;
 
       // ========================================================
@@ -1084,8 +880,7 @@ class OwnerProfileComplitionController extends GetxController {
       // ========================================================
 
       case 3:
-        return address.value.trim().isNotEmpty &&
-            city.value.trim().isNotEmpty;
+        return address.value.trim().isNotEmpty && city.value.trim().isNotEmpty;
 
       default:
         return false;
@@ -1102,8 +897,7 @@ class OwnerProfileComplitionController extends GetxController {
       return;
     }
 
-    final leave =
-        await AppDialogs.showConfirmDialog(
+    final leave = await AppDialogs.showConfirmDialog(
       title: 'Leave Profile Completion?',
       message:
           'Your progress will remain saved. '
@@ -1173,9 +967,7 @@ class OwnerProfileComplitionController extends GetxController {
 
     PrefHelper.clearOwnerOnboarding();
 
-    debugPrint(
-      'Owner onboarding reset.',
-    );
+    debugPrint('Owner onboarding reset.');
   }
 
   // ============================================================
@@ -1190,16 +982,8 @@ class OwnerProfileComplitionController extends GetxController {
   // ERROR
   // ============================================================
 
-  void _showErrorSnackbar({
-    required String title,
-    required String message,
-  }) {
-    Get.snackbar(
-      title,
-      message,
-      snackPosition:
-          SnackPosition.BOTTOM,
-    );
+  void _showErrorSnackbar({required String title, required String message}) {
+    Get.snackbar(title, message, snackPosition: SnackPosition.BOTTOM);
   }
 
   // ============================================================

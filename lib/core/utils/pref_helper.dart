@@ -33,16 +33,16 @@ class PrefHelper {
   // AUTH TOKEN
   // ============================================================
 
+  static Future<void> saveUserRole(String role) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userRoleKey, role);
+  }
 
-static Future<void> saveUserRole(String role) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString(_userRoleKey, role);
-}
+  static Future<String?> getUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_userRoleKey);
+  }
 
-static Future<String?> getUserRole() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getString(_userRoleKey);
-}
   static Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -198,6 +198,7 @@ static Future<String?> getUserRole() async {
 
     await prefs.remove(_userPhotoKey);
   }
+
   static const String _profileCompletedKey = 'profile_completed';
 
   //=============== profile completion ===============
@@ -209,7 +210,7 @@ static Future<String?> getUserRole() async {
   static Future<bool> getProfileCompleted() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_profileCompletedKey) ?? false;
-}
+  }
 
   // ============================================================
   // DEBUG EVERYTHING
@@ -229,362 +230,240 @@ static Future<String?> getUserRole() async {
     print('🖼️ Photo       : ${prefs.getString(_userPhotoKey)}');
     print('🌐 Language    : ${prefs.getString(_langKey)}');
     print('🏪 Business Type: ${prefs.getString(_businessTypeKey)}');
-    print('📦 Categories: ${prefs.getStringList(_businessCategoriesKey)}',
-);
+    print('📦 Categories: ${prefs.getStringList(_businessCategoriesKey)}');
     print('══════════════════════════════════');
     print('');
   }
-// ============================================================
-// CLIENT ONBOARDING
-// ============================================================
+  // ============================================================
+  // CLIENT ONBOARDING
+  // ============================================================
 
-static const String _clientOnboardingStep =
-    'client_onboarding_step';
+  static const String _clientOnboardingStep = 'client_onboarding_step';
 
-static const String _clientProfileCompletion =
-    'client_profile_completion';
+  static const String _clientProfileCompletion = 'client_profile_completion';
 
-static const String _clientPreferencesCompleted =
-    'client_preferences_completed';
+  static const String _clientPreferencesCompleted =
+      'client_preferences_completed';
 
-static const String _clientDocumentsCompleted =
-    'client_documents_completed';
+  static const String _clientDocumentsCompleted = 'client_documents_completed';
 
-static const String _clientProfileCompleted =
-    'client_profile_completed';
+  static const String _clientProfileCompleted = 'client_profile_completed';
 
-static const String _clientFacilityId =
-    'client_facility_id';
+  static const String _clientFacilityId = 'client_facility_id';
 
-static const String _clientBusinessName =
-    'client_business_name';
+  static const String _clientBusinessName = 'client_business_name';
 
-static const String _clientBusinessType =
-    'client_business_type';
+  static const String _clientBusinessType = 'client_business_type';
 
-static const String _clientSelectedProducts =
-    'client_selected_products';
+  static const String _clientSelectedProducts = 'client_selected_products';
 
+  // ============================================================
+  // SAVE ONBOARDING STEP
+  // ============================================================
 
-// ============================================================
-// SAVE ONBOARDING STEP
-// ============================================================
+  static Future<void> saveClientOnboardingStep(int step) async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<void> saveClientOnboardingStep(
-  int step,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_clientOnboardingStep, step);
+  }
 
-  await prefs.setInt(
-    _clientOnboardingStep,
-    step,
-  );
-}
+  // ============================================================
+  // GET ONBOARDING STEP
+  // ============================================================
 
+  static Future<int> getClientOnboardingStep() async {
+    final prefs = await SharedPreferences.getInstance();
 
-// ============================================================
-// GET ONBOARDING STEP
-// ============================================================
+    return prefs.getInt(_clientOnboardingStep) ?? 0;
+  }
 
-static Future<int> getClientOnboardingStep() async {
-  final prefs = await SharedPreferences.getInstance();
+  // ============================================================
+  // SAVE PROFILE COMPLETION
+  // ============================================================
 
-  return prefs.getInt(
-        _clientOnboardingStep,
-      ) ??
-      0;
-}
+  static Future<void> saveClientProfileCompletion(int completion) async {
+    final prefs = await SharedPreferences.getInstance();
 
+    await prefs.setInt(_clientProfileCompletion, completion);
+  }
 
-// ============================================================
-// SAVE PROFILE COMPLETION
-// ============================================================
+  // ============================================================
+  // GET PROFILE COMPLETION
+  // ============================================================
 
-static Future<void> saveClientProfileCompletion(
-  int completion,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+  static Future<int> getClientProfileCompletion() async {
+    final prefs = await SharedPreferences.getInstance();
 
-  await prefs.setInt(
-    _clientProfileCompletion,
-    completion,
-  );
-}
+    return prefs.getInt(_clientProfileCompletion) ?? 0;
+  }
 
+  // ============================================================
+  // PREFERENCES COMPLETED
+  // ============================================================
 
-// ============================================================
-// GET PROFILE COMPLETION
-// ============================================================
+  static Future<void> setClientPreferencesCompleted(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<int> getClientProfileCompletion() async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_clientPreferencesCompleted, value);
+  }
 
-  return prefs.getInt(
-        _clientProfileCompletion,
-      ) ??
-      0;
-}
+  static Future<bool> isClientPreferencesCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
 
+    return prefs.getBool(_clientPreferencesCompleted) ?? false;
+  }
 
-// ============================================================
-// PREFERENCES COMPLETED
-// ============================================================
+  // ============================================================
+  // DOCUMENTS COMPLETED
+  // ============================================================
 
-static Future<void> setClientPreferencesCompleted(
-  bool value,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+  static Future<void> setClientDocumentsCompleted(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
 
-  await prefs.setBool(
-    _clientPreferencesCompleted,
-    value,
-  );
-}
+    await prefs.setBool(_clientDocumentsCompleted, value);
+  }
 
+  static Future<bool> areClientDocumentsCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<bool> isClientPreferencesCompleted() async {
-  final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_clientDocumentsCompleted) ?? false;
+  }
 
-  return prefs.getBool(
-        _clientPreferencesCompleted,
-      ) ??
-      false;
-}
+  // ============================================================
+  // PROFILE COMPLETED
+  // ============================================================
 
+  static Future<void> setClientProfileCompleted(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
 
-// ============================================================
-// DOCUMENTS COMPLETED
-// ============================================================
+    await prefs.setBool(_clientProfileCompleted, value);
+  }
 
-static Future<void> setClientDocumentsCompleted(
-  bool value,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+  static Future<bool> isClientProfileCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
 
-  await prefs.setBool(
-    _clientDocumentsCompleted,
-    value,
-  );
-}
+    return prefs.getBool(_clientProfileCompleted) ?? false;
+  }
 
+  // ============================================================
+  // FACILITY ID
+  // ============================================================
 
-static Future<bool> areClientDocumentsCompleted() async {
-  final prefs = await SharedPreferences.getInstance();
+  static Future<void> saveClientFacilityId(int facilityId) async {
+    final prefs = await SharedPreferences.getInstance();
 
-  return prefs.getBool(
-        _clientDocumentsCompleted,
-      ) ??
-      false;
-}
+    await prefs.setInt(_clientFacilityId, facilityId);
+  }
 
+  static Future<int?> getClientFacilityId() async {
+    final prefs = await SharedPreferences.getInstance();
 
-// ============================================================
-// PROFILE COMPLETED
-// ============================================================
+    return prefs.getInt(_clientFacilityId);
+  }
 
-static Future<void> setClientProfileCompleted(
-  bool value,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+  // ============================================================
+  // BUSINESS NAME
+  // ============================================================
 
-  await prefs.setBool(
-    _clientProfileCompleted,
-    value,
-  );
-}
+  static Future<void> saveClientBusinessName(String value) async {
+    final prefs = await SharedPreferences.getInstance();
 
+    await prefs.setString(_clientBusinessName, value);
+  }
 
-static Future<bool> isClientProfileCompleted() async {
-  final prefs = await SharedPreferences.getInstance();
+  static Future<String> getClientBusinessName() async {
+    final prefs = await SharedPreferences.getInstance();
 
-  return prefs.getBool(
-        _clientProfileCompleted,
-      ) ??
-      false;
-}
+    return prefs.getString(_clientBusinessName) ?? '';
+  }
 
+  // ============================================================
+  // BUSINESS TYPE
+  // ============================================================
 
-// ============================================================
-// FACILITY ID
-// ============================================================
+  static Future<void> saveClientBusinessType(String value) async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<void> saveClientFacilityId(
-  int facilityId,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_clientBusinessType, value);
+  }
 
-  await prefs.setInt(
-    _clientFacilityId,
-    facilityId,
-  );
-}
+  static Future<String> getClientBusinessType() async {
+    final prefs = await SharedPreferences.getInstance();
 
+    return prefs.getString(_clientBusinessType) ?? '';
+  }
 
-static Future<int?> getClientFacilityId() async {
-  final prefs = await SharedPreferences.getInstance();
+  // ============================================================
+  // SELECTED PRODUCTS
+  // ============================================================
 
-  return prefs.getInt(
-    _clientFacilityId,
-  );
-}
+  static Future<void> saveClientSelectedProducts(List<String> products) async {
+    final prefs = await SharedPreferences.getInstance();
 
+    await prefs.setStringList(_clientSelectedProducts, products);
+  }
 
-// ============================================================
-// BUSINESS NAME
-// ============================================================
+  static Future<List<String>> getClientSelectedProducts() async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<void> saveClientBusinessName(
-  String value,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(_clientSelectedProducts) ?? [];
+  }
 
-  await prefs.setString(
-    _clientBusinessName,
-    value,
-  );
-}
+  // ============================================================
+  // CLEAR CLIENT ONBOARDING
+  // ============================================================
 
+  static Future<void> clearClientOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<String> getClientBusinessName() async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_clientOnboardingStep);
 
-  return prefs.getString(
-        _clientBusinessName,
-      ) ??
-      '';
-}
+    await prefs.remove(_clientProfileCompletion);
 
+    await prefs.remove(_clientPreferencesCompleted);
 
-// ============================================================
-// BUSINESS TYPE
-// ============================================================
+    await prefs.remove(_clientDocumentsCompleted);
 
-static Future<void> saveClientBusinessType(
-  String value,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_clientProfileCompleted);
 
-  await prefs.setString(
-    _clientBusinessType,
-    value,
-  );
-}
+    await prefs.remove(_clientFacilityId);
 
+    await prefs.remove(_clientBusinessName);
 
-static Future<String> getClientBusinessType() async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_clientBusinessType);
 
-  return prefs.getString(
-        _clientBusinessType,
-      ) ??
-      '';
-}
+    await prefs.remove(_clientSelectedProducts);
+  }
+  // ============================================================
+  // ONBOARDING PREFERENCES
+  // ============================================================
 
+  static Future<void> saveBusinessType(String businessType) async {
+    final prefs = await SharedPreferences.getInstance();
 
-// ============================================================
-// SELECTED PRODUCTS
-// ============================================================
+    await prefs.setString(_businessTypeKey, businessType);
 
-static Future<void> saveClientSelectedProducts(
-  List<String> products,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+    print('💾 Business type saved: $businessType');
+  }
 
-  await prefs.setStringList(
-    _clientSelectedProducts,
-    products,
-  );
-}
+  static Future<String?> getBusinessType() async {
+    final prefs = await SharedPreferences.getInstance();
 
+    return prefs.getString(_businessTypeKey);
+  }
 
-static Future<List<String>>
-    getClientSelectedProducts() async {
-  final prefs = await SharedPreferences.getInstance();
+  static Future<void> saveBusinessCategories(List<String> categories) async {
+    final prefs = await SharedPreferences.getInstance();
 
-  return prefs.getStringList(
-        _clientSelectedProducts,
-      ) ??
-      [];
-}
+    await prefs.setStringList(_businessCategoriesKey, categories);
+    print('💾 Business categories saved: $categories');
+  }
 
+  static Future<List<String>> getBusinessCategories() async {
+    final prefs = await SharedPreferences.getInstance();
 
-// ============================================================
-// CLEAR CLIENT ONBOARDING
-// ============================================================
-
-static Future<void> clearClientOnboarding() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  await prefs.remove(
-    _clientOnboardingStep,
-  );
-
-  await prefs.remove(
-    _clientProfileCompletion,
-  );
-
-  await prefs.remove(
-    _clientPreferencesCompleted,
-  );
-
-  await prefs.remove(
-    _clientDocumentsCompleted,
-  );
-
-  await prefs.remove(
-    _clientProfileCompleted,
-  );
-
-  await prefs.remove(
-    _clientFacilityId,
-  );
-
-  await prefs.remove(
-    _clientBusinessName,
-  );
-
-  await prefs.remove(
-    _clientBusinessType,
-  );
-
-  await prefs.remove(
-    _clientSelectedProducts,
-  );
-}
-// ============================================================
-// ONBOARDING PREFERENCES
-// ============================================================
-
-static Future<void> saveBusinessType(String businessType) async {
-  final prefs = await SharedPreferences.getInstance();
-
-  await prefs.setString(_businessTypeKey, businessType);
-
-  print('💾 Business type saved: $businessType');
-}
-
-static Future<String?> getBusinessType() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  return prefs.getString(_businessTypeKey);
-}
-
-static Future<void> saveBusinessCategories(
-    List<String> categories) async {
-  final prefs = await SharedPreferences.getInstance();
-
-  await prefs.setStringList(
-    _businessCategoriesKey,
-    categories,
-  );
-  print('💾 Business categories saved: $categories');
-}
-
-static Future<List<String>> getBusinessCategories() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  return prefs.getStringList(_businessCategoriesKey) ?? [];
-}
+    return prefs.getStringList(_businessCategoriesKey) ?? [];
+  }
 
   // ============================================================
   // CLEAR USER / LOGOUT
@@ -607,356 +486,227 @@ static Future<List<String>> getBusinessCategories() async {
 
     print('🧹 User data completely wiped out from local storage.');
   }
-// ============================================================
-// OWNER ONBOARDING
-// ============================================================
+  // ============================================================
+  // OWNER ONBOARDING
+  // ============================================================
 
-static const String _ownerOnboardingStep =
-    'owner_onboarding_step';
+  static const String _ownerOnboardingStep = 'owner_onboarding_step';
 
-static const String _ownerProfileCompletion =
-    'owner_profile_completion';
+  static const String _ownerProfileCompletion = 'owner_profile_completion';
 
-static const String _ownerPreferencesCompleted =
-    'owner_preferences_completed';
+  static const String _ownerPreferencesCompleted =
+      'owner_preferences_completed';
 
-static const String _ownerDocumentsCompleted =
-    'owner_documents_completed';
+  static const String _ownerDocumentsCompleted = 'owner_documents_completed';
 
-static const String _ownerProfileCompleted =
-    'owner_profile_completed';
+  static const String _ownerProfileCompleted = 'owner_profile_completed';
 
-static const String _ownerFacilityId =
-    'owner_facility_id';
+  static const String _ownerFacilityId = 'owner_facility_id';
 
-static const String _ownerBusinessName =
-    'owner_business_name';
+  static const String _ownerBusinessName = 'owner_business_name';
 
-static const String _ownerBusinessType =
-    'owner_business_type';
+  static const String _ownerBusinessType = 'owner_business_type';
 
-static const String _ownerSelectedProducts =
-    'owner_selected_products';
+  static const String _ownerSelectedProducts = 'owner_selected_products';
 
+  // ============================================================
+  // SAVE OWNER ONBOARDING STEP
+  // ============================================================
 
-// ============================================================
-// SAVE OWNER ONBOARDING STEP
-// ============================================================
+  static Future<void> saveOwnerOnboardingStep(int step) async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<void> saveOwnerOnboardingStep(
-  int step,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_ownerOnboardingStep, step);
+  }
 
-  await prefs.setInt(
-    _ownerOnboardingStep,
-    step,
-  );
-}
+  // ============================================================
+  // GET OWNER ONBOARDING STEP
+  // ============================================================
 
+  static Future<int> getOwnerOnboardingStep() async {
+    final prefs = await SharedPreferences.getInstance();
 
-// ============================================================
-// GET OWNER ONBOARDING STEP
-// ============================================================
+    return prefs.getInt(_ownerOnboardingStep) ?? 0;
+  }
 
-static Future<int> getOwnerOnboardingStep() async {
-  final prefs = await SharedPreferences.getInstance();
+  // ============================================================
+  // SAVE OWNER PROFILE COMPLETION
+  // ============================================================
 
-  return prefs.getInt(
-        _ownerOnboardingStep,
-      ) ??
-      0;
-}
+  static Future<void> saveOwnerProfileCompletion(int completion) async {
+    final prefs = await SharedPreferences.getInstance();
 
+    await prefs.setInt(_ownerProfileCompletion, completion);
+  }
 
-// ============================================================
-// SAVE OWNER PROFILE COMPLETION
-// ============================================================
+  // ============================================================
+  // GET OWNER PROFILE COMPLETION
+  // ============================================================
 
-static Future<void> saveOwnerProfileCompletion(
-  int completion,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+  static Future<int> getOwnerProfileCompletion() async {
+    final prefs = await SharedPreferences.getInstance();
 
-  await prefs.setInt(
-    _ownerProfileCompletion,
-    completion,
-  );
-}
+    return prefs.getInt(_ownerProfileCompletion) ?? 0;
+  }
 
+  // ============================================================
+  // OWNER PREFERENCES COMPLETED
+  // ============================================================
 
-// ============================================================
-// GET OWNER PROFILE COMPLETION
-// ============================================================
+  static Future<void> setOwnerPreferencesCompleted(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<int> getOwnerProfileCompletion() async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_ownerPreferencesCompleted, value);
+  }
 
-  return prefs.getInt(
-        _ownerProfileCompletion,
-      ) ??
-      0;
-}
+  static Future<bool> isOwnerPreferencesCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
 
+    return prefs.getBool(_ownerPreferencesCompleted) ?? false;
+  }
 
-// ============================================================
-// OWNER PREFERENCES COMPLETED
-// ============================================================
+  // ============================================================
+  // OWNER DOCUMENTS COMPLETED
+  // ============================================================
 
-static Future<void> setOwnerPreferencesCompleted(
-  bool value,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+  static Future<void> setOwnerDocumentsCompleted(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
 
-  await prefs.setBool(
-    _ownerPreferencesCompleted,
-    value,
-  );
-}
+    await prefs.setBool(_ownerDocumentsCompleted, value);
+  }
 
+  static Future<bool> areOwnerDocumentsCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<bool> isOwnerPreferencesCompleted() async {
-  final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_ownerDocumentsCompleted) ?? false;
+  }
 
-  return prefs.getBool(
-        _ownerPreferencesCompleted,
-      ) ??
-      false;
-}
+  // ============================================================
+  // OWNER PROFILE COMPLETED
+  // ============================================================
 
+  static Future<void> setOwnerProfileCompleted(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
 
-// ============================================================
-// OWNER DOCUMENTS COMPLETED
-// ============================================================
+    await prefs.setBool(_ownerProfileCompleted, value);
+  }
 
-static Future<void> setOwnerDocumentsCompleted(
-  bool value,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+  static Future<bool> isOwnerProfileCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
 
-  await prefs.setBool(
-    _ownerDocumentsCompleted,
-    value,
-  );
-}
+    return prefs.getBool(_ownerProfileCompleted) ?? false;
+  }
 
+  // ============================================================
+  // OWNER FACILITY ID
+  // ============================================================
 
-static Future<bool> areOwnerDocumentsCompleted() async {
-  final prefs = await SharedPreferences.getInstance();
+  static Future<void> saveOwnerFacilityId(int facilityId) async {
+    final prefs = await SharedPreferences.getInstance();
 
-  return prefs.getBool(
-        _ownerDocumentsCompleted,
-      ) ??
-      false;
-}
+    await prefs.setInt(_ownerFacilityId, facilityId);
 
+    print('💾 Owner Facility ID saved: $facilityId');
+  }
 
-// ============================================================
-// OWNER PROFILE COMPLETED
-// ============================================================
+  static Future<int?> getOwnerFacilityId() async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<void> setOwnerProfileCompleted(
-  bool value,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(_ownerFacilityId);
+  }
 
-  await prefs.setBool(
-    _ownerProfileCompleted,
-    value,
-  );
-}
+  // ============================================================
+  // OWNER BUSINESS NAME
+  // ============================================================
 
+  static Future<void> saveOwnerBusinessName(String value) async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<bool> isOwnerProfileCompleted() async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_ownerBusinessName, value);
+  }
 
-  return prefs.getBool(
-        _ownerProfileCompleted,
-      ) ??
-      false;
-}
+  static Future<String> getOwnerBusinessName() async {
+    final prefs = await SharedPreferences.getInstance();
 
+    return prefs.getString(_ownerBusinessName) ?? '';
+  }
 
-// ============================================================
-// OWNER FACILITY ID
-// ============================================================
+  // ============================================================
+  // OWNER BUSINESS TYPE
+  // ============================================================
 
-static Future<void> saveOwnerFacilityId(
-  int facilityId,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+  static Future<void> saveOwnerBusinessType(String value) async {
+    final prefs = await SharedPreferences.getInstance();
 
-  await prefs.setInt(
-    _ownerFacilityId,
-    facilityId,
-  );
+    await prefs.setString(_ownerBusinessType, value);
+  }
 
-  print(
-    '💾 Owner Facility ID saved: $facilityId',
-  );
-}
+  static Future<String> getOwnerBusinessType() async {
+    final prefs = await SharedPreferences.getInstance();
 
+    return prefs.getString(_ownerBusinessType) ?? '';
+  }
 
-static Future<int?> getOwnerFacilityId() async {
-  final prefs = await SharedPreferences.getInstance();
+  // ============================================================
+  // OWNER SELECTED PRODUCTS
+  // ============================================================
 
-  return prefs.getInt(
-    _ownerFacilityId,
-  );
-}
+  static Future<void> saveOwnerSelectedProducts(List<String> products) async {
+    final prefs = await SharedPreferences.getInstance();
 
+    await prefs.setStringList(_ownerSelectedProducts, products);
+  }
 
-// ============================================================
-// OWNER BUSINESS NAME
-// ============================================================
+  static Future<List<String>> getOwnerSelectedProducts() async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<void> saveOwnerBusinessName(
-  String value,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(_ownerSelectedProducts) ?? [];
+  }
 
-  await prefs.setString(
-    _ownerBusinessName,
-    value,
-  );
-}
+  // ============================================================
+  // CLEAR OWNER ONBOARDING
+  // ============================================================
 
+  static Future<void> clearOwnerOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<String> getOwnerBusinessName() async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_ownerOnboardingStep);
 
-  return prefs.getString(
-        _ownerBusinessName,
-      ) ??
-      '';
-}
+    await prefs.remove(_ownerProfileCompletion);
 
+    await prefs.remove(_ownerPreferencesCompleted);
 
-// ============================================================
-// OWNER BUSINESS TYPE
-// ============================================================
+    await prefs.remove(_ownerDocumentsCompleted);
 
-static Future<void> saveOwnerBusinessType(
-  String value,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_ownerProfileCompleted);
 
-  await prefs.setString(
-    _ownerBusinessType,
-    value,
-  );
-}
+    await prefs.remove(_ownerFacilityId);
 
+    await prefs.remove(_ownerBusinessName);
 
-static Future<String> getOwnerBusinessType() async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_ownerBusinessType);
 
-  return prefs.getString(
-        _ownerBusinessType,
-      ) ??
-      '';
-}
+    await prefs.remove(_ownerSelectedProducts);
+  }
+  // ============================================================
+  // OWNER BUSINESS CATEGORIES
+  // ============================================================
 
+  static const String _ownerBusinessCategories = 'owner_business_categories';
 
-// ============================================================
-// OWNER SELECTED PRODUCTS
-// ============================================================
+  static Future<void> saveOwnerBusinessCategories(
+    List<String> categories,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<void> saveOwnerSelectedProducts(
-  List<String> products,
-) async {
-  final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_ownerBusinessCategories, categories);
 
-  await prefs.setStringList(
-    _ownerSelectedProducts,
-    products,
-  );
-}
+    print('💾 Owner business categories saved: $categories');
+  }
 
+  static Future<List<String>> getOwnerBusinessCategories() async {
+    final prefs = await SharedPreferences.getInstance();
 
-static Future<List<String>>
-    getOwnerSelectedProducts() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  return prefs.getStringList(
-        _ownerSelectedProducts,
-      ) ??
-      [];
-}
-
-
-// ============================================================
-// CLEAR OWNER ONBOARDING
-// ============================================================
-
-static Future<void> clearOwnerOnboarding() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  await prefs.remove(
-    _ownerOnboardingStep,
-  );
-
-  await prefs.remove(
-    _ownerProfileCompletion,
-  );
-
-  await prefs.remove(
-    _ownerPreferencesCompleted,
-  );
-
-  await prefs.remove(
-    _ownerDocumentsCompleted,
-  );
-
-  await prefs.remove(
-    _ownerProfileCompleted,
-  );
-
-  await prefs.remove(
-    _ownerFacilityId,
-  );
-
-  await prefs.remove(
-    _ownerBusinessName,
-  );
-
-  await prefs.remove(
-    _ownerBusinessType,
-  );
-
-  await prefs.remove(
-    _ownerSelectedProducts,
-  );
-}
-// ============================================================
-// OWNER BUSINESS CATEGORIES
-// ============================================================
-
-static const String _ownerBusinessCategories =
-    'owner_business_categories';
-
-static Future<void> saveOwnerBusinessCategories(
-  List<String> categories,
-) async {
-  final prefs = await SharedPreferences.getInstance();
-
-  await prefs.setStringList(
-    _ownerBusinessCategories,
-    categories,
-  );
-
-  print(
-    '💾 Owner business categories saved: $categories',
-  );
-}
-
-static Future<List<String>>
-    getOwnerBusinessCategories() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  return prefs.getStringList(
-        _ownerBusinessCategories,
-      ) ??
-      [];
-}
+    return prefs.getStringList(_ownerBusinessCategories) ?? [];
+  }
 }

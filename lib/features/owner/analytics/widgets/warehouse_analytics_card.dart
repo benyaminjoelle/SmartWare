@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:smartware/features/owner/analytics/controllers/owner_analytic_controller.dart';
+
+import 'package:smartware/features/owner/analytics/models/warehouse_model.dart';
 
 class WarehouseAnalyticsCard extends StatelessWidget {
   final WarehouseModel warehouse;
@@ -37,11 +38,12 @@ class WarehouseAnalyticsCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _WarehouseHeader(warehouse: warehouse),
+              _WarehouseHeader(
+                warehouse: warehouse,
+              ),
 
               const SizedBox(height: 18),
 
-              // Visible divider between warehouse info and statistics.
               Divider(
                 height: 1,
                 thickness: 1,
@@ -50,7 +52,23 @@ class WarehouseAnalyticsCard extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              _WarehouseStats(warehouse: warehouse),
+              _WarehouseStats(
+                warehouse: warehouse,
+              ),
+
+              const SizedBox(height: 16),
+
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: colors.outlineVariant.withOpacity(0.35),
+              ),
+
+              const SizedBox(height: 14),
+
+              _WarehouseLocation(
+                location: warehouse.location,
+              ),
             ],
           ),
         ),
@@ -66,7 +84,9 @@ class WarehouseAnalyticsCard extends StatelessWidget {
 class _WarehouseHeader extends StatelessWidget {
   final WarehouseModel warehouse;
 
-  const _WarehouseHeader({required this.warehouse});
+  const _WarehouseHeader({
+    required this.warehouse,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +96,7 @@ class _WarehouseHeader extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _WarehouseImage(imageUrl: warehouse.imageUrl),
+        const _WarehouseImage(),
 
         const SizedBox(width: 14),
 
@@ -85,7 +105,7 @@ class _WarehouseHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                warehouse.name,
+                warehouse.nameEn,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.titleMedium?.copyWith(
@@ -97,10 +117,9 @@ class _WarehouseHeader extends StatelessWidget {
               const SizedBox(height: 6),
 
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
-                    Icons.location_on_outlined,
+                    Icons.warehouse_outlined,
                     size: 15,
                     color: colors.onSurfaceVariant,
                   ),
@@ -109,12 +128,11 @@ class _WarehouseHeader extends StatelessWidget {
 
                   Expanded(
                     child: Text(
-                      warehouse.location,
-                      maxLines: 2,
+                      warehouse.type,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colors.onSurfaceVariant,
-                        height: 1.3,
                       ),
                     ),
                   ),
@@ -141,46 +159,23 @@ class _WarehouseHeader extends StatelessWidget {
 // -----------------------------------------------------------------------------
 
 class _WarehouseImage extends StatelessWidget {
-  final String? imageUrl;
-
-  const _WarehouseImage({required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    final hasImage = imageUrl != null && imageUrl!.trim().isNotEmpty;
- 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(14),
-      child: SizedBox(
-        width: 54,
-        height: 54,
-        child: hasImage
-            ? Image.network(
-                imageUrl!,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) {
-                  return const _EmptyWarehouseImage();
-                },
-              )
-            : const _EmptyWarehouseImage(),
-      ),
-    );
-  }
-}
-
-class _EmptyWarehouseImage extends StatelessWidget {
-  const _EmptyWarehouseImage();
+  const _WarehouseImage();
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    return Container(
-      color: colors.surfaceContainerHighest.withOpacity(0.45),
-      child: Icon(
-        Icons.image_outlined,
-        size: 25,
-        color: colors.onSurfaceVariant.withOpacity(0.55),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        width: 54,
+        height: 54,
+        color: colors.surfaceContainerHighest.withOpacity(0.45),
+        child: Icon(
+          Icons.warehouse_outlined,
+          size: 25,
+          color: colors.onSurfaceVariant.withOpacity(0.55),
+        ),
       ),
     );
   }
@@ -193,84 +188,90 @@ class _EmptyWarehouseImage extends StatelessWidget {
 class _WarehouseStats extends StatelessWidget {
   final WarehouseModel warehouse;
 
-  const _WarehouseStats({required this.warehouse});
+  const _WarehouseStats({
+    required this.warehouse,
+  });
 
   @override
   Widget build(BuildContext context) {
-     final theme = Theme.of(context);
+    final colors = Theme.of(context).colorScheme;
+
+    return Row(
+      children: [
+        Expanded(
+          child: MiniStat(
+            label: 'Products',
+            value: warehouse.productCount.toString(),
+            icon: Icons.inventory_2_outlined,
+          ),
+        ),
+
+        const _StatDivider(),
+
+        Expanded(
+          child: MiniStat(
+            label: 'Low stock',
+            value: warehouse.stockOutRiskCount.toString(),
+            icon: Icons.warning_amber_rounded,
+            iconColor: colors.error,
+          ),
+        ),
+
+        const _StatDivider(),
+
+        Expanded(
+          child: MiniStat(
+            label: 'Status',
+            value: warehouse.status,
+            icon: Icons.check_circle_outline_rounded,
+            iconColor: colors.primary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// WAREHOUSE LOCATION
+// -----------------------------------------------------------------------------
+
+class _WarehouseLocation extends StatelessWidget {
+  final String location;
+
+  const _WarehouseLocation({
+    required this.location,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final colors = theme.colorScheme;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isSmall = constraints.maxWidth < 340;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          Icons.location_on_outlined,
+          size: 19,
+          color: colors.onSurfaceVariant,
+        ),
 
-        if (isSmall) {
-          return Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: MiniStat(
-                      label: 'Products',
-                      value: warehouse.totalProducts.toString(),
-                      icon: Icons.inventory_2_outlined,
-                    ),
-                  ),
-                  Expanded(
-                    child: MiniStat(
-                      label: 'Stock',
-                      value: warehouse.totalStock.toString(),
-                      icon: Icons.layers_outlined,
-                    ),
-                  ),
-                ],
-              ),
+        const SizedBox(width: 8),
 
-              const SizedBox(height: 14),
-
-              MiniStat(
-                label: 'Low stock',
-                value: warehouse.lowStockProducts.toString(),
-                icon: Icons.warning_amber_rounded,
-                iconColor:colors.error ,
-                expanded: true,
-              ),
-            ],
-          );
-        }
-
-        return Row(
-          children: [
-            Expanded(
-              child: MiniStat(
-                label: 'Products',
-                value: warehouse.totalProducts.toString(),
-                icon: Icons.inventory_2_outlined,
-              ),
+        Expanded(
+          child: Text(
+            location.isNotEmpty ? location : 'Location not available',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: colors.onSurfaceVariant,
+              fontSize: 12,
+              height: 1.3,
             ),
-
-            const _StatDivider(),
-
-            Expanded(
-              child: MiniStat(
-                label: 'Stock',
-                value: warehouse.totalStock.toString(),
-                icon: Icons.layers_outlined,
-              ),
-            ),
-
-            const _StatDivider(),
-
-            Expanded(
-              child: MiniStat(
-                label: 'Low stock',
-                value: warehouse.lowStockProducts.toString(),
-                icon: Icons.warning_amber_rounded,
-              ),
-            ),
-          ],
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -283,7 +284,6 @@ class MiniStat extends StatelessWidget {
   final String label;
   final String value;
   final IconData icon;
-  final bool expanded;
   final Color? iconColor;
 
   const MiniStat({
@@ -291,9 +291,7 @@ class MiniStat extends StatelessWidget {
     required this.label,
     required this.value,
     required this.icon,
-    
-    this.expanded = false,
-    this.iconColor
+    this.iconColor,
   });
 
   @override
@@ -301,44 +299,45 @@ class MiniStat extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
 
-    return SizedBox(
-      width: expanded ? double.infinity : null,
-      child: Row(
-        mainAxisSize: expanded ? MainAxisSize.max : MainAxisSize.min,
-        children: [
-          Icon(icon, size: 19, color:iconColor?? colors.primary),
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          icon,
+          size: 19,
+          color: iconColor ?? colors.primary,
+        ),
 
-          const SizedBox(width: 9),
+        const SizedBox(width: 9),
 
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
                 ),
+              ),
 
-                const SizedBox(height: 2),
+              const SizedBox(height: 2),
 
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colors.onSurfaceVariant,
-                    fontSize: 11,
-                  ),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colors.onSurfaceVariant,
+                  fontSize: 11,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
