@@ -172,6 +172,7 @@ class ClientSignupView extends StatelessWidget {
                                       text: "Continue".tr,
                                       isLoading: controller.isLoading.value,
                                       onPressed: () {
+                                        FocusScope.of(context).unfocus();
                                         controller.continueToVerify();
                                       },
                                     ),
@@ -183,6 +184,7 @@ class ClientSignupView extends StatelessWidget {
                                       Text("Already have an account?".tr),
                                       TextButton(
                                         onPressed: () {
+                                          FocusScope.of(context).unfocus();
                                           Get.toNamed(AppRoutes.login);
                                         },
                                         child: Text('Login'.tr),

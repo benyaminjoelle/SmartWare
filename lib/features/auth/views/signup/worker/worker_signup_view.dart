@@ -196,6 +196,7 @@ class WorkerSignupView extends StatelessWidget {
                                                   .tr,
                                           icon: Icons.check_circle_outline,
                                         );
+                                        FocusScope.of(context).unfocus();
                                         Get.toNamed('/userverification');
                                       },
                                     ),
@@ -207,6 +208,7 @@ class WorkerSignupView extends StatelessWidget {
                                       Text("Already have an account?".tr),
                                       TextButton(
                                         onPressed: () {
+                                          FocusScope.of(context).unfocus();
                                           Get.toNamed(AppRoutes.login);
                                         },
                                         child: Text('Login'.tr),

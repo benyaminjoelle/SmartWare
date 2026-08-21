@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'package:smartware/core/routes/app_routes.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
@@ -50,6 +51,15 @@ class LoginController extends GetxController {
         loginIdentifier: input,
         password: password,
       );
+      final box = GetStorage();
+      await box.write('user_data', {
+        'id': user.id,
+        'first_name': user.firstName,
+        'last_name': user.lastName,
+        'email': user.email,
+        'phone_number': user.phoneNumber,
+        'role': _roleToStorageString(user.role),
+      });
 
       print('');
       print('════════ USER RECEIVED ════════');

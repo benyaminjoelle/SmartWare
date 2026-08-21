@@ -53,8 +53,9 @@ class ClientHomeView extends StatelessWidget {
                               letterSpacing: 1.2,
                             ).copyWith(color: colors.onSurface),
                           ),
+                         
                           Text(
-                            "Welcome back, @userName!".trParams({
+                             "${homeController.greeting}, @userName!".trParams({
                               "userName": homeController.userName,
                             }),
                             style: theme.textTheme.bodyMedium?.copyWith(

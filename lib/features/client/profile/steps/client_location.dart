@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smartware/features/client/profile/controllers/client_location_controller.dart';
+import 'package:smartware/widgets/primary_button.dart';
 
 
 class ClientLocation extends StatelessWidget {
@@ -440,40 +441,24 @@ class ClientLocation extends StatelessWidget {
           // ======================================================
           // DONE BUTTON
           // ======================================================
+        // final bool saving = controller.isSaving.value;
           Positioned(
-            left: horizontalPadding,
-            right: horizontalPadding,
-            bottom: 16,
-            child: SafeArea(
-              top: false,
-              child: Obx(() {
-                final bool saving = controller.isSaving.value;
-
-                return SizedBox(
-                  height: 56,
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: saving ? null : controller.done,
-                    child: saving
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text(
-                            'Done',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                  ),
-                );
-              }),
-            ),
+          left: horizontalPadding,
+          right: horizontalPadding,
+          bottom: 16,
+          child: SafeArea(
+            top: false,
+            child: Obx(() {
+              return PrimaryButton(
+                text: 'Done',
+                isLoading: controller.isSaving.value,
+                onPressed: controller.done,
+              );
+            }),
           ),
-        ],
-      ),
+        ),
+                    
+      ]),
     );
   }
 }

@@ -171,6 +171,7 @@ class OwnerSignupView extends StatelessWidget {
                                       text: "Continue".tr,
                                       isLoading: controller.isLoading.value,
                                       onPressed: () {
+                                        FocusScope.of(context).unfocus();
                                         controller.continueToVerify();
                                       },
                                     ),
@@ -182,6 +183,7 @@ class OwnerSignupView extends StatelessWidget {
                                       Text("Already have an account?".tr),
                                       TextButton(
                                         onPressed: () {
+                                          FocusScope.of(context).unfocus();
                                           Get.toNamed(AppRoutes.login);
                                         },
                                         child: Text('Login'.tr),

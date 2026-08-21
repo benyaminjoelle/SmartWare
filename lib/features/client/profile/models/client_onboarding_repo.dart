@@ -262,6 +262,67 @@ class ClientOnboardingRepo {
       message: 'Failed to upload onboarding documents',
     );
   }
+  
+}
+//Add Client location
+Future<void> submitLocation({
+  required int facilityId,
+  required double latitude,
+  required double longitude,
+  required String address,
+}) async {
+  try {
+    print('');
+    print('════════ SUBMIT LOCATION START ════════');
+
+    final requestData = {
+      'facility_id': facilityId,
+      'latitude': latitude,
+      'longitude': longitude,
+      'address': address,
+    };
+
+    print('📤 Request Data:');
+    print(requestData);
+
+    final response = await _api.post(
+      '$baseUrl/api/onboarding/submitLocation',
+      requestData,
+    );
+
+    print('');
+    print('📥 Location Response:');
+    print(response);
+
+    if (response is ApiError) {
+      throw response;
+    }
+
+    print('════════ SUBMIT LOCATION SUCCESS ════════');
+  } on DioException catch (e) {
+    print('');
+    print('════════ SUBMIT LOCATION DIO ERROR ════════');
+    print('❌ Status Code: ${e.response?.statusCode}');
+    print('❌ Response Data: ${e.response?.data}');
+    print('════════════════════════════════════════');
+
+    throw ApiError(
+      message:
+          e.response?.data?['message'] ??
+          'Failed to save location',
+    );
+  } catch (e) {
+    print('');
+    print('❌ Submit location error: $e');
+
+    if (e is ApiError) {
+      rethrow;
+    }
+
+    throw ApiError(
+      message: 'Failed to save location',
+    );
+  }
 }
 // ============================================================
 // ADD / UPDATE PERSONAL IMAGE
