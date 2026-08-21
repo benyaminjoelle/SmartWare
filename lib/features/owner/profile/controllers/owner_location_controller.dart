@@ -495,17 +495,9 @@ class OwnerLocationController extends GetxController {
 
       await moveCamera(location);
 
-      debugPrint(
-        '📍 Latitude: ${location.latitude}',
-      );
-
-      debugPrint(
-        '📍 Longitude: ${location.longitude}',
-      );
-
-      debugPrint(
-        '📍 Address: ${selectedAddress.value}',
-      );
+      debugPrint('📍 Latitude: ${location.latitude}',);
+      debugPrint('📍 Longitude: ${location.longitude}',);
+      debugPrint('📍 Address: ${selectedAddress.value}',);
 
       debugPrint(
         '════════════════════════════════',
@@ -531,6 +523,7 @@ class OwnerLocationController extends GetxController {
       isLoadingPlace.value = false;
     }
   }
+  
 
   // ============================================================
   // GET PLACE DETAILS
@@ -683,7 +676,7 @@ class OwnerLocationController extends GetxController {
       ),
     };
   }
-
+  
   // ============================================================
   // MOVE CAMERA
   // ============================================================
@@ -900,13 +893,9 @@ class OwnerLocationController extends GetxController {
 
 class PlacePrediction {
   final String placeId;
-
   final String placeResourceName;
-
   final String description;
-
   final String mainText;
-
   final String secondaryText;
 
   PlacePrediction({

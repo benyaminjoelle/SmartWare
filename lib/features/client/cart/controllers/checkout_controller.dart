@@ -3,6 +3,7 @@ import 'package:smartware/core/network/api_service.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/features/client/cart/controllers/client_cart_controller.dart';
 import 'package:smartware/features/client/cart/models/cart_item_model.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
 
 class CheckoutController extends GetxController {
   final CartController cartController = Get.find<CartController>();
@@ -81,13 +82,13 @@ Future<void> loadProfileStatus() async {
   // ============================================================
 
   Future<void> placeOrder() async {
-//     if (!isProfileCompleted.value) {
-//   Get.snackbar(
-//     "Complete Your Profile",
-//     "Please complete your profile setup before placing an order.",
-//   );
-//   return;
-// }
+    if (!isProfileCompleted.value) {
+  Get.snackbar(
+    "Complete Your Profile",
+    "Please complete your profile setup before placing an order.",
+  );
+  return;
+}
    if (cartController.cartItems.isEmpty) {
     Get.snackbar(
       "Error",
@@ -139,9 +140,9 @@ Future<void> loadProfileStatus() async {
   } catch (e) {
     print("❌ CREATE ORDER ERROR: $e");
 
-    Get.snackbar(
-      "Order Failed",
-      e.toString(),
+    AppSnackbar.show(
+      title:"Order Failed",
+      message: e.toString(),
     );
   } finally {
     isLoading.value = false;

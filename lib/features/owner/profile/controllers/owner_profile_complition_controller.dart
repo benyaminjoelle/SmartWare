@@ -14,7 +14,6 @@ import 'package:smartware/features/owner/profile/models/owner_onboarding_repo.da
 import 'package:smartware/features/owner/profile/models/owner_prefrences_model.dart';
 
 import 'package:smartware/features/client/profile/widgets/product_type_model.dart';
-
 import 'package:smartware/widgets/app_dialog.dart';
 
 class OwnerProfileComplitionController extends GetxController {
