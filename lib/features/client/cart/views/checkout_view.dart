@@ -12,117 +12,115 @@ class CheckoutView extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Checkout"),
-        centerTitle: true,
-      ),
-
-      body: Obx(() {
-        final invoices = controller.warehouseInvoices;
-
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              Text(
-                "Your Invoices",
-                style: Theme.of(context)
-                    .textTheme
-                    .titleLarge
-                    ?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // ==================================================
-              // ONE INVOICE PER WAREHOUSE
-              // ==================================================
-
-              ...invoices.entries.map((entry) {
-                final items = entry.value;
-
-                return _buildWarehouseInvoice(
-                  context,
-                  controller,
-                  items,
-                  colors,
-                );
-              }),
-
-              const SizedBox(height: 20),
-
-              // ==================================================
-              // GRAND TOTAL
-              // ==================================================
-
-              const Divider(thickness: 1.5),
-
-              const SizedBox(height: 16),
-
-              Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Total to Pay",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  Text(
-                    "\$${controller.grandTotal.toStringAsFixed(2)}",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: colors.primary,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 28),
-
-              // ==================================================
-              // PLACE ORDER
-              // ==================================================
-
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: controller.isLoading.value
-                      ? null
-                      : controller.placeOrder,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: colors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: controller.isLoading.value
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                      : const Text(
-                          "Confirm & Place Order",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+    
+      body: SafeArea(
+        child: Obx(() {
+          final invoices = controller.warehouseInvoices;
+        
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+        
+                Text(
+                  "Your Invoices",
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge
+                      ?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
-              ),
-            ],
-          ),
-        );
-      }),
+        
+                const SizedBox(height: 16),
+        
+                // ==================================================
+                // ONE INVOICE PER WAREHOUSE
+                // ==================================================
+        
+                ...invoices.entries.map((entry) {
+                  final items = entry.value;
+        
+                  return _buildWarehouseInvoice(
+                    context,
+                    controller,
+                    items,
+                    colors,
+                  );
+                }),
+        
+                const SizedBox(height: 20),
+        
+                // ==================================================
+                // GRAND TOTAL
+                // ==================================================
+        
+                const Divider(thickness: 1.5),
+        
+                const SizedBox(height: 16),
+        
+                Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Total to Pay",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+        
+                    Text(
+                      "\$${controller.grandTotal.toStringAsFixed(2)}",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: colors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+        
+                const SizedBox(height: 28),
+        
+                // ==================================================
+                // PLACE ORDER
+                // ==================================================
+        
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : controller.placeOrder,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: controller.isLoading.value
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : const Text(
+                            "Confirm & Place Order",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 
@@ -137,21 +135,11 @@ class CheckoutView extends StatelessWidget {
     ColorScheme colors,
   ) {
     final warehouseName = items.first.warehouseName;
-
-    final subtotal =
-        controller.warehouseSubtotal(items);
-
-    final savings =
-        controller.warehouseSavings(items);
-
-    final finalTotal =
-        controller.warehouseFinalTotal(items);
-
-    final tax =
-        controller.warehouseTax(items);
-
-    final total =
-        controller.warehouseGrandTotal(items);
+    final subtotal = controller.warehouseSubtotal(items);
+    final savings = controller.warehouseSavings(items);
+    final finalTotal = controller.warehouseFinalTotal(items);
+    final tax = controller.warehouseTax(items);
+    final total = controller.warehouseGrandTotal(items);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 20),

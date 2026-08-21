@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+
 import 'package:smartware/features/client/widgets/special_sales_product_card.dart';
-import 'package:smartware/features/product/controllers/product_controller.dart';
-import 'package:smartware/features/warehouse/models/warehouse_product_model.dart';
+import 'package:smartware/features/product/models/product_model.dart';
 
 class SpecialSalesRow extends StatelessWidget {
   final String title;
   final VoidCallback? onSeeAllPressed;
-  final RxList<WarehouseProductModel> items;
+  final RxList<Product> items;
 
   const SpecialSalesRow({
     super.key,
@@ -23,7 +20,6 @@ class SpecialSalesRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final media = MediaQuery.of(context).size;
-    final productController = Get.find<ProductController>();
 
     return Obx(() {
       if (items.isEmpty) {
@@ -39,11 +35,13 @@ class SpecialSalesRow extends StatelessWidget {
               vertical: 4,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   title,
-                  style: theme.textTheme.titleMedium?.copyWith(
+                  style:
+                      theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),
@@ -56,7 +54,6 @@ class SpecialSalesRow extends StatelessWidget {
               ],
             ),
           ),
-
           SizedBox(
             height: 240,
             child: ListView.builder(
@@ -68,16 +65,9 @@ class SpecialSalesRow extends StatelessWidget {
               ),
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
-                final warehouseProduct = items[index];
-                final product = productController.getProductById(
-                  warehouseProduct.productId,
-                );
-                if (product == null) {
-                  Center(child: Text("No items available".tr));
-                  return const SizedBox.shrink();    
-                }
+                final product = items[index];
+
                 return SpecialSaleProductCard(
-                  warehouseProduct: warehouseProduct,
                   product: product,
                 );
               },

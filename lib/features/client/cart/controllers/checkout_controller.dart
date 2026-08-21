@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:smartware/core/network/api_service.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/features/client/cart/controllers/client_cart_controller.dart';
 import 'package:smartware/features/client/cart/models/cart_item_model.dart';
@@ -80,83 +81,70 @@ Future<void> loadProfileStatus() async {
   // ============================================================
 
   Future<void> placeOrder() async {
-    if (!isProfileCompleted.value) {
-  Get.snackbar(
-    "Complete Your Profile",
-    "Please complete your profile setup before placing an order.",
-  );
-  return;
-}
-    if (cartController.cartItems.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Your cart is empty!",
-      );
-      return;
-    }
+//     if (!isProfileCompleted.value) {
+//   Get.snackbar(
+//     "Complete Your Profile",
+//     "Please complete your profile setup before placing an order.",
+//   );
+//   return;
+// }
+   if (cartController.cartItems.isEmpty) {
+    Get.snackbar(
+      "Error",
+      "Your cart is empty!",
+    );
+    return;
+  }
 
-    try {
-      isLoading.value = true;
+  try {
+    isLoading.value = true;
 
-      // One invoice/order per warehouse
-      final invoices = warehouseInvoices.entries.map((entry) {
-        final warehouseId = entry.key;
-        final items = entry.value;
+    final items = cartController.cartItems.values.map((item) {
+      return {
+        "product_id": item.product.id,
+        "warehouse_id": item.warehouseId,
+        "quantity": item.quantity,
+      };
+    }).toList();
 
-        return {
-          "warehouseId": warehouseId,
+    final body = {
+      "items": items,
+    };
 
-          "warehouseName": items.first.warehouseName,
+    print("========== CREATE ORDER ==========");
+    print(body);
+    print("==================================");
 
-          "items": items.map((item) {
-            return {
-              "productId": item.product.id,
-              "sku": item.product.sku,
-              "quantity": item.quantity,
-              "unitPrice": item.unitPrice,
-              "discountPercentage": item.discountPercentage,
-              "discountedPrice":
-                  item.discountedUnitPrice,
-            };
-          }).toList(),
+    final response = await ApiService().post(
+      '/orders',
+      body,
+    );
 
-          "subtotal": warehouseSubtotal(items),
-          "discountSavings": warehouseSavings(items),
-          "subtotalAfterDiscount": warehouseFinalTotal(items),
-          "shippingFee": shippingFee,
-          "tax": warehouseTax(items),
-          "grandTotal": warehouseGrandTotal(items),
-          "paymentMethod": selectedPaymentMethod.value,
-        };
-      }).toList();
+    print("========== ORDER RESPONSE ==========");
+    print(response);
+    print("====================================");
 
-      // For now, simulate API call
-      await Future.delayed(
-        const Duration(seconds: 2),
-      );
-
-      print("========== ORDERS ==========");
-      print(invoices);
-      print("============================");
-
-      // Save all warehouse invoices
-      await cartController.saveOrderHistory({
-        "orders": invoices,
-        "createdAt": DateTime.now().toIso8601String(),
-      });
-
+    if (response is Map && response['success'] == true) {
       cartController.clearCart();
 
-      isLoading.value = false;
-
       Get.offAllNamed('/order-success');
-    } catch (e) {
-      isLoading.value = false;
-
+    } else {
       Get.snackbar(
         "Order Failed",
-        e.toString(),
+        response is Map
+            ? response['message'] ?? 'Failed to create order.'
+            : 'Failed to create order.',
       );
     }
+  } catch (e) {
+    print("❌ CREATE ORDER ERROR: $e");
+
+    Get.snackbar(
+      "Order Failed",
+      e.toString(),
+    );
+  } finally {
+    isLoading.value = false;
   }
+}
 }

@@ -107,21 +107,23 @@ class CartCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
 
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                         
-                          Text(
-                            'Total: \$${cartItem.discountedTotal.toStringAsFixed(2)}',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: colors.tertiary,
-                              fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Total: \$${cartItem.discountedTotal.toStringAsFixed(2)}',
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colors.tertiary,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
 
-                      // ================= QUANTITY CONTROLS =================
+            // ================= QUANTITY CONTROLS =================
                  Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

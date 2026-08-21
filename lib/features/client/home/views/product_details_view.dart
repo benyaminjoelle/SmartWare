@@ -46,18 +46,18 @@ class ProductDetailsView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // COMPANY
-                      Text(
-                        product.companyName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.labelMedium?.copyWith(
-                          color: colors.primary,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
+                      // Text(
+                      //   product.companyName,
+                      //   maxLines: 1,
+                      //   overflow: TextOverflow.ellipsis,
+                      //   style: theme.textTheme.labelMedium?.copyWith(
+                      //     color: colors.primary,
+                      //     fontWeight: FontWeight.w800,
+                      //     letterSpacing: 0.8,
+                      //   ),
+                      // ),
 
-                      const SizedBox(height: 8),
+                      // const SizedBox(height: 8),
 
                       // PRODUCT NAME
                       Text(

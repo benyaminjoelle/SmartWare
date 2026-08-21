@@ -7,12 +7,10 @@ class ProductRepo {
 
   Future<List<Product>> getProducts() async {
     try {
-      final response = await _apiService.get('/products');
-
+      final response = await _apiService.get('/inventories/products');
       if (response is ApiError) {
         throw response;
       }
-
       final data = response['data'];
 
       if (data is! List) {
@@ -28,7 +26,10 @@ class ProductRepo {
             ),
           )
           .toList();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('❌ PRODUCT PARSING ERROR: $e');
+      print(stackTrace);
+
       if (e is ApiError) {
         rethrow;
       }

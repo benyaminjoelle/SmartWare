@@ -35,7 +35,6 @@ class OwnerEditProfileController extends GetxController {
   // ============================================================
 
   final AuthRepo _authRepo = AuthRepo();
-
   final OwnerOnboardingRepo _ownerOnboardingRepo = OwnerOnboardingRepo();
 
   // ============================================================
@@ -43,13 +42,9 @@ class OwnerEditProfileController extends GetxController {
   // ============================================================
 
   final RxString businessName = ''.obs;
-
   final RxString selectedBusinessName = ''.obs;
-
   final RxString email = ''.obs;
-
   final RxString pendingEmail = ''.obs;
-
   final RxString phone = ''.obs;
 
   // ============================================================
@@ -953,6 +948,88 @@ class OwnerEditProfileController extends GetxController {
   void togglePasswordVisibility() {
     obscurePassword.value = !obscurePassword.value;
   }
+
+  // ============================================================
+// CHANGE PASSWORD
+// ============================================================
+
+Future<void> changePassword({
+  required String currentPassword,
+  required String newPassword,
+}) async {
+  if (isLoading.value) {
+    return;
+  }
+
+  if (currentPassword.isEmpty) {
+    AppSnackbar.show(
+      title: 'Required'.tr,
+      message: 'Please enter your current password'.tr,
+      icon: Icons.warning_amber_rounded,
+    );
+
+    return;
+  }
+
+  if (newPassword.isEmpty) {
+    AppSnackbar.show(
+      title: 'Required'.tr,
+      message: 'Please enter your new password'.tr,
+      icon: Icons.warning_amber_rounded,
+    );
+
+    return;
+  }
+
+  if (newPassword.length < 8) {
+    AppSnackbar.show(
+      title: 'Weak Password'.tr,
+      message:
+          'Your new password must be at least 8 characters'.tr,
+      icon: Icons.lock_outline,
+    );
+
+    return;
+  }
+
+  if (currentPassword == newPassword) {
+    AppSnackbar.show(
+      title: 'No Changes'.tr,
+      message:
+          'Your new password must be different from your current password'
+              .tr,
+      icon: Icons.info_outline,
+    );
+
+    return;
+  }
+
+  isLoading.value = true;
+
+  try {
+    await _ownerOnboardingRepo.changePassword(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+    );
+
+    Get.back();
+
+    AppSnackbar.show(
+      title: 'Password Updated'.tr,
+      message:
+          'Your password has been changed successfully'.tr,
+      icon: Icons.check_circle_outline,
+    );
+  } catch (e) {
+    AppSnackbar.show(
+      title: 'Password Update Failed'.tr,
+      message: _getFriendlyErrorMessage(e),
+      icon: Icons.error_outline,
+    );
+  } finally {
+    isLoading.value = false;
+  }
+}
 
   // ============================================================
   // UPDATE BUSINESS NAME
