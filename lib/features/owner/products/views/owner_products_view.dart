@@ -39,7 +39,8 @@ class OwnerProductsView extends StatelessWidget {
             return RefreshIndicator(
               onRefresh: controller.refreshProducts,
               child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
+                physics:
+                    const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.fromLTRB(
                   20,
                   16,
@@ -47,19 +48,26 @@ class OwnerProductsView extends StatelessWidget {
                   30,
                 ),
                 children: [
+                  // ============================================================
                   // HEADER
+                  // ============================================================
+
                   Row(
                     children: [
                       Expanded(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
                           children: [
                             Text(
                               'Products',
                               maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style:
-                                  theme.textTheme.headlineSmall?.copyWith(
+                              overflow:
+                                  TextOverflow.ellipsis,
+                              style: theme
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
@@ -72,10 +80,12 @@ class OwnerProductsView extends StatelessWidget {
 
                       Material(
                         color: colors.primary,
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius:
+                            BorderRadius.circular(14),
                         child: InkWell(
                           onTap: controller.addProduct,
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius:
+                              BorderRadius.circular(14),
                           child: const SizedBox(
                             width: 46,
                             height: 46,
@@ -92,11 +102,20 @@ class OwnerProductsView extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
+                  // ============================================================
+                  // SEARCH
+                  // ============================================================
+
                   ProductSearchField(
-                    onChanged: controller.searchProducts,
+                    onChanged:
+                        controller.searchProducts,
                   ),
 
                   const SizedBox(height: 14),
+
+                  // ============================================================
+                  // SUMMARY
+                  // ============================================================
 
                   ProductsSummary(
                     controller: controller,
@@ -104,8 +123,13 @@ class OwnerProductsView extends StatelessWidget {
 
                   const SizedBox(height: 22),
 
+                  // ============================================================
+                  // PRODUCTS
+                  // ============================================================
+
                   Obx(() {
-                    final products = controller.filteredProducts;
+                    final products =
+                        controller.filteredProducts;
 
                     if (products.isEmpty) {
                       return const EmptyProductsState();
@@ -114,13 +138,16 @@ class OwnerProductsView extends StatelessWidget {
                     return Column(
                       children: products.map((product) {
                         return Padding(
-                          padding: const EdgeInsets.only(
+                          padding:
+                              const EdgeInsets.only(
                             bottom: 12,
                           ),
                           child: ProductCard(
                             product: product,
                             onTap: () {
-                              controller.openProduct(product);
+                              controller.openProduct(
+                                product,
+                              );
                             },
                           ),
                         );

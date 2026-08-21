@@ -1,162 +1,261 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class OwnerProduct {
-  final int id;
-  final String name;
-  final String sku;
-  final String category;
-  final String? imageUrl;
-  final int currentStock;
-  final int minimumStock;
-  final String unit;
+import 'package:smartware/core/utils/pref_helper.dart';
 
-  OwnerProduct({
-    required this.id,
-    required this.name,
-    required this.sku,
-    required this.category,
-    this.imageUrl,
-    required this.currentStock,
-    required this.minimumStock,
-    required this.unit,
-  });
-
-  bool get isOutOfStock => currentStock <= 0;
-
-  bool get isLowStock =>
-      currentStock > 0 && currentStock <= minimumStock;
-
-  bool get isHealthy =>
-      currentStock > minimumStock;
-}
+import 'package:smartware/features/owner/products/models/owner_inventory_model.dart';
+import 'package:smartware/features/owner/products/models/products_repo.dart';
+import 'package:smartware/features/owner/products/views/owner_add_product_view.dart';
+import 'package:smartware/features/owner/products/widgets/product_details_sheet.dart';
 
 class OwnerProductsController extends GetxController {
-  final RxList<OwnerProduct> products = <OwnerProduct>[].obs;
+  final ProductsRepo _repo = ProductsRepo();
+
+  // ============================================================
+  // STATE
+  // ============================================================
+
+  final RxList<OwnerInventoryModel> products =
+      <OwnerInventoryModel>[].obs;
 
   final RxString searchQuery = ''.obs;
+
   final RxString selectedCategory = 'All'.obs;
 
   final RxBool isLoading = false.obs;
 
-  List<OwnerProduct> get filteredProducts {
+  final RxInt facilityId = 0.obs;
+
+  // ============================================================
+  // FILTERED PRODUCTS
+  // ============================================================
+
+  List<OwnerInventoryModel> get filteredProducts {
     final query = searchQuery.value.trim().toLowerCase();
 
-    return products.where((product) {
+    return products.where((inventory) {
+      final product = inventory.product;
+
       final matchesSearch =
           query.isEmpty ||
-          product.name.toLowerCase().contains(query) ||
-          product.sku.toLowerCase().contains(query) ||
-          product.category.toLowerCase().contains(query);
+          product.nameEn.toLowerCase().contains(query) ||
+          product.nameAr.toLowerCase().contains(query) ||
+          product.sku.toLowerCase().contains(query);
 
+      // Category is not currently returned
+      // by the backend inventory endpoint.
       final matchesCategory =
-          selectedCategory.value == 'All' ||
-          product.category == selectedCategory.value;
+          selectedCategory.value == 'All';
 
       return matchesSearch && matchesCategory;
     }).toList();
   }
 
+  // ============================================================
+  // CATEGORIES
+  // ============================================================
+
   List<String> get categories {
-    final values = products
-        .map((product) => product.category)
-        .where((category) => category.trim().isNotEmpty)
-        .toSet()
-        .toList();
-
-    values.sort();
-
-    return ['All', ...values];
+    return ['All'];
   }
 
-  int get totalProducts => products.length;
+  // ============================================================
+  // SUMMARY
+  // ============================================================
 
-  int get lowStockCount =>
-      products.where((product) => product.isLowStock).length;
+  int get totalProducts {
+    return products.length;
+  }
 
-  int get outOfStockCount =>
-      products.where((product) => product.isOutOfStock).length;
+  int get lowStockCount {
+    // Backend does not currently return minimum_stock.
+    return 0;
+  }
+
+  int get outOfStockCount {
+    return products
+        .where(
+          (inventory) => inventory.quantity <= 0,
+        )
+        .length;
+  }
+
+  // ============================================================
+  // SEARCH
+  // ============================================================
 
   void searchProducts(String value) {
     searchQuery.value = value;
   }
 
+  // ============================================================
+  // CATEGORY
+  // ============================================================
+
   void selectCategory(String category) {
     selectedCategory.value = category;
   }
+
+  // ============================================================
+  // LOAD FACILITY ID
+  // ============================================================
+
+  Future<void> loadFacilityId() async {
+    final savedFacilityId =
+        await PrefHelper.getOwnerFacilityId();
+
+    if (savedFacilityId == null) {
+      print('❌ Owner facility ID not found');
+
+      facilityId.value = 0;
+      return;
+    }
+
+    facilityId.value = savedFacilityId;
+
+    print(
+      '🏢 Owner Facility ID: ${facilityId.value}',
+    );
+  }
+
+  // ============================================================
+  // FETCH PRODUCTS
+  // ============================================================
 
   Future<void> fetchProducts() async {
     try {
       isLoading.value = true;
 
-      // TODO:
-      // Call your repository/API here.
-      //
-      // Example:
-      // final result = await repository.getWarehouseProducts();
+      print('');
+      print(
+        '════════ FETCH OWNER PRODUCTS ════════',
+      );
 
-      await Future.delayed(const Duration(milliseconds: 500));
+      // ----------------------------------------------------------
+      // LOAD FACILITY ID
+      // ----------------------------------------------------------
 
-      // Temporary mock data.
-      products.assignAll([
-        OwnerProduct(
-          id: 1,
-          name: 'Coca Cola 330ml',
-          sku: 'BEV-001',
-          category: 'Beverages',
-          currentStock: 120,
-          minimumStock: 30,
-          unit: 'pcs',
-        ),
-        OwnerProduct(
-          id: 2,
-          name: 'Pepsi 330ml',
-          sku: 'BEV-002',
-          category: 'Beverages',
-          currentStock: 18,
-          minimumStock: 25,
-          unit: 'pcs',
-        ),
-        OwnerProduct(
-          id: 3,
-          name: 'Basmati Rice 5kg',
-          sku: 'FOOD-001',
-          category: 'Food',
-          currentStock: 75,
-          minimumStock: 20,
-          unit: 'bags',
-        ),
-        OwnerProduct(
-          id: 4,
-          name: 'Mineral Water 1.5L',
-          sku: 'BEV-003',
-          category: 'Beverages',
-          currentStock: 0,
-          minimumStock: 30,
-          unit: 'bottles',
-        ),
-      ]);
+      await loadFacilityId();
+
+      if (facilityId.value <= 0) {
+        print(
+          '❌ Invalid owner facility ID',
+        );
+
+        Get.snackbar(
+          'Error',
+          'Owner facility was not found',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+
+        return;
+      }
+
+      print(
+        '🏢 Facility ID: ${facilityId.value}',
+      );
+
+      // ----------------------------------------------------------
+      // API REQUEST
+      // ----------------------------------------------------------
+
+      final result =
+          await _repo.getWarehouseInventory(
+        facilityId: facilityId.value,
+      );
+
+      // ----------------------------------------------------------
+      // UPDATE PRODUCTS
+      // ----------------------------------------------------------
+
+      products.assignAll(result);
+
+      print(
+        '✅ Products loaded: ${products.length}',
+      );
+
+      print(
+        '════════════════════════════════════',
+      );
+    } catch (e, stackTrace) {
+      print('');
+      print(
+        '════════ FETCH PRODUCTS ERROR ════════',
+      );
+
+      print(
+        '❌ Error: $e',
+      );
+
+      print(
+        '❌ Type: ${e.runtimeType}',
+      );
+
+      print(
+        '❌ StackTrace: $stackTrace',
+      );
+
+      print(
+        '════════════════════════════════════',
+      );
+
+      Get.snackbar(
+        'Error',
+        'Failed to load products',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
+  // ============================================================
+  // ADD PRODUCT
+  // ============================================================
+
   void addProduct() {
-    // TODO:
-    // Navigate to AddProductView
+  // Get.to(
+  //   () => const AddProductView(),
+  // )?.then((result) {
+  //   if (result == true) {
+  //     fetchProducts();
+  //   }
+  
+}
+
+  // ============================================================
+  // OPEN PRODUCT DETAILS
+  // ============================================================
+
+  void openProduct(
+    OwnerInventoryModel inventory,
+  ) {
+    Get.bottomSheet(
+      ProductDetailsSheet(
+        inventory: inventory,
+      ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      enableDrag: true,
+    );
   }
 
-  void openProduct(OwnerProduct product) {
-    // TODO:
-    // Navigate to ProductDetailsView / EditProductView
-  }
+  // ============================================================
+  // REFRESH
+  // ============================================================
 
   Future<void> refreshProducts() async {
     await fetchProducts();
   }
 
+  // ============================================================
+  // INIT
+  // ============================================================
+
   @override
   void onInit() {
     super.onInit();
+
     fetchProducts();
   }
 }

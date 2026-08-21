@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
+import 'package:smartware/core/routes/app_routes.dart';
+import 'package:smartware/core/utils/pref_helper.dart';
 
 class OwnerHomeController extends GetxController {
   // ===========================================================================
   // STATE
   // ===========================================================================
-
+  final userName = 'User name'.obs;
   final isLoading = false.obs;
-
-  final ownerName = 'Joelle'.obs;
 
   // ===========================================================================
   // MAIN OVERVIEW
@@ -68,18 +68,13 @@ class OwnerHomeController extends GetxController {
 
   /// Number of warehouses that are almost full.
   int get warehousesNearCapacity {
-    return warehouses
-        .where((warehouse) => warehouse.capacity >= 0.85)
-        .length;
+    return warehouses.where((warehouse) => warehouse.capacity >= 0.85).length;
   }
 
   /// Number of products that are critically low.
   int get criticalStockCount {
     return lowStockProducts
-        .where(
-          (product) =>
-              product.currentStock <= product.minimumStock * 0.5,
-        )
+        .where((product) => product.currentStock <= product.minimumStock * 0.5)
         .length;
   }
 
@@ -90,8 +85,7 @@ class OwnerHomeController extends GetxController {
     }
 
     return warehouses.reduce(
-      (current, next) =>
-          current.capacity > next.capacity ? current : next,
+      (current, next) => current.capacity > next.capacity ? current : next,
     );
   }
 
@@ -114,9 +108,17 @@ class OwnerHomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    loadUserName();
     loadHome();
   }
 
+  Future<void> loadUserName() async {
+    final name = await PrefHelper.getUserName();
+
+    if (name != null && name.isNotEmpty) {
+      userName.value = name;
+    }
+  }
   // ===========================================================================
   // LOAD HOME
   // ===========================================================================
@@ -144,12 +146,9 @@ class OwnerHomeController extends GetxController {
       //
       // ========================================================================
 
-      await Future.delayed(
-        const Duration(milliseconds: 700),
-      );
+      await Future.delayed(const Duration(milliseconds: 700));
 
       _loadDemoData();
-
     } catch (e) {
       // TODO:
       // Handle API error here.
@@ -159,7 +158,6 @@ class OwnerHomeController extends GetxController {
       //   'Error',
       //   'Unable to load dashboard data',
       // );
-
     } finally {
       isLoading.value = false;
     }
@@ -173,8 +171,6 @@ class OwnerHomeController extends GetxController {
     // -------------------------------------------------------------------------
     // OWNER
     // -------------------------------------------------------------------------
-
-    ownerName.value = 'Joelle';
 
     // -------------------------------------------------------------------------
     // OVERVIEW
@@ -318,9 +314,7 @@ class OwnerHomeController extends GetxController {
         clientName: 'Al Sham Restaurant',
         status: 'Pending',
         totalItems: 24,
-        createdAt: DateTime.now().subtract(
-          const Duration(minutes: 12),
-        ),
+        createdAt: DateTime.now().subtract(const Duration(minutes: 12)),
       ),
 
       OwnerRecentOrderModel(
@@ -328,9 +322,7 @@ class OwnerHomeController extends GetxController {
         clientName: 'Fresh Market',
         status: 'Processing',
         totalItems: 42,
-        createdAt: DateTime.now().subtract(
-          const Duration(minutes: 38),
-        ),
+        createdAt: DateTime.now().subtract(const Duration(minutes: 38)),
       ),
 
       OwnerRecentOrderModel(
@@ -338,9 +330,7 @@ class OwnerHomeController extends GetxController {
         clientName: 'City Pharmacy',
         status: 'Ready',
         totalItems: 18,
-        createdAt: DateTime.now().subtract(
-          const Duration(hours: 1),
-        ),
+        createdAt: DateTime.now().subtract(const Duration(hours: 1)),
       ),
 
       OwnerRecentOrderModel(
@@ -348,9 +338,7 @@ class OwnerHomeController extends GetxController {
         clientName: 'Daily Needs Store',
         status: 'Completed',
         totalItems: 31,
-        createdAt: DateTime.now().subtract(
-          const Duration(hours: 2),
-        ),
+        createdAt: DateTime.now().subtract(const Duration(hours: 2)),
       ),
 
       OwnerRecentOrderModel(
@@ -358,9 +346,7 @@ class OwnerHomeController extends GetxController {
         clientName: 'Al Noor Market',
         status: 'Completed',
         totalItems: 16,
-        createdAt: DateTime.now().subtract(
-          const Duration(hours: 3),
-        ),
+        createdAt: DateTime.now().subtract(const Duration(hours: 3)),
       ),
     ]);
   }
@@ -406,21 +392,13 @@ class OwnerHomeController extends GetxController {
     // Navigate to warehouses.
   }
 
-  void openProfile() {
-    // TODO:
-    // Navigate to profile.
-  }
-
-  void openWarehouse(
-    OwnerWarehouseHomeModel warehouse,
-  ) {
+ 
+  void openWarehouse(OwnerWarehouseHomeModel warehouse) {
     // TODO:
     // Open warehouse details.
   }
 
-  void openProduct(
-    OwnerLowStockHomeModel product,
-  ) {
+  void openProduct(OwnerLowStockHomeModel product) {
     // TODO:
     // Open product details.
   }
@@ -430,9 +408,7 @@ class OwnerHomeController extends GetxController {
   // ===========================================================================
 
   /// This will be useful once the backend returns warehouse data.
-  void setWarehouseData(
-    List<OwnerWarehouseHomeModel> data,
-  ) {
+  void setWarehouseData(List<OwnerWarehouseHomeModel> data) {
     warehouses.assignAll(data);
 
     warehouseCount.value = data.length;
@@ -447,29 +423,21 @@ class OwnerHomeController extends GetxController {
       (sum, warehouse) => sum + warehouse.capacity,
     );
 
-    overallCapacity.value =
-        (totalCapacity / data.length).clamp(0.0, 1.0);
+    overallCapacity.value = (totalCapacity / data.length).clamp(0.0, 1.0);
   }
 
   /// Update stock alerts after loading products.
-  void setLowStockData(
-    List<OwnerLowStockHomeModel> data,
-  ) {
+  void setLowStockData(List<OwnerLowStockHomeModel> data) {
     lowStockProducts.assignAll(data);
     lowStockCount.value = data.length;
   }
 
   /// Update orders after loading orders.
-  void setOrderData(
-    List<OwnerRecentOrderModel> data,
-  ) {
+  void setOrderData(List<OwnerRecentOrderModel> data) {
     recentOrders.assignAll(data);
 
     pendingOrders.value = data
-        .where(
-          (order) =>
-              order.status.toLowerCase() == 'pending',
-        )
+        .where((order) => order.status.toLowerCase() == 'pending')
         .length;
   }
 }
@@ -506,12 +474,7 @@ class OwnerWarehouseHomeModel {
 // WAREHOUSE STATUS
 // =============================================================================
 
-enum WarehouseStatus {
-  operational,
-  nearCapacity,
-  maintenance,
-  inactive,
-}
+enum WarehouseStatus { operational, nearCapacity, maintenance, inactive }
 
 // =============================================================================
 // LOW STOCK MODEL

@@ -202,7 +202,7 @@ class _Header extends StatelessWidget {
               const SizedBox(height: 7),
 
               Text(
-                controller.ownerName.value,
+                controller.userName.value,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -213,37 +213,6 @@ class _Header extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        ),
-
-        GestureDetector(
-          onTap: controller.openProfile,
-          child: Container(
-            width: 49,
-            height: 49,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  colors.primary,
-                  colors.secondary,
-                ],
-              ),
-              borderRadius: BorderRadius.circular(17),
-              boxShadow: [
-                BoxShadow(
-                  color: colors.primary.withOpacity(.22),
-                  blurRadius: 15,
-                  offset: const Offset(0, 7),
-                ),
-              ],
-            ),
-            child: Icon(
-              Icons.person_outline_rounded,
-              color: colors.onPrimary,
-              size: 22,
-            ),
           ),
         ),
       ],

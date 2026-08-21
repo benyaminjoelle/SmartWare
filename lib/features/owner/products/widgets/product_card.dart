@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:smartware/features/owner/products/controllers/owner_products_controller.dart';
+import 'package:smartware/features/owner/products/models/owner_inventory_model.dart';
 import 'package:smartware/features/owner/products/widgets/product_image.dart';
 
 class ProductCard extends StatelessWidget {
-  final OwnerProduct product;
+  final OwnerInventoryModel product;
   final VoidCallback onTap;
 
   const ProductCard({
@@ -18,19 +18,31 @@ class ProductCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
 
+    final productInfo = product.product;
+
+    // ============================================================
+    // STOCK STATUS
+    // ============================================================
+
     final Color statusColor;
     final String statusText;
 
-    if (product.isOutOfStock) {
+    if (product.quantity <= 0) {
       statusColor = colors.error;
       statusText = 'Out of stock';
-    } else if (product.isLowStock) {
-      statusColor = Colors.orange.shade700;
-      statusText = 'Low stock';
     } else {
       statusColor = colors.primary;
       statusText = 'In stock';
     }
+
+    // ============================================================
+    // PRODUCT NAME
+    // ============================================================
+
+    final String productName =
+        productInfo.nameEn.trim().isNotEmpty
+            ? productInfo.nameEn
+            : productInfo.nameAr;
 
     return Material(
       color: Colors.transparent,
@@ -53,21 +65,31 @@ class ProductCard extends StatelessWidget {
           ),
           child: Row(
             children: [
+              // ============================================================
+              // IMAGE
+              // ============================================================
+
               ProductImage(
-                imageUrl: product.imageUrl,
+                imageUrl: productInfo.productImage,
               ),
 
               const SizedBox(width: 14),
 
+              // ============================================================
+              // PRODUCT INFO
+              // ============================================================
+
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
                   children: [
                     Text(
-                      product.name,
+                      productName,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyLarge?.copyWith(
+                      style: theme.textTheme.bodyLarge
+                          ?.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -75,11 +97,13 @@ class ProductCard extends StatelessWidget {
                     const SizedBox(height: 5),
 
                     Text(
-                      product.sku,
+                      productInfo.sku,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colors.onSurfaceVariant,
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(
+                        color:
+                            colors.onSurfaceVariant,
                       ),
                     ),
 
@@ -89,11 +113,16 @@ class ProductCard extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Text(
-                            product.category,
+                            'Unit: ${productInfo.unit}',
                             maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: colors.onSurfaceVariant,
+                            overflow:
+                                TextOverflow.ellipsis,
+                            style: theme
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                              color: colors
+                                  .onSurfaceVariant,
                             ),
                           ),
                         ),
@@ -103,8 +132,10 @@ class ProductCard extends StatelessWidget {
                         Container(
                           width: 4,
                           height: 4,
-                          decoration: BoxDecoration(
-                            color: colors.onSurfaceVariant,
+                          decoration:
+                              BoxDecoration(
+                            color: colors
+                                .onSurfaceVariant,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -115,10 +146,15 @@ class ProductCard extends StatelessWidget {
                           child: Text(
                             statusText,
                             maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.labelSmall?.copyWith(
+                            overflow:
+                                TextOverflow.ellipsis,
+                            style: theme
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
                               color: statusColor,
-                              fontWeight: FontWeight.w700,
+                              fontWeight:
+                                  FontWeight.w700,
                             ),
                           ),
                         ),
@@ -130,14 +166,20 @@ class ProductCard extends StatelessWidget {
 
               const SizedBox(width: 12),
 
+              // ============================================================
+              // STOCK / PRICE
+              // ============================================================
+
               Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment:
+                    CrossAxisAlignment.end,
                 children: [
                   Text(
-                    product.currentStock.toString(),
+                    product.quantity.toString(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium?.copyWith(
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(
                       fontWeight: FontWeight.w800,
                       color: statusColor,
                     ),
@@ -146,11 +188,13 @@ class ProductCard extends StatelessWidget {
                   const SizedBox(height: 2),
 
                   Text(
-                    product.unit,
+                    productInfo.unit,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colors.onSurfaceVariant,
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(
+                      color:
+                          colors.onSurfaceVariant,
                       fontSize: 10,
                     ),
                   ),
@@ -158,17 +202,24 @@ class ProductCard extends StatelessWidget {
                   const SizedBox(height: 3),
 
                   Text(
-                    'min ${product.minimumStock}',
+                    product.unitPrice
+                        .toStringAsFixed(2),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: colors.onSurfaceVariant,
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(
+                      color:
+                          colors.onSurfaceVariant,
                     ),
                   ),
                 ],
               ),
 
               const SizedBox(width: 8),
+
+              // ============================================================
+              // ARROW
+              // ============================================================
 
               Icon(
                 Icons.arrow_forward_ios_rounded,
