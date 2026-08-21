@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 
 class AnalyticsChartCard extends StatelessWidget {
   final Widget child;
+  final double? height;
+  final EdgeInsetsGeometry? padding;
 
   const AnalyticsChartCard({
     super.key,
     required this.child,
+    this.height = 320,
+    this.padding = const EdgeInsets.all(16),
   });
 
   @override
@@ -13,8 +17,8 @@ class AnalyticsChartCard extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return Container(
-      height: 320,
-      padding: const EdgeInsets.all(16),
+      height: height,
+      padding: padding,
       decoration: BoxDecoration(
         color: colors.surface,
         borderRadius: BorderRadius.circular(20),

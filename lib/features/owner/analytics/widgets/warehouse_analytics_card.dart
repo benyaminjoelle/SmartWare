@@ -77,9 +77,9 @@ class WarehouseAnalyticsCard extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
-// WAREHOUSE HEADER
-// -----------------------------------------------------------------------------
+// ============================================================================
+// HEADER
+// ============================================================================
 
 class _WarehouseHeader extends StatelessWidget {
   final WarehouseModel warehouse;
@@ -94,7 +94,6 @@ class _WarehouseHeader extends StatelessWidget {
     final colors = theme.colorScheme;
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const _WarehouseImage(),
 
@@ -154,9 +153,9 @@ class _WarehouseHeader extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
-// WAREHOUSE IMAGE
-// -----------------------------------------------------------------------------
+// ============================================================================
+// IMAGE
+// ============================================================================
 
 class _WarehouseImage extends StatelessWidget {
   const _WarehouseImage();
@@ -181,9 +180,9 @@ class _WarehouseImage extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
-// WAREHOUSE STATISTICS
-// -----------------------------------------------------------------------------
+// ============================================================================
+// STATS
+// ============================================================================
 
 class _WarehouseStats extends StatelessWidget {
   final WarehouseModel warehouse;
@@ -232,9 +231,9 @@ class _WarehouseStats extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
-// WAREHOUSE LOCATION
-// -----------------------------------------------------------------------------
+// ============================================================================
+// LOCATION
+// ============================================================================
 
 class _WarehouseLocation extends StatelessWidget {
   final String location;
@@ -261,7 +260,9 @@ class _WarehouseLocation extends StatelessWidget {
 
         Expanded(
           child: Text(
-            location.isNotEmpty ? location : 'Location not available',
+            location.isNotEmpty
+                ? location
+                : 'Location not available',
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.bodySmall?.copyWith(
@@ -276,9 +277,9 @@ class _WarehouseLocation extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
+// ============================================================================
 // MINI STAT
-// -----------------------------------------------------------------------------
+// ============================================================================
 
 class MiniStat extends StatelessWidget {
   final String label;
@@ -342,9 +343,9 @@ class MiniStat extends StatelessWidget {
   }
 }
 
-// -----------------------------------------------------------------------------
-// STAT DIVIDER
-// -----------------------------------------------------------------------------
+// ============================================================================
+// DIVIDER
+// ============================================================================
 
 class _StatDivider extends StatelessWidget {
   const _StatDivider();

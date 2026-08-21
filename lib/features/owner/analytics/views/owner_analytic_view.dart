@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:smartware/features/owner/analytics/controllers/owner_analytic_controller.dart';
+import 'package:smartware/features/owner/analytics/models/warehouse_model.dart';
+import 'package:smartware/features/owner/analytics/views/warehouse_analytics_view.dart';
 import 'package:smartware/features/owner/analytics/widgets/warehouse_analytics_card.dart';
 import 'package:smartware/widgets/primary_button.dart';
 
@@ -98,7 +100,10 @@ class OwnerAnalyticsView extends StatelessWidget {
               ),
             ),
 
-            // Floating Add New Facility Button
+            // ============================================================
+            // ADD NEW FACILITY
+            // ============================================================
+
             Positioned(
               right: 24,
               bottom: 20,
@@ -160,11 +165,37 @@ class _WarehouseGrid extends StatelessWidget {
 
         return WarehouseAnalyticsCard(
           warehouse: warehouse,
-          onTap: () {
-            controller.selectWarehouse(warehouse);
-          },
+
+          // ==========================================================
+          // OPEN WAREHOUSE ANALYTICS
+          // ==========================================================
+
+          onTap: () => _openWarehouseAnalytics(
+            context,
+            controller,
+            warehouse,
+          ),
         );
       },
+    );
+  }
+
+  Future<void> _openWarehouseAnalytics(
+    BuildContext context,
+    OwnerAnalyticsController controller,
+    WarehouseModel warehouse,
+  ) async {
+    // First select the warehouse and load its analytics.
+    await controller.selectWarehouse(warehouse);
+
+    // Then open the analytics screen.
+    if (!context.mounted) return;
+
+    Get.to(
+      () => WarehouseAnalyticsView(
+        warehouse: warehouse,
+        controller: controller,
+      ),
     );
   }
 }
@@ -173,8 +204,7 @@ class _WarehouseGrid extends StatelessWidget {
 // EMPTY STATE
 // ============================================================
 
-class _EmptyWarehousesState
-    extends StatelessWidget {
+class _EmptyWarehousesState extends StatelessWidget {
   const _EmptyWarehousesState();
 
   @override
