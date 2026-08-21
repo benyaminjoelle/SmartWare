@@ -42,8 +42,6 @@ class OwnerProductsController extends GetxController {
           product.nameAr.toLowerCase().contains(query) ||
           product.sku.toLowerCase().contains(query);
 
-      // Category is not currently returned
-      // by the backend inventory endpoint.
       final matchesCategory =
           selectedCategory.value == 'All';
 
@@ -68,7 +66,6 @@ class OwnerProductsController extends GetxController {
   }
 
   int get lowStockCount {
-    // Backend does not currently return minimum_stock.
     return 0;
   }
 
@@ -127,20 +124,12 @@ class OwnerProductsController extends GetxController {
       isLoading.value = true;
 
       print('');
-      print(
-        '════════ FETCH OWNER PRODUCTS ════════',
-      );
-
-      // ----------------------------------------------------------
-      // LOAD FACILITY ID
-      // ----------------------------------------------------------
+      print('════════ FETCH OWNER PRODUCTS ════════');
 
       await loadFacilityId();
 
       if (facilityId.value <= 0) {
-        print(
-          '❌ Invalid owner facility ID',
-        );
+        print('❌ Invalid owner facility ID');
 
         Get.snackbar(
           'Error',
@@ -152,52 +141,36 @@ class OwnerProductsController extends GetxController {
       }
 
       print(
-        '🏢 Facility ID: ${facilityId.value}',
+        '📡 Fetching inventory for facility '
+        '${facilityId.value}...',
       );
 
-      // ----------------------------------------------------------
-      // API REQUEST
-      // ----------------------------------------------------------
-
-      final result =
-          await _repo.getWarehouseInventory(
+      final result = await _repo.getWarehouseInventory(
         facilityId: facilityId.value,
       );
 
-      // ----------------------------------------------------------
-      // UPDATE PRODUCTS
-      // ----------------------------------------------------------
-
       products.assignAll(result);
 
-      print(
-        '✅ Products loaded: ${products.length}',
-      );
+      print('');
+      print('✅ PRODUCTS UPDATED');
+      print('📦 Total products: ${products.length}');
 
-      print(
-        '════════════════════════════════════',
-      );
+      for (final inventory in products) {
+        print(
+          '   • ${inventory.product.nameEn} '
+          '| SKU: ${inventory.product.sku} '
+          '| Qty: ${inventory.quantity}',
+        );
+      }
+
+      print('════════════════════════════════════');
     } catch (e, stackTrace) {
       print('');
-      print(
-        '════════ FETCH PRODUCTS ERROR ════════',
-      );
-
-      print(
-        '❌ Error: $e',
-      );
-
-      print(
-        '❌ Type: ${e.runtimeType}',
-      );
-
-      print(
-        '❌ StackTrace: $stackTrace',
-      );
-
-      print(
-        '════════════════════════════════════',
-      );
+      print('════════ FETCH PRODUCTS ERROR ════════');
+      print('❌ Error: $e');
+      print('❌ Type: ${e.runtimeType}');
+      print('❌ StackTrace: $stackTrace');
+      print('════════════════════════════════════');
 
       Get.snackbar(
         'Error',
@@ -213,15 +186,36 @@ class OwnerProductsController extends GetxController {
   // ADD PRODUCT
   // ============================================================
 
-  void addProduct() {
-  // Get.to(
-  //   () => const AddProductView(),
-  // )?.then((result) {
-  //   if (result == true) {
-  //     fetchProducts();
-  //   }
-  
-}
+  Future<void> addProduct() async {
+    print('');
+    print('➕ OPENING ADD PRODUCT VIEW');
+
+    final result = await Get.to<bool>(
+      () => const AddProductView(),
+    );
+
+    print('');
+    print('⬅️ RETURNED FROM ADD PRODUCT');
+    print('📌 Result: $result');
+
+    if (result == true) {
+      print('');
+      print('🔄 PRODUCT CREATED');
+      print('🔄 REFETCHING PRODUCTS NOW...');
+
+      await fetchProducts();
+
+      print('');
+      print(
+        '✅ REFETCH COMPLETE '
+        '| Products: ${products.length}',
+      );
+    } else {
+      print(
+        '⚠️ Add Product closed without creating a product',
+      );
+    }
+  }
 
   // ============================================================
   // OPEN PRODUCT DETAILS
@@ -255,6 +249,9 @@ class OwnerProductsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    print('');
+    print('════════ OWNER PRODUCTS INIT ════════');
 
     fetchProducts();
   }

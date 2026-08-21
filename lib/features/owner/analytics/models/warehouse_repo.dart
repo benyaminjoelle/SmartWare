@@ -18,15 +18,12 @@ class OwnerAnalyticsRepo {
   Future<List<WarehouseModel>> getWarehouses() async {
     try {
       print('');
-      print(
-        '════════ GET OWNER WAREHOUSES START ════════',
-      );
+      print('════════ GET OWNER WAREHOUSES ════════');
 
       final response = await _api.get(
-        '$baseUrl/api/facilities/warehouses',
+        '$baseUrl/api/home_page/ownedFacilities',
       );
 
-      print('');
       print('📥 Raw Response:');
       print(response);
 
@@ -34,21 +31,13 @@ class OwnerAnalyticsRepo {
         throw response;
       }
 
-      if (response is! Map<String, dynamic>) {
+      if (response is! List) {
         throw ApiError(
-          message: 'Invalid response from server',
+          message: 'Invalid warehouses response',
         );
       }
 
-      final data = response['data'];
-
-      if (data is! List) {
-        throw ApiError(
-          message: 'Invalid warehouses data',
-        );
-      }
-
-      final result = data
+      final result = response
           .map(
             (item) => WarehouseModel.fromJson(
               item as Map<String, dynamic>,
@@ -56,47 +45,26 @@ class OwnerAnalyticsRepo {
           )
           .toList();
 
-      print('');
-      print(
-        '════════ OWNER WAREHOUSES RESPONSE ════════',
-      );
-
-      print(
-        '🏢 Total Warehouses: ${result.length}',
-      );
+      print('🏢 Owner Warehouses: ${result.length}');
 
       for (final warehouse in result) {
         print(
-          '🏢 ${warehouse.name} '
+          '🏢 ${warehouse.nameEn} '
+          '| ID: ${warehouse.id} '
           '| Type: ${warehouse.type} '
-          '| Status: ${warehouse.status} '
-          '| Owner ID: ${warehouse.ownerId} '
-          '| Address ID: ${warehouse.addressId}',
+          '| Status: ${warehouse.status}',
         );
       }
 
-      print(
-        '════════════════════════════════════════',
-      );
+      print('════════════════════════════════════');
 
       return result;
     } on DioException catch (e) {
       print('');
-      print(
-        '════════ OWNER WAREHOUSES DIO ERROR ════════',
-      );
-
-      print(
-        '❌ Status Code: ${e.response?.statusCode}',
-      );
-
-      print(
-        '❌ Response Data: ${e.response?.data}',
-      );
-
-      print(
-        '════════════════════════════════════════',
-      );
+      print('════════ OWNER WAREHOUSES DIO ERROR ════════');
+      print('❌ Status Code: ${e.response?.statusCode}');
+      print('❌ Response Data: ${e.response?.data}');
+      print('════════════════════════════════════════');
 
       final data = e.response?.data;
 
@@ -110,22 +78,14 @@ class OwnerAnalyticsRepo {
         }
       }
 
-      throw ApiError(
-        message: message,
-      );
+      throw ApiError(message: message);
     } catch (e, stackTrace) {
       print('');
-      print(
-        '════════ OWNER WAREHOUSES ERROR ════════',
-      );
-
+      print('════════ OWNER WAREHOUSES ERROR ════════');
       print('❌ Error: $e');
       print('❌ Type: ${e.runtimeType}');
       print('❌ StackTrace: $stackTrace');
-
-      print(
-        '════════════════════════════════════',
-      );
+      print('════════════════════════════════════');
 
       if (e is ApiError) {
         rethrow;

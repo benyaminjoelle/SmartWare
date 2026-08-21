@@ -38,6 +38,7 @@ import 'package:smartware/features/client/root/view/root_view.dart';
 import 'package:smartware/features/onboarding/binding/carousel_binding.dart';
 import 'package:smartware/features/onboarding/views/onboarding_view.dart';
 import 'package:smartware/features/owner/analytics/views/owner_analytic_view.dart';
+import 'package:smartware/features/owner/home/views/owner_add_facility.dart';
 import 'package:smartware/features/owner/home/views/owner_home_view.dart';
 import 'package:smartware/features/owner/notifications/views/owner_notifications_view.dart';
 import 'package:smartware/features/owner/orders/views/owner_orders_view.dart';
@@ -222,6 +223,11 @@ class AppPages {
      GetPage(
       name: AppRoutes.ownerProducts,
       page: () => OwnerProductsView(),
+      binding: OwnerRootBinding(),
+    ),
+     GetPage(
+      name: AppRoutes.ownerAddFacility,
+      page: () => OwnerAddFacility(),
       binding: OwnerRootBinding(),
     ),
   ];

@@ -1,25 +1,63 @@
 class WarehouseModel {
-  final String name;
+  final int id;
+  final int addressId;
+  final int userId;
+
+  final String nameEn;
+  final String? nameAr;
+
   final String type;
   final String status;
-  final int ownerId;
-  final int addressId;
+  final String businessType;
+
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  final int productCount;
+  final int stockOutRiskCount;
+
+  final String location;
 
   WarehouseModel({
-    required this.name,
+    required this.id,
+    required this.addressId,
+    required this.userId,
+    required this.nameEn,
+    this.nameAr,
     required this.type,
     required this.status,
-    required this.ownerId,
-    required this.addressId,
+    required this.businessType,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.productCount,
+    required this.stockOutRiskCount,
+    required this.location,
   });
 
   factory WarehouseModel.fromJson(Map<String, dynamic> json) {
+    final address = json['address'];
+
     return WarehouseModel(
-      name: json['facility_name'] ?? '',
+      id: json['id'] ?? 0,
+      addressId: json['address_id'] ?? 0,
+      userId: json['user_id'] ?? 0,
+
+      nameEn: json['facility_name_en'] ?? '',
+      nameAr: json['facility_name_ar'],
+
       type: json['facility_type'] ?? '',
       status: json['facility_status'] ?? '',
-      ownerId: json['owner_id'] ?? 0,
-      addressId: json['address_id'] ?? 0,
+      businessType: json['business_type'] ?? '',
+
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+
+      productCount: json['product_count'] ?? 0,
+      stockOutRiskCount: json['stock_out_risk_count'] ?? 0,
+
+      location: address is Map<String, dynamic>
+          ? address['address'] ?? ''
+          : '',
     );
   }
 }

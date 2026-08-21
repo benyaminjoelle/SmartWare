@@ -22,7 +22,7 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   final String initialLang;
   final String? savedTheme;
-//AIzaSyCl0f-cxl8M8p8HzCpXIk4rBG-GFdiZBjs
+
   const MyApp({super.key, required this.initialLang, required this.savedTheme});
 
   ThemeMode get themeMode {

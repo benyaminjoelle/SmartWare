@@ -37,4 +37,6 @@ class AppRoutes {
   static const ownerEditPofile = '/ownerEditProfile';
   static const ownerWorkers = '/ownerWorkers';
   static const ownerProducts = '/ownerProducts';
+  static const ownerAddFacility = '/ownerAddFacility';
+  
 }

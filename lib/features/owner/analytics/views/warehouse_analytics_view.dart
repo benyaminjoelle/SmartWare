@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:smartware/features/owner/analytics/controllers/owner_analytic_controller.dart';
+import 'package:smartware/features/owner/analytics/models/warehouse_model.dart';
 import 'package:smartware/features/owner/analytics/widgets/analytics_chart_card.dart';
 import 'package:smartware/features/owner/analytics/widgets/analytics_charts.dart';
 import 'package:smartware/features/owner/analytics/widgets/analytics_section_title.dart';
 import 'package:smartware/features/owner/analytics/widgets/analytics_stat_card.dart';
-
 
 class WarehouseAnalyticsView extends StatelessWidget {
   final WarehouseModel warehouse;
@@ -62,7 +62,7 @@ class WarehouseAnalyticsView extends StatelessWidget {
 
                     Expanded(
                       child: Text(
-                        warehouse.name,
+                        warehouse.nameEn,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.titleLarge?.copyWith(
@@ -167,7 +167,8 @@ class WarehouseAnalyticsView extends StatelessWidget {
 
                 AnalyticsSectionTitle(
                   title: 'Top moving products',
-                  subtitle: 'Products with the highest outgoing quantity',
+                  subtitle:
+                      'Products with the highest outgoing quantity',
                 ),
 
                 const SizedBox(height: 12),
@@ -179,8 +180,6 @@ class WarehouseAnalyticsView extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 20),
-
-                
               ],
             ),
           );
