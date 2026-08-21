@@ -29,33 +29,31 @@ class ProductDetailsController extends GetxController {
 
   }
 
-  Future<void> checkWarehouseAvailability() async {
-    try {
-      isCheckingAvailability.value = true;
+ Future<void> checkWarehouseAvailability() async {
+  try {
+    isCheckingAvailability.value = true;
 
-      await Future.delayed(
-        const Duration(milliseconds: 300),
-      );
-      availableWarehouses.assignAll(
-        warehouseController
-            .getWarehousesForProduct(product.id)
-            .where(
-              (warehouse) => warehouse.quantity > 0,
-            ),
-      );
+    await warehouseController.loadWarehousesForProduct(product.id);
 
-      hasCheckedAvailability.value = true;
+    availableWarehouses.assignAll(
+      warehouseController
+          .getWarehousesForProduct(product.id)
+          .where((warehouse) => warehouse.quantity > 0),
+    );
 
-      final selected = selectedWarehouse.value;
+    hasCheckedAvailability.value = true;
 
-      if (selected != null &&
-          selected.quantity < quantity.value) {
-        selectedWarehouse.value = null;
-      }
-    } finally {
-      isCheckingAvailability.value = false;
+    final selected = selectedWarehouse.value;
+
+    if (selected != null &&
+        selected.quantity < quantity.value) {
+      selectedWarehouse.value = null;
     }
+  } finally {
+    isCheckingAvailability.value = false;
   }
+}
+
   double get selectedPrice {
     return selectedWarehouse.value?.discountedPrice ?? 0.0;
   }

@@ -98,7 +98,7 @@ class ClientWarehouseStockCard extends StatelessWidget {
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
-                      warehouse.address,
+                      warehouse.sectionName,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: colors.outline,
                       ),
