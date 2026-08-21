@@ -446,19 +446,7 @@ class ClientProfileCompletionController extends GetxController {
         '${selectedProducts.toList()}',
       );
 
-      // ========================================================
       // API CALL
-      // ========================================================
-
-      // final result =
-      //     await _onboardingRepo.savePreferences(
-      //   facilityName: facilityName,
-      //   role: 'client',
-      //   businessType:
-      //       selectedBusinessType.value,
-      //   categories:
-      //       selectedProducts.toList(),
-      // );
         final result =
         await _onboardingRepo.savePreferences(
         facilityName: facilityName,

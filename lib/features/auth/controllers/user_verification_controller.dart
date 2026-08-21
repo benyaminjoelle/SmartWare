@@ -97,47 +97,47 @@ class UserVerificationController extends GetxController {
   // CHANGE EMAIL
   // ============================================================
 
-  Future<void> changeEmail(String newEmail) async {
-    try {
-      isLoading.value = true;
+  // Future<void> changeEmail(String newEmail) async {
+  //   try {
+  //     isLoading.value = true;
 
-      final userId = await PrefHelper.getUserId();
+  //     final userId = await PrefHelper.getUserId();
 
-      if (userId == null) {
-        throw Exception(
-          'User ID not found in local storage.',
-        );
-      }
+  //     if (userId == null) {
+  //       throw Exception(
+  //         'User ID not found in local storage.',
+  //       );
+  //     }
 
-      await _authRepo.changeEmail(
-        userId: userId,
-        email: newEmail,
-      );
+  //     await _authRepo.changeEmail(
+  //       userId: userId,
+  //       email: newEmail,
+  //     );
 
-      email.value = newEmail;
+  //     email.value = newEmail;
 
-      await PrefHelper.saveUserEmail(newEmail);
+  //     await PrefHelper.saveUserEmail(newEmail);
 
-      AppSnackbar.show(
-        title: "Email Updated".tr,
-        message:
-            "Your email has been changed successfully.".tr,
-        icon: Icons.check_circle_outline,
-        iconColor: Colors.green,
-      );
-    } catch (e) {
-      print('❌ CHANGE EMAIL ERROR: $e');
+  //     AppSnackbar.show(
+  //       title: "Email Updated".tr,
+  //       message:
+  //           "Your email has been changed successfully.".tr,
+  //       icon: Icons.check_circle_outline,
+  //       iconColor: Colors.green,
+  //     );
+  //   } catch (e) {
+  //     print('❌ CHANGE EMAIL ERROR: $e');
 
-      AppSnackbar.show(
-        title: "Error".tr,
-        message: e.toString(),
-        icon: Icons.error_outline,
-        iconColor: theme.colorScheme.error,
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  //     AppSnackbar.show(
+  //       title: "Error".tr,
+  //       message: e.toString(),
+  //       icon: Icons.error_outline,
+  //       iconColor: theme.colorScheme.error,
+  //     );
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   // ============================================================
   // RESEND VERIFICATION EMAIL

@@ -492,6 +492,94 @@ Future<OwnerPrefrencesModel> savePreferences({
       );
     }
   }
+  // ============================================================
+// CHANGE PASSWORD
+// ============================================================
+
+Future<void> changePassword({
+  required String currentPassword,
+  required String newPassword,
+}) async {
+  try {
+    print('');
+    print('════════ CHANGE OWNER PASSWORD START ════════');
+
+    final requestData = {
+      'current_password': currentPassword,
+      'new_password': newPassword,
+    };
+
+    print('📤 Request Data:');
+    print({
+      'current_password': '********',
+      'new_password': '********',
+    });
+
+    final response = await _api.post(
+      '$baseUrl/api/changePassword',
+      requestData,
+    );
+
+    print('');
+    print('📥 Raw Password Response:');
+    print(response);
+
+    if (response is ApiError) {
+      throw response;
+    }
+
+    if (response is! Map<String, dynamic>) {
+      throw ApiError(
+        message: 'Invalid response from server',
+      );
+    }
+
+    final message = response['message']?.toString() ??
+        'Password changed successfully';
+
+    print('💬 Message: $message');
+    print('✅ OWNER PASSWORD CHANGE SUCCESS');
+    print('════════════════════════════════════════');
+
+  } on DioException catch (e) {
+    print('');
+    print('════════ CHANGE OWNER PASSWORD DIO ERROR ════════');
+
+    print('❌ Status Code: ${e.response?.statusCode}');
+    print('❌ Response Data: ${e.response?.data}');
+
+    final data = e.response?.data;
+
+    String message = 'Failed to change password';
+
+    if (data is Map<String, dynamic>) {
+      if (data['message'] != null) {
+        message = data['message'].toString();
+      } else if (data['error'] != null) {
+        message = data['error'].toString();
+      }
+    }
+
+    throw ApiError(message: message);
+
+  } catch (e, stackTrace) {
+    print('');
+    print('════════ CHANGE OWNER PASSWORD ERROR ════════');
+
+    print('❌ Error: $e');
+    print('❌ Type: ${e.runtimeType}');
+    print('❌ StackTrace:');
+    print(stackTrace);
+
+    if (e is ApiError) {
+      rethrow;
+    }
+
+    throw ApiError(
+      message: 'Failed to change password',
+    );
+  }
+}
 
   // ============================================================
   // UPDATE BUSINESS NAME

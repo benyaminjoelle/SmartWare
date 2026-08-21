@@ -4,29 +4,23 @@ import 'package:get/get.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/features/product/models/product_model.dart';
 import 'package:smartware/features/product/models/product_repo.dart';
-import 'package:smartware/features/warehouse/controllers/warehouse_controller.dart';
-import 'package:smartware/features/warehouse/models/warehouse_product_model.dart';
 
 class ProductController extends GetxController {
-  //========== Repo ============
   final ProductRepo productRepo = ProductRepo();
 
-  final WarehouseController warehouseController = Get.find<WarehouseController>();
-  
   final RxList<Product> products = <Product>[].obs;
-  
-  // ============ filtering ==============
   final RxList<Product> displayedProducts = <Product>[].obs;
+
   final RxSet<String> selectedUnit = <String>{}.obs;
   final RxSet<String> selectedCategories = <String>{}.obs;
   final RxString searchQuery = ''.obs;
+
   final RxString businessType = ''.obs;
   final RxBool isProfileCompleted = false.obs;
   final RxList<String> businessCategories = <String>[].obs;
 
   double minPossiblePrice = 0.0;
   double maxPossiblePrice = 100.0;
-
   late Rx<RangeValues> priceRange;
 
   @override
@@ -42,44 +36,47 @@ class ProductController extends GetxController {
       time: const Duration(milliseconds: 300),
     );
   }
+
   Future<void> loadProfileStatus() async {
-  isProfileCompleted.value =
-      await PrefHelper.getProfileCompleted();
-}
-
-
-  Future<void> loadProducts() async {
-  try {
-    final result = await productRepo.getProducts();
-
-    products.assignAll(result);
-
-    calculatePriceBounds();
-    applyFilters();
-
-    print('📦 Real products loaded: ${products.length}');
-  } catch (e) {
-    print('❌ Failed to load products: $e');
+    isProfileCompleted.value =
+        await PrefHelper.getProfileCompleted();
   }
 
-    calculatePriceBounds();
-    applyFilters();
+  Future<void> loadProducts() async {
+    try {
+      final result = await productRepo.getProducts();
+
+      products.assignAll(result);
+
+      print('📦 Real products loaded: ${products.length}');
+
+      calculatePriceBounds();
+      applyFilters();
+    } catch (e) {
+      print('❌ Failed to load products: $e');
+
+      products.clear();
+      displayedProducts.clear();
+    }
   }
 
   void calculatePriceBounds() {
-    final warehouseProducts = warehouseController.warehouseProducts;
+    final prices = products
+        .expand((product) => product.inventories)
+        .map((inventory) => inventory.unitPrice)
+        .toList();
 
-    if (warehouseProducts.isEmpty) {
+    if (prices.isEmpty) {
       minPossiblePrice = 0.0;
       maxPossiblePrice = 100.0;
     } else {
-      minPossiblePrice = warehouseProducts
-          .map((item) => item.unitPrice)
-          .reduce((a, b) => a < b ? a : b);
+      minPossiblePrice = prices.reduce(
+        (a, b) => a < b ? a : b,
+      );
 
-      maxPossiblePrice = warehouseProducts
-          .map((item) => item.unitPrice)
-          .reduce((a, b) => a > b ? a : b);
+      maxPossiblePrice = prices.reduce(
+        (a, b) => a > b ? a : b,
+      );
     }
 
     priceRange = RangeValues(
@@ -87,6 +84,7 @@ class ProductController extends GetxController {
       maxPossiblePrice,
     ).obs;
   }
+
   void updateSearchQuery(String query) {
     searchQuery.value = query;
   }
@@ -98,71 +96,65 @@ class ProductController extends GetxController {
         .toList();
   }
 
- List<String> get availableCategories {
-  return products
-      .expand((product) => product.categories)
-      .toSet()
-      .toList();
-}
-RxList<WarehouseProductModel> get specialSaleItems {
-  return warehouseController.warehouseProducts
-      .where(
-        (item) {
-           final product = getProductById(item.productId);
-
-        if (product == null) return false;
-
-        final matchesPreference =
-            businessCategories.isEmpty ||
-            product.categories.any(
-              (category) => businessCategories.contains(category),
-            );
-
-        return item.discountPercentage != null &&
-            item.discountPercentage! > 0 &&
-            item.quantity > 0 &&
-            matchesPreference;
-        }
-            
-      )
-      .toList().obs;
-}
-List<String> get filterCategories {
-  if (businessCategories.isEmpty) {
-    return availableCategories;
+  List<String> get availableCategories {
+    return products
+        .expand((product) => product.categories)
+        .toSet()
+        .toList();
   }
-  return businessCategories;
-}
 
-Product? getProductById(int productId) {
-  try {
-    return products.firstWhere(
-      (product) => product.id == productId,
-    );
-  } catch (_) {
-    return null;
+  List<String> get filterCategories {
+    if (businessCategories.isEmpty) {
+      return availableCategories;
+    }
+
+    return businessCategories;
   }
-}
- // ========== filtering logic =============
-  void applyFilters() {
-  //    if (!isProfileCompleted.value) {
-  //   displayedProducts.assignAll(products);
-  //   return;
-  // }
-    final query =
-        searchQuery.value.trim().toLowerCase();
 
-    final filtered = products.where((product) {
-
+  RxList<Product> get specialSaleItems {
+    return products.where((product) {
       final matchesBusinessCategory =
           businessCategories.isEmpty ||
           product.categories.any(
-            (category) => businessCategories.contains(category),
+            (category) =>
+                businessCategories.contains(category),
+          );
+
+      final hasSpecialSale = product.inventories.any(
+        (inventory) =>
+            inventory.quantity > 0 &&
+            inventory.hasDiscount,
+      );
+
+      return matchesBusinessCategory && hasSpecialSale;
+    }).toList().obs;
+  }
+
+  Product? getProductById(int productId) {
+    try {
+      return products.firstWhere(
+        (product) => product.id == productId,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  void applyFilters() {
+    final query = searchQuery.value.trim().toLowerCase();
+
+    final filtered = products.where((product) {
+      final matchesBusinessCategory =
+          businessCategories.isEmpty ||
+          product.categories.any(
+            (category) =>
+                businessCategories.contains(category),
           );
 
       final matchesSearch =
           query.isEmpty ||
-          product.name.toLowerCase().contains(query) ||
+          product.nameEn.toLowerCase().contains(query) ||
+          product.nameAr.toLowerCase().contains(query) ||
           product.sku.toLowerCase().contains(query);
 
       final matchesUnit =
@@ -176,21 +168,24 @@ Product? getProductById(int productId) {
                 selectedCategories.contains(category),
           );
 
-      final matchesPrice =
-          warehouseController.warehouseProducts.any(
-        (warehouseProduct) =>
-            warehouseProduct.productId == product.id &&
-            warehouseProduct.unitPrice >=
+      final matchesPrice = product.inventories.any(
+        (inventory) =>
+            inventory.unitPrice >=
                 priceRange.value.start &&
-            warehouseProduct.unitPrice <=
+            inventory.unitPrice <=
                 priceRange.value.end,
+      );
+
+      final hasStock = product.inventories.any(
+        (inventory) => inventory.quantity > 0,
       );
 
       return matchesBusinessCategory &&
           matchesSearch &&
           matchesUnit &&
           matchesSelectedCategory &&
-          matchesPrice;
+          matchesPrice &&
+          hasStock;
     }).toList();
 
     displayedProducts.assignAll(filtered);
@@ -228,11 +223,14 @@ Product? getProductById(int productId) {
   void resetFilters() {
     selectedUnit.clear();
     selectedCategories.clear();
+
     priceRange.value = RangeValues(
       minPossiblePrice,
       maxPossiblePrice,
     );
+
     searchQuery.value = '';
+
     applyFilters();
   }
 }

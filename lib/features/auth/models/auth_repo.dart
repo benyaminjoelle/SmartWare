@@ -422,38 +422,38 @@ class AuthRepo {
   }
 
   ///==================cHANGE EMAIL======================
-  Future<void> changeEmail({required int userId, required String email}) async {
-    try {
-      print('════════ CHANGE EMAIL START ════════');
+  // Future<void> changeEmail({required int userId, required String email}) async {
+  //   try {
+  //     print('════════ CHANGE EMAIL START ════════');
 
-      final FormData formData = FormData.fromMap({'email': email.trim()});
+  //     final FormData formData = FormData.fromMap({'email': email.trim()});
 
-      print(
-        '📤 Request Data (Form Data): email = ${email.trim()} to ID: $userId',
-      );
+  //     print(
+  //       '📤 Request Data (Form Data): email = ${email.trim()} to ID: $userId',
+  //     );
 
-      final response = await _api.post(
-        'http://${ConstIp().ip}:8000/api/email/change/$userId',
-        formData,
-      );
+  //     final response = await _api.post(
+  //       'http://${ConstIp().ip}:8000/api/email/change/$userId',
+  //       formData,
+  //     );
 
-      print('📥 Response:');
-      print(response);
+  //     print('📥 Response:');
+  //     print(response);
 
-      if (response is ApiError) {
-        throw response;
-      }
+  //     if (response is ApiError) {
+  //       throw response;
+  //     }
 
-      print('════════ CHANGE EMAIL SUCCESS ════════');
-    } catch (e) {
-      print('════════ CHANGE EMAIL ERROR ════════');
-      print(e);
+  //     print('════════ CHANGE EMAIL SUCCESS ════════');
+  //   } catch (e) {
+  //     print('════════ CHANGE EMAIL ERROR ════════');
+  //     print(e);
 
-      if (e is ApiError) rethrow;
+  //     if (e is ApiError) rethrow;
 
-      throw ApiError(message: 'Failed to change email');
-    }
-  }
+  //     throw ApiError(message: 'Failed to change email');
+  //   }
+  // }
 
   ///=================FORGOT PASSWORD======================
   ///==================1st screen==================

@@ -155,7 +155,6 @@ class ClientOrdersView extends StatelessWidget {
       ),
     );
   }
-
   Widget _tab(
     String text,
     OrderTab tab,
@@ -187,7 +186,6 @@ class ClientOrdersView extends StatelessWidget {
       ),
     );
   }
-
   Color _statusColor(String status, ColorScheme cs) {
     switch (status.toLowerCase()) {
       case "processing":

@@ -234,15 +234,15 @@ class ClientCartView extends StatelessWidget {
                       height: 48,
                       child: PrimaryButton(
                         onPressed: () async {
-                        final completed = await PrefHelper.getProfileCompleted();
-                        if (!completed) {
-                          AppSnackbar.show(
-                            position: SnackPosition.TOP,
-                            title: "Complete Your Profile",
-                            message: "Please complete your profile setup before placing an order.",
-                          );
-                          return;
-                        }
+                        // final completed = await PrefHelper.getProfileCompleted();
+                        // if (!completed) {
+                        //   AppSnackbar.show(
+                        //     position: SnackPosition.TOP,
+                        //     title: "Complete Your Profile",
+                        //     message: "Please complete your profile setup before placing an order.",
+                        //   );
+                        //   return;
+                        // }
                         Get.toNamed('/checkout');
                       },
                         isLoading: false,

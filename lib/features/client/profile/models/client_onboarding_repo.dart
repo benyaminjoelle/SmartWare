@@ -470,6 +470,108 @@ Future<ChangePhoneNumberModel> changePhoneNumber({
     );
   }
 }
+
+// ============= CHANGE CLIENT EMAIL ================
+Future<void> changeEmail({
+  required String email,
+}) async {
+  try {
+    print('');
+    print('════════ CHANGE EMAIL START ════════');
+
+    final newEmail = email.trim();
+
+    print('📧 New Email: $newEmail');
+
+    final requestData = {
+      'email': newEmail,
+    };
+
+    print('');
+    print('📤 Request Data:');
+    print(requestData);
+
+    final response = await _api.post(
+      '$baseUrl/api/changeEmail',
+      requestData,
+    );
+
+    print('');
+    print('📥 Raw Change Email Response:');
+    print(response);
+
+    if (response is ApiError) {
+      throw response;
+    }
+
+    print('');
+    print('════════ CHANGE EMAIL SUCCESS ════════');
+  } on DioException catch (e) {
+    print('');
+    print('════════ CHANGE EMAIL DIO ERROR ════════');
+
+    print('❌ Status Code: ${e.response?.statusCode}');
+    print('❌ Response Data: ${e.response?.data}');
+
+    print('════════════════════════════════════════');
+
+    throw ApiError(
+      message:
+          e.response?.data?['message'] ??
+          'Failed to change email',
+    );
+  } catch (e, stackTrace) {
+    print('');
+    print('════════ CHANGE EMAIL ERROR ════════');
+
+    print('❌ Error: $e');
+    print('❌ Type: ${e.runtimeType}');
+    print('❌ StackTrace:');
+    print(stackTrace);
+
+    print('════════════════════════════════════');
+
+    if (e is ApiError) {
+      rethrow;
+    }
+
+    throw ApiError(
+      message: 'Failed to change email',
+    );
+  }
+}
+// ============== CHANGE PASSWORD ===============
+Future<void> changePassword({
+  required String currentPassword,
+  required String newPassword,
+}) async {
+  try {
+    final response = await _api.post(
+      '$baseUrl/api/password/change',
+      {
+        'current_password': currentPassword,
+        'new_password': newPassword,
+      },
+    );
+
+    if (response is ApiError) {
+      throw response;
+    }
+  } on DioException catch (e) {
+    throw ApiError(
+      message:
+          e.response?.data?['message'] ??
+          'Failed to change password',
+    );
+  } catch (e) {
+    if (e is ApiError) rethrow;
+
+    throw ApiError(
+      message: 'Failed to change password',
+    );
+  }
+}
+
 Future<ClientPreferencesResponseModel> getPreferences() async {
   try {
     print('');

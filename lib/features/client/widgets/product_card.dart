@@ -109,16 +109,16 @@ class ProductCard extends StatelessWidget {
                                 .withOpacity(0.55),
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        // const SizedBox(height: 4),
 
-                          Text(
-                          product.companyName,
-                          style: theme.textTheme.bodySmall
-                              ?.copyWith(
-                            color: colors.onSurface
-                                .withOpacity(0.55),
-                          ),
-                        ),
+                        //   Text(
+                        //   product.companyName,
+                        //   style: theme.textTheme.bodySmall
+                        //       ?.copyWith(
+                        //     color: colors.onSurface
+                        //         .withOpacity(0.55),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
