@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smartware/features/owner/profile/controllers/owner_location_controller.dart';
+import 'package:smartware/widgets/primary_button.dart';
 
 class OwnerLocation extends StatelessWidget {
   OwnerLocation({super.key});
@@ -468,8 +469,7 @@ class OwnerLocation extends StatelessWidget {
                               const SizedBox(height: 3),
 
                               Text(
-                                controller
-                                    .selectedAddress.value,
+                                controller.selectedAddress.value,
                                 maxLines: 2,
                                 overflow:
                                     TextOverflow.ellipsis,
@@ -495,43 +495,19 @@ class OwnerLocation extends StatelessWidget {
           // ======================================================
 
           Positioned(
-            left: horizontalPadding,
-            right: horizontalPadding,
-            bottom: 16,
-            child: SafeArea(
-              top: false,
-              child: Obx(
-                () {
-                  final bool saving =
-                      controller.isSaving.value;
-
-                  return SizedBox(
-                    height: 56,
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed:
-                          saving ? null : controller.done,
-                      child: saving
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child:
-                                  CircularProgressIndicator(
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const Text(
-                              'Done',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                    ),
-                  );
-                },
-              ),
-            ),
+          left: horizontalPadding,
+          right: horizontalPadding,
+          bottom: 16,
+          child: SafeArea(
+            top: false,
+            child: Obx(() {
+              return PrimaryButton(
+                text: 'Done',
+                isLoading: controller.isSaving.value,
+                onPressed: controller.done,
+              );
+            }),
+          ),
           ),
         ],
       ),

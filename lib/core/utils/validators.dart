@@ -80,16 +80,16 @@ class Validators {
     return 'Required'.tr;
   }
 
-  // 2. Define the Email Regex pattern
-  // This pattern ensures: text + @ + text + . + text
-  final emailRegExp = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  final email = value.trim();
 
-  // 3. Validate the format
-  if (!emailRegExp.hasMatch(value)) {
-    return "Please Enter a valid email address.".tr;
+  final emailRegExp = RegExp(
+    r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+  );
+
+  if (!emailRegExp.hasMatch(email)) {
+    return 'Please Enter a valid email address.'.tr;
   }
 
-  // 4. Return null if validation passes
   return null;
 }
 
