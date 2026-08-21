@@ -29,8 +29,28 @@ class ClientHomeController extends GetxController {
   }
 
   void loadUser() {
-    final data = GetStorage().read('user_data') ?? {};
-    user = UserModel.fromJson(Map<String, dynamic>.from(data));
+  final data = GetStorage().read('user_data');
+
+  print('👤 USER JSON 👉 $data');
+  if (data == null || data.isEmpty) {
+    print('❌ No user data found');
+    return;
+  }
+  user = UserModel.fromJson(
+    Map<String, dynamic>.from(data),
+  );
+
+  print('✅ USER NAME 👉 ${user.firstName}');
+}
+  String get greeting {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good morning';
+    }
+    if (hour < 18) {
+      return 'Good afternoon';
+    }
+    return 'Good evening';
   }
 
   Future<void> getPreferences() async {

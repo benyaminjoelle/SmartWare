@@ -39,9 +39,7 @@ class OwnerHomeController extends GetxController {
   // ===========================================================================
 
   final warehouses = <OwnerWarehouseHomeModel>[].obs;
-
   final lowStockProducts = <OwnerLowStockHomeModel>[].obs;
-
   final recentOrders = <OwnerRecentOrderModel>[].obs;
 
   // ===========================================================================
@@ -50,15 +48,12 @@ class OwnerHomeController extends GetxController {
 
   String get greeting {
     final hour = DateTime.now().hour;
-
     if (hour < 12) {
       return 'Good morning';
     }
-
     if (hour < 18) {
       return 'Good afternoon';
     }
-
     return 'Good evening';
   }
 

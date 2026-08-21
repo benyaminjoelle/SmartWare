@@ -1,38 +1,30 @@
 import 'dart:async';
 import 'dart:math';
-
+import 'package:smartware/core/utils/pref_helper.dart';
+import 'package:smartware/features/client/profile/models/client_onboarding_repo.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:smartware/widgets/app_snackbar.dart';
 
 class ClientLocationController extends GetxController {
-  // ============================================================
+  //REPO
+  final ClientOnboardingRepo _repo = ClientOnboardingRepo();
   // GOOGLE API KEY
-  // ============================================================
-
   static const String googleApiKey =
       'AIzaSyCl0f-cxl8M8p8HzCpXIk4rBG-GFdiZBjs';
-
-  // ============================================================
   // GOOGLE PLACES URLS
-  // ============================================================
 
   static const String _autocompleteUrl =
       'https://places.googleapis.com/v1/places:autocomplete';
 
   static const String _placesUrl =
       'https://places.googleapis.com/v1/places';
-
-  // ============================================================
   // DIO
-  // ============================================================
 
   final Dio _dio = Dio();
-
-  // ============================================================
   // MAP CONTROLLER
-  // ============================================================
   //
   // IMPORTANT:
   // We do NOT use Completer here.
@@ -43,49 +35,30 @@ class ClientLocationController extends GetxController {
   // A nullable controller is safer because we can explicitly
   // clear it when the controller is disposed.
   //
-  // ============================================================
 
   GoogleMapController? _mapController;
-
-  // ============================================================
   // SEARCH CONTROLLER
-  // ============================================================
 
   final TextEditingController searchController =
       TextEditingController();
-
-  // ============================================================
   // SEARCH DEBOUNCE
-  // ============================================================
 
   Timer? _searchDebounce;
-
-  // ============================================================
   // GOOGLE PLACES SESSION TOKEN
-  // ============================================================
 
   String sessionToken = '';
-
-  // ============================================================
   // AUTOCOMPLETE SUGGESTIONS
-  // ============================================================
 
   final RxList<PlacePrediction> suggestions =
       <PlacePrediction>[].obs;
-
-  // ============================================================
   // SELECTED LOCATION
-  // ============================================================
 
   final Rxn<LatLng> selectedLocation =
       Rxn<LatLng>();
 
   final RxString selectedAddress =
       ''.obs;
-
-  // ============================================================
   // LOADING STATES
-  // ============================================================
 
   final RxBool isSearching =
       false.obs;
@@ -95,37 +68,25 @@ class ClientLocationController extends GetxController {
 
   final RxBool isSaving =
       false.obs;
-
-  // ============================================================
   // MARKERS
-  // ============================================================
 
   final RxSet<Marker> markers =
       <Marker>{}.obs;
-
-  // ============================================================
   // SYRIA CENTER
-  // ============================================================
 
   static const LatLng syriaCenter =
       LatLng(
     34.8021,
     38.9968,
   );
-
-  // ============================================================
   // INITIAL CAMERA
-  // ============================================================
 
   static const CameraPosition initialCameraPosition =
       CameraPosition(
     target: syriaCenter,
     zoom: 6.5,
   );
-
-  // ============================================================
   // INIT
-  // ============================================================
 
   @override
   void onInit() {
@@ -141,10 +102,7 @@ class ClientLocationController extends GetxController {
       '🎫 Places session token created',
     );
   }
-
-  // ============================================================
   // GENERATE SESSION TOKEN
-  // ============================================================
 
   String _generateSessionToken() {
     final random = Random.secure();
@@ -154,10 +112,7 @@ class ClientLocationController extends GetxController {
       (_) => random.nextInt(16).toRadixString(16),
     ).join();
   }
-
-  // ============================================================
   // MAP CREATED
-  // ============================================================
 
   void onMapCreated(
     GoogleMapController controller,
@@ -168,10 +123,7 @@ class ClientLocationController extends GetxController {
       '🗺️ Google Map controller created',
     );
   }
-
-  // ============================================================
   // SEARCH CHANGED
-  // ============================================================
 
   void onSearchChanged(String value) {
     final query = value.trim();
@@ -209,10 +161,7 @@ class ClientLocationController extends GetxController {
       },
     );
   }
-
-  // ============================================================
   // GOOGLE PLACES AUTOCOMPLETE
-  // ============================================================
 
   Future<void> _searchAutocomplete(
     String query,
@@ -398,10 +347,7 @@ class ClientLocationController extends GetxController {
       isSearching.value = false;
     }
   }
-
-  // ============================================================
   // SELECT AUTOCOMPLETE SUGGESTION
-  // ============================================================
 
   Future<void> selectSuggestion(
     PlacePrediction prediction,
@@ -455,10 +401,10 @@ class ClientLocationController extends GetxController {
       );
 
       if (location == null) {
-        Get.snackbar(
-          'Location Error',
-          'Could not get the coordinates of this location.',
-          snackPosition: SnackPosition.BOTTOM,
+        AppSnackbar.show(
+          title: 'Location Error',
+          message:'Could not get the coordinates of this location.',
+          position: SnackPosition.TOP,
         );
 
         return;
@@ -522,19 +468,16 @@ class ClientLocationController extends GetxController {
         '❌ Select place error: $e',
       );
 
-      Get.snackbar(
-        'Error',
-        'Unable to select this location.',
-        snackPosition: SnackPosition.BOTTOM,
+      AppSnackbar.show(
+  title:       'Error',
+  message:      'Unable to select this location.',
+        position: SnackPosition.TOP,
       );
     } finally {
       isLoadingPlace.value = false;
     }
   }
-
-  // ============================================================
   // GET PLACE DETAILS
-  // ============================================================
 
   Future<LatLng?> _getPlaceLocation(
     String placeId,
@@ -625,10 +568,7 @@ class ClientLocationController extends GetxController {
       return null;
     }
   }
-
-  // ============================================================
   // SELECT LOCATION DIRECTLY FROM MAP
-  // ============================================================
 
   Future<void> selectLocation(
     LatLng location,
@@ -660,10 +600,7 @@ class ClientLocationController extends GetxController {
     // The map was already tapped at this position,
     // so there is no need to animate the camera.
   }
-
-  // ============================================================
   // SET MARKER
-  // ============================================================
 
   void _setMarker(
     LatLng location, {
@@ -683,10 +620,7 @@ class ClientLocationController extends GetxController {
       ),
     };
   }
-
-  // ============================================================
   // MOVE CAMERA
-  // ============================================================
   //
   // This is the important part.
   //
@@ -696,7 +630,6 @@ class ClientLocationController extends GetxController {
   // No second map.
   // No stale controller.
   //
-  // ============================================================
 
   Future<void> moveCamera(
     LatLng location,
@@ -741,10 +674,7 @@ class ClientLocationController extends GetxController {
       );
     }
   }
-
-  // ============================================================
   // SEARCH LOCATION BUTTON
-  // ============================================================
 
   Future<void> searchLocation() async {
     final query =
@@ -764,10 +694,7 @@ class ClientLocationController extends GetxController {
 
     await _searchAutocomplete(query);
   }
-
-  // ============================================================
   // CLEAR SEARCH
-  // ============================================================
 
   void clearSearch() {
     _searchDebounce?.cancel();
@@ -782,60 +709,64 @@ class ClientLocationController extends GetxController {
         _generateSessionToken();
   }
 
-  // ============================================================
   // DONE
-  // ============================================================
-
   Future<void> done() async {
-    final LatLng? location =
-        selectedLocation.value;
+  final LatLng? location = selectedLocation.value;
 
-    if (location == null) {
-      Get.snackbar(
-        'Location Required',
-        'Please select your business location on the map.',
-        snackPosition: SnackPosition.BOTTOM,
+  if (location == null) {
+    AppSnackbar.show(
+      title: 'Location Required',
+      message: 'Please select your business location on the map.',
+      position: SnackPosition.TOP,
+    );
+    return;
+  }
+
+  if (isSaving.value) return;
+
+  isSaving.value = true;
+
+  try {
+    final facilityId = await PrefHelper.getClientFacilityId();
+
+    if (facilityId == null || facilityId <= 0) {
+      AppSnackbar.show(
+        title: 'Error',
+        message: 'Facility information was not found.',
+        position: SnackPosition.TOP,
       );
-
       return;
     }
 
-    if (isSaving.value) {
-      return;
-    }
+    await _repo.submitLocation(
+      facilityId: facilityId,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      address: selectedAddress.value.trim(),
+    );
+    await PrefHelper.setClientProfileCompleted(true);
+    await PrefHelper.saveClientProfileCompletion(100);
+    await PrefHelper.saveClientOnboardingStep(2);
 
-    isSaving.value = true;
+    AppSnackbar.show(
+      title: 'Location Saved',
+      message: 'Your facility location has been saved successfully.',
+      position: SnackPosition.TOP,
+    );
 
-    try {
-      final double latitude =
-          location.latitude;
+    Get.back(result: true);
+  } catch (e) {
+    debugPrint('❌ Save location error: $e');
 
-      final double longitude =
-          location.longitude;
-
-      final String address =
-          selectedAddress.value;
-
-      debugPrint(
-        '════════ LOCATION SELECTED ════════',
-      );
-
-      debugPrint(
-        '📍 Latitude: $latitude',
-      );
-
-      debugPrint(
-        '📍 Longitude: $longitude',
-      );
-
-      debugPrint(
-        '📍 Address: $address',
-      );
-
-      debugPrint(
-        '══════════════════════════════════',
-      );
-
+    AppSnackbar.show(
+      title: 'Error',
+      message: e.toString(),
+      position: SnackPosition.TOP,
+    );
+  } finally {
+    isSaving.value = false;
+  }
+}
       // ========================================================
       // SEND TO LARAVEL HERE
       // ========================================================
@@ -850,29 +781,8 @@ class ClientLocationController extends GetxController {
       //
       // ========================================================
 
-      Get.snackbar(
-        'Location Saved',
-        'Your location has been selected.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } catch (e) {
-      debugPrint(
-        '❌ Save location error: $e',
-      );
-
-      Get.snackbar(
-        'Error',
-        'Something went wrong while saving the location.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    } finally {
-      isSaving.value = false;
-    }
-  }
-
-  // ============================================================
+  
   // CLOSE
-  // ============================================================
 
   @override
   void onClose() {
@@ -881,7 +791,6 @@ class ClientLocationController extends GetxController {
     );
 
     _searchDebounce?.cancel();
-
     searchController.dispose();
 
     // IMPORTANT:
@@ -892,21 +801,17 @@ class ClientLocationController extends GetxController {
 
     super.onClose();
   }
-}
 
+}
 // ================================================================
 // PLACE PREDICTION MODEL
 // ================================================================
 
 class PlacePrediction {
   final String placeId;
-
   final String placeResourceName;
-
   final String description;
-
   final String mainText;
-
   final String secondaryText;
 
   PlacePrediction({
