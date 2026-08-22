@@ -38,7 +38,6 @@ class EditProductController extends GetxController {
 
   final Rxn<File> selectedImage = Rxn<File>();
 
-  // Existing image from backend
   final RxnString existingImage = RxnString();
 
   // ============================================================
@@ -61,30 +60,11 @@ class EditProductController extends GetxController {
   // ============================================================
   // OWNER CATEGORIES
   // ============================================================
-  //
-  // Categories come from the SAME source of truth as
-  // AddProductController: PrefHelper.getOwnerProductCategories(),
-  // which stores the REAL {id, name} objects returned by the
-  // backend after onboarding / preferences update.
-  //
-  // ⚠️ KNOWN LIMITATION:
-  // The inventory/product API currently does NOT return which
-  // categories this specific product already belongs to
-  // (OwnerProductModel has no `categories` field). So this screen
-  // cannot preselect the product's current categories — the user
-  // must re-select them from scratch, and whatever they pick
-  // fully replaces the product's categories on save. Ask backend
-  // to add `categories` to the product JSON to fix this properly.
-  //
-  // ============================================================
 
-  /// Category names shown by the UI.
   final RxList<String> availableCategories = <String>[].obs;
 
-  /// Category names currently selected for this product.
   final RxList<String> selectedCategories = <String>[].obs;
 
-  /// REAL owner categories: [{'id': 1, 'name': 'Canned Foods'}, ...]
   final RxList<Map<String, dynamic>> ownerCategories =
       <Map<String, dynamic>>[].obs;
 
@@ -134,17 +114,6 @@ class EditProductController extends GetxController {
 
     existingImage.value = product.productImage;
 
-    // ------------------------------------------------------------
-    // ⚠️ GUARD: backend can return a unit string (e.g. "قطعة")
-    // that doesn't match any entry in the hardcoded `units` list.
-    // Setting selectedUnit to an unknown value crashes the
-    // DropdownButtonFormField, since Flutter requires the current
-    // value to match exactly one item.
-    //
-    // If it doesn't match, we leave the dropdown unselected and
-    // ask the user to pick again, instead of crashing.
-    // ------------------------------------------------------------
-
     final incomingUnit = product.unit.trim();
 
     if (units.contains(incomingUnit)) {
@@ -165,21 +134,10 @@ class EditProductController extends GetxController {
     debugPrint('📦 Quantity: ${quantityController.text}');
     debugPrint('💰 Unit Price: ${unitPriceController.text}');
     debugPrint('🖼 Existing Image: ${existingImage.value}');
-
-    // ------------------------------------------------------------
-    // ⚠️ TODO — PRESELECT EXISTING PRODUCT CATEGORIES
-    // ------------------------------------------------------------
-    //
-    // `inventory.product` currently exposes no category data, so
-    // we cannot preselect this product's existing categories here.
-    // Once the backend adds `categories` to the product JSON, this
-    // is where we'd match those against `ownerCategories` (loaded
-    // below) and call `selectedCategories.assignAll(...)`.
-    // ------------------------------------------------------------
   }
 
   // ============================================================
-  // LOAD OWNER CATEGORIES (REAL {id, name} DATA)
+  // LOAD OWNER CATEGORIES
   // ============================================================
 
   Future<void> _loadOwnerCategoriesThenPreselect() async {
@@ -211,10 +169,6 @@ class EditProductController extends GetxController {
 
         return;
       }
-
-      // ----------------------------------------------------------
-      // NORMALIZE (same logic as AddProductController)
-      // ----------------------------------------------------------
 
       final validCategories = <Map<String, dynamic>>[];
 
@@ -287,8 +241,6 @@ class EditProductController extends GetxController {
       debugPrint(
         '════════════════════════════════════════',
       );
-
-      // TODO: once product-category data is known, preselect here.
     } catch (e, stackTrace) {
       debugPrint(
         '❌ Failed to load owner categories: $e',
@@ -320,30 +272,46 @@ class EditProductController extends GetxController {
 
     final category = ownerCategories.firstWhereOrNull(
       (item) {
-        final name = item['name']?.toString().trim() ?? '';
+        final name =
+            item['name']?.toString().trim() ?? '';
+
         return name == cleanName;
       },
     );
 
     if (category == null) {
       debugPrint('❌ Category not found: $cleanName');
-      debugPrint('Available: ${ownerCategories.toList()}');
+      debugPrint(
+        'Available: ${ownerCategories.toList()}',
+      );
       return;
     }
 
     if (selectedCategories.contains(cleanName)) {
       selectedCategories.remove(cleanName);
-      debugPrint('➖ Removed: $cleanName');
+
+      debugPrint(
+        '➖ Removed: $cleanName',
+      );
     } else {
       selectedCategories.add(cleanName);
-      debugPrint('➕ Selected: $cleanName');
-      debugPrint('🆔 Real category ID: ${category['id']}');
+
+      debugPrint(
+        '➕ Selected: $cleanName',
+      );
+
+      debugPrint(
+        '🆔 Real category ID: ${category['id']}',
+      );
     }
 
     debugPrint(
       '📦 Selected: ${selectedCategories.toList()}',
     );
-    debugPrint('🆔 IDs: $selectedCategoryIds');
+
+    debugPrint(
+      '🆔 IDs: $selectedCategoryIds',
+    );
   }
 
   List<int> get selectedCategoryIds {
@@ -352,7 +320,9 @@ class EditProductController extends GetxController {
     for (final selectedName in selectedCategories) {
       final category = ownerCategories.firstWhereOrNull(
         (item) {
-          final name = item['name']?.toString().trim() ?? '';
+          final name =
+              item['name']?.toString().trim() ?? '';
+
           return name == selectedName;
         },
       );
@@ -368,7 +338,9 @@ class EditProductController extends GetxController {
 
       final id = rawId is int
           ? rawId
-          : int.tryParse(rawId?.toString() ?? '');
+          : int.tryParse(
+              rawId?.toString() ?? '',
+            );
 
       if (id != null && id > 0) {
         ids.add(id);
@@ -381,7 +353,8 @@ class EditProductController extends GetxController {
   int? getCategoryId(String categoryName) {
     final category = ownerCategories.firstWhereOrNull(
       (item) =>
-          item['name']?.toString().trim() == categoryName.trim(),
+          item['name']?.toString().trim() ==
+          categoryName.trim(),
     );
 
     if (category == null) {
@@ -394,16 +367,22 @@ class EditProductController extends GetxController {
       return rawId;
     }
 
-    return int.tryParse(rawId?.toString() ?? '');
+    return int.tryParse(
+      rawId?.toString() ?? '',
+    );
   }
 
   String categoryTitle(String category) {
     final clean = category.trim();
-    return clean.isEmpty ? 'Category' : clean;
+
+    return clean.isEmpty
+        ? 'Category'.tr
+        : clean;
   }
 
   IconData categoryIcon(String category) {
-    final normalized = category.trim().toLowerCase();
+    final normalized =
+        category.trim().toLowerCase();
 
     if (normalized.contains('canned')) {
       return Icons.inventory_2_outlined;
@@ -456,13 +435,15 @@ class EditProductController extends GetxController {
 
       selectedImage.value = File(image.path);
 
-      debugPrint('🖼️ New image selected: ${image.path}');
+      debugPrint(
+        '🖼️ New image selected: ${image.path}',
+      );
     } catch (e) {
       debugPrint('❌ Image error: $e');
 
       Get.snackbar(
-        'Error',
-        'Failed to select image',
+        'Error'.tr,
+        'Failed to select image'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
     }
@@ -478,16 +459,14 @@ class EditProductController extends GetxController {
   // ============================================================
 
   void selectUnit(String? unit) {
-    if (unit == null) return;
-
-    // ------------------------------------------------------------
-    // Defensive guard: only allow values that actually exist in
-    // the dropdown's item list, to avoid ever putting the
-    // DropdownButtonFormField into an invalid state.
-    // ------------------------------------------------------------
+    if (unit == null) {
+      return;
+    }
 
     if (!units.contains(unit)) {
-      debugPrint('⚠️ Attempted to select unknown unit: $unit');
+      debugPrint(
+        '⚠️ Attempted to select unknown unit: $unit',
+      );
       return;
     }
 
@@ -502,15 +481,17 @@ class EditProductController extends GetxController {
     final sku = value?.trim() ?? '';
 
     if (sku.isEmpty) {
-      return 'SKU is required';
+      return 'SKU is required'.tr;
     }
 
-    if (!RegExp(r'^[A-Za-z0-9_-]+$').hasMatch(sku)) {
-      return 'Use only letters, numbers, _ or -';
+    if (!RegExp(
+      r'^[A-Za-z0-9_-]+$',
+    ).hasMatch(sku)) {
+      return 'Use only letters, numbers, _ or -'.tr;
     }
 
     if (sku.length > 100) {
-      return 'SKU must not exceed 100 characters';
+      return 'SKU must not exceed 100 characters'.tr;
     }
 
     return null;
@@ -520,11 +501,11 @@ class EditProductController extends GetxController {
     final name = value?.trim() ?? '';
 
     if (name.isEmpty) {
-      return 'Product name is required';
+      return 'Product name is required'.tr;
     }
 
     if (name.length > 255) {
-      return 'Product name is too long';
+      return 'Product name is too long'.tr;
     }
 
     return null;
@@ -532,7 +513,7 @@ class EditProductController extends GetxController {
 
   String? validateDescription(String? value) {
     if ((value?.trim() ?? '').isEmpty) {
-      return 'Description is required';
+      return 'Description is required'.tr;
     }
 
     return null;
@@ -543,11 +524,11 @@ class EditProductController extends GetxController {
         int.tryParse(value?.trim() ?? '');
 
     if (quantity == null) {
-      return 'Enter a valid quantity';
+      return 'Enter a valid quantity'.tr;
     }
 
     if (quantity < 0) {
-      return 'Quantity cannot be negative';
+      return 'Quantity cannot be negative'.tr;
     }
 
     return null;
@@ -558,11 +539,11 @@ class EditProductController extends GetxController {
         double.tryParse(value?.trim() ?? '');
 
     if (price == null) {
-      return 'Enter a valid unit price';
+      return 'Enter a valid unit price'.tr;
     }
 
     if (price < 0) {
-      return 'Unit price cannot be negative';
+      return 'Unit price cannot be negative'.tr;
     }
 
     return null;
@@ -587,22 +568,22 @@ class EditProductController extends GetxController {
 
     if (selectedUnit.value.isEmpty) {
       Get.snackbar(
-        'Missing Unit',
-        'Please select a unit',
+        'Missing Unit'.tr,
+        'Please select a unit'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
     }
 
     if (ownerCategories.isEmpty) {
-      // Try once more in case categories were loaded after init.
       await _loadOwnerCategoriesThenPreselect();
     }
 
     if (ownerCategories.isEmpty) {
       Get.snackbar(
-        'Categories Unavailable',
-        'No product categories are available for this warehouse.',
+        'Categories Unavailable'.tr,
+        'No product categories are available for this warehouse.'
+            .tr,
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
@@ -610,8 +591,8 @@ class EditProductController extends GetxController {
 
     if (selectedCategories.isEmpty) {
       Get.snackbar(
-        'Missing Categories',
-        'Please select at least one category',
+        'Missing Categories'.tr,
+        'Please select at least one category'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
@@ -621,18 +602,22 @@ class EditProductController extends GetxController {
 
     if (categoryIds.isEmpty) {
       Get.snackbar(
-        'Invalid Categories',
-        'The selected categories could not be resolved.',
+        'Invalid Categories'.tr,
+        'The selected categories could not be resolved.'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
       return;
     }
 
     final quantity =
-        int.tryParse(quantityController.text.trim());
+        int.tryParse(
+      quantityController.text.trim(),
+    );
 
     final unitPrice =
-        double.tryParse(unitPriceController.text.trim());
+        double.tryParse(
+      unitPriceController.text.trim(),
+    );
 
     if (quantity == null || unitPrice == null) {
       return;
@@ -642,10 +627,21 @@ class EditProductController extends GetxController {
       _submitted = true;
       isLoading.value = true;
 
-      debugPrint('════════ UPDATE PRODUCT CATEGORIES ════════');
-      debugPrint('🏷 Names: ${selectedCategories.toList()}');
-      debugPrint('🆔 REAL IDs: $categoryIds');
-      debugPrint('════════════════════════════════════════');
+      debugPrint(
+        '════════ UPDATE PRODUCT CATEGORIES ════════',
+      );
+
+      debugPrint(
+        '🏷 Names: ${selectedCategories.toList()}',
+      );
+
+      debugPrint(
+        '🆔 REAL IDs: $categoryIds',
+      );
+
+      debugPrint(
+        '════════════════════════════════════════',
+      );
 
       await _repo.updateProduct(
         productId: inventory.product.id,
@@ -667,7 +663,7 @@ class EditProductController extends GetxController {
       _submitted = false;
 
       Get.snackbar(
-        'Error',
+        'Error'.tr,
         e.message,
         snackPosition: SnackPosition.BOTTOM,
       );
@@ -677,8 +673,8 @@ class EditProductController extends GetxController {
       debugPrint('❌ UPDATE ERROR: $e');
 
       Get.snackbar(
-        'Error',
-        'Failed to update product',
+        'Error'.tr,
+        'Failed to update product'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
