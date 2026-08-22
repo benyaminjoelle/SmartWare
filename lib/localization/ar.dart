@@ -4,81 +4,91 @@ const Map<String, String> ar = {
   "ACCOUNT MANAGEMENT": "إدارة الحساب",
   "Add Photo": "إضافة صورة",
   "All Products": "جميع المنتجات",
-  "Already have an account?": 'لديك حساب مسبق؟',
+  "Already have an account?": "لديك حساب مسبق؟",
   "Appearance": "المظهر",
   "Application": "التطبيق",
   "Arabic": "العربية",
-  "Assist with warehouse operations and inventory management": 'مساعدة في عمليات المستودع وإدارة المخزون',
+  "Assist with warehouse operations and inventory management":
+      "مساعدة في عمليات المستودع وإدارة المخزون",
   "A new code has been sent successfully!": "تم إرسال رمز جديد بنجاح!",
-  "A new verification email has been sent.": "تم إرسال بريد إلكتروني جديد للتحقق.",
-  "At smartware, we value your trust and are committed to protecting your personal information. We collect and process data only when necessary to provide our services and improve your experience within the application.": "في smartware، نقدر ثقتك ونلتزم بحماية معلوماتك الشخصية. نقوم بجمع ومعالجة البيانات فقط عند الحاجة لتقديم خدماتنا وتحسين تجربتك داخل التطبيق.",
+  "A new verification email has been sent.":
+      "تم إرسال بريد إلكتروني جديد للتحقق.",
+  "At smartware, we value your trust and are committed to protecting your personal information. We collect and process data only when necessary to provide our services and improve your experience within the application.":
+      "في smartware، نقدر ثقتك ونلتزم بحماية معلوماتك الشخصية. نقوم بجمع ومعالجة البيانات فقط عند الحاجة لتقديم خدماتنا وتحسين تجربتك داخل التطبيق.",
 
   // B
   "Brand/Category": "العلامة التجارية / الفئة",
   "Business Email:": "البريد الإلكتروني الخاص بالعمل:",
   "Business Name:": "اسم النشاط التجاري:",
-  "Business phone number:": 'رقم الهاتف الخاص بالعمل:',
+  "Business phone number:": "رقم الهاتف الخاص بالعمل:",
   "Buy It Again": "اشترِ مجدداً",
-  "By continuing, you agree to our Terms of Service and Privacy Policy.": "بالمتابعة، أنت توافق على شروط الخدمة وسياسة الخصوصية.",
+  "By continuing, you agree to our Terms of Service and Privacy Policy.":
+      "بالمتابعة، أنت توافق على شروط الخدمة وسياسة الخصوصية.",
 
   // C
-  "Cancel": 'التراجع',
+  "Cancel": "التراجع",
   "Cart": "السلة",
   "Change Email Address": "تغيير عنوان البريد الإلكتروني",
   "Change Photo": "تغيير الصورة",
   "Chat with our team": "تحدث مع فريقنا",
-  "Choose your account type to get started with smartware": 'اختر نوع الحساب للبدأ',
-  "Choose your preferred way to reach us.": "اختر الطريقة المفضلة للتواصل معنا.",
+  "Choose your account type to get started with smartware":
+      "اختر نوع الحساب للبدأ",
+  "Choose your preferred way to reach us.":
+      "اختر الطريقة المفضلة للتواصل معنا.",
   "Client": "عميل",
   "Confirm Code": "تأكيد الرمز",
   "Confirm Password": "تأكيد كلمة المرور",
-  "Confirm your new password": 'أكد كلمة المرور الجديدة',
+  "Confirm your new password": "أكد كلمة المرور الجديدة",
   "Contact Support": "تواصل مع الدعم",
   "Contact Us": "تواصل معنا",
-  "Continue": 'المتابعة',
+  "Continue": "المتابعة",
   "Create Account": "إنشاء حساب",
 
   // D
   "Dark Theme": "الوضع الداكن",
-  "Depending on how you use smartware, we may collect account information, profile details, language preferences, and other data required to deliver core functionality and enhance the overall user experience.": "اعتمادًا على طريقة استخدامك لتطبيق smartware، قد نقوم بجمع معلومات الحساب، وبيانات الملف الشخصي، وتفضيلات اللغة، وبيانات أخرى مطلوبة لتقديم الوظائف الأساسية وتحسين تجربة المستخدم.",
-  "Didnt receive the email? ": 'لم تستلم البريد الإلكتروني؟ ',
+  "Depending on how you use smartware, we may collect account information, profile details, language preferences, and other data required to deliver core functionality and enhance the overall user experience.":
+      "اعتمادًا على طريقة استخدامك لتطبيق smartware، قد نقوم بجمع معلومات الحساب، وبيانات الملف الشخصي، وتفضيلات اللغة، وبيانات أخرى مطلوبة لتقديم الوظائف الأساسية وتحسين تجربة المستخدم.",
+  "Didnt receive the email? ": "لم تستلم البريد الإلكتروني؟ ",
   "Don't have an account?": "لا تملك حسابا؟",
 
   // E
   "Edit Profile": "تعديل الملف الشخصي",
   "Email": "البريد الإلكتروني",
-  "Email Address:": 'البريد الالكتروني:',
-  'Email Address / Phone number:': 'البريد الالكتروني/رقم الهاتف',
+  "Email Address:": "البريد الالكتروني:",
+  "Email Address / Phone number:": "البريد الالكتروني/رقم الهاتف",
   "Email Sent": "تم إرسال البريد الإلكتروني",
   "Email Updated": "تم تحديث البريد الإلكتروني",
   "Email verified successfully": "تم التحقق من البريد الإلكتروني بنجاح",
-  "Enable or disable app notifications": "تفعيل أو تعطيل إشعارات التطبيق",
+  "Enable or disable app notifications":
+      "تفعيل أو تعطيل إشعارات التطبيق",
   "English": "الإنجليزية",
-  'Enter Email or Phone number': 'ادخل البريد الالكتروني أو رقم الهاتف',
+  "Enter Email or Phone number": "ادخل البريد الالكتروني أو رقم الهاتف",
   "Enter your business email": "ادخل البريد الالكتروني الخاص بالعمل",
   "Enter your business name": "أدخل اسم النشاط التجاري",
-  "Enter your email": 'ادخل بريدك الالكتروني',
-  "Enter your email address": 'ادخل عنوان بريدك الإلكتروني',
-  "Enter your first name": 'ادخل اسمك الأول',
-  "Enter your last name": 'ادخل اسمك الأخير:',
-  "Enter your national ID": 'ادخل رقمك الوطني',
-  "Enter your new password": 'ادخل كلمة المرور الجديدة',
-  'Enter your password': 'ادخل كلمة المرور',
-  "Enter your phone number": 'ادخل رقم الهاتف الخاص بالعمل',
-  "Error": 'خطأ',
-  "Exit": 'الخروج',
-  "Exit signup?": 'الخروج من انشاء الحساب؟',
+  "Enter your email": "ادخل بريدك الالكتروني",
+  "Enter your email address": "ادخل عنوان بريدك الإلكتروني",
+  "Enter your first name": "ادخل اسمك الأول",
+  "Enter your last name": "ادخل اسمك الأخير:",
+  "Enter your national ID": "ادخل رقمك الوطني",
+  "Enter your new password": "ادخل كلمة المرور الجديدة",
+  "Enter your password": "ادخل كلمة المرور",
+  "Enter your phone number": "ادخل رقم الهاتف الخاص بالعمل",
+  "Error": "خطأ",
+  "Exit": "الخروج",
+  "Exit signup?": "الخروج من انشاء الحساب؟",
 
   // F
   "Fast Logistics": "لوجستيات سريعة",
   "Failed to alter account password": "فشل في تغيير كلمة مرور الحساب",
   "Failed to change email": "فشل في تغيير البريد الإلكتروني",
   "Failed to resend email": "فشل في إعادة إرسال البريد الإلكتروني",
-  "Failed to send password reset email": "فشل في إرسال رسالة إعادة تعيين كلمة المرور",
-  "First Name:": 'الاسم الأول:',
-  "For complete details about our privacy practices, data handling, and your rights, please visit our official website.": "للاطلاع على التفاصيل الكاملة حول ممارسات الخصوصية ومعالجة البيانات وحقوقك، يرجى زيارة موقعنا الرسمي.",
-  'Forgot Password?': 'هل نسيت كلمة المرور؟',
-  "Forgot Password": 'نسيت كلمة المرور',
+  "Failed to send password reset email":
+      "فشل في إرسال رسالة إعادة تعيين كلمة المرور",
+  "First Name:": "الاسم الأول:",
+  "For complete details about our privacy practices, data handling, and your rights, please visit our official website.":
+      "للاطلاع على التفاصيل الكاملة حول ممارسات الخصوصية ومعالجة البيانات وحقوقك، يرجى زيارة موقعنا الرسمي.",
+  "Forgot Password?": "هل نسيت كلمة المرور؟",
+  "Forgot Password": "نسيت كلمة المرور",
 
   // G
 
@@ -89,11 +99,11 @@ const Map<String, String> ar = {
   "I have verified": "لقد قمت بالتحقق",
   "Information We Collect": "المعلومات التي نجمعها",
   "Invalid Code": "رمز غير صالح",
-  "Invalid Data": 'البيانات خاطئة',
+  "Invalid Data": "البيانات خاطئة",
   "Invalid Email": "بريد إلكتروني غير صالح",
-  "Invalid Input": 'ادخال غير صالح',
-  'Invalid number': 'رقم غير صالح',
-  'Invalid price': 'سعر غير صالح',
+  "Invalid Input": "ادخال غير صالح",
+  "Invalid number": "رقم غير صالح",
+  "Invalid price": "سعر غير صالح",
   "Invalid response from server": "استجابة غير صالحة من الخادم",
 
   // J
@@ -106,54 +116,68 @@ const Map<String, String> ar = {
   "Learn More": "المزيد",
   "Learn more about smartware": "تعرّف أكثر على smartware",
   "Live Analytics": "تحليلات مباشرة",
-  'Login': 'تسجيل الدخول',
-  "Link validation or reset request failed": "فشل التحقق من الرابط أو طلب إعادة تعيين كلمة المرور",
+  "Login": "تسجيل الدخول",
+  "Link validation or reset request failed":
+      "فشل التحقق من الرابط أو طلب إعادة تعيين كلمة المرور",
   "Login failed": "فشل تسجيل الدخول",
 
   // M
-  "Manage warehouses, storage, and incoming orders ": "إدارة المستودعات والتخزين والطلبات الواردة",
+  "Manage warehouses, storage, and incoming orders ":
+      "إدارة المستودعات والتخزين والطلبات الواردة",
 
   // N
-  "Name must be at least 2 characters": "يجب أن يكون الاسم على الأقل 2 أحرف",
+  "Name must be at least 2 characters":
+      "يجب أن يكون الاسم على الأقل 2 أحرف",
   "National ID:": "الرقم الوطني:",
-  'National ID must be exactly 10 digits': 'يجب أن يكون الرقم الوطني مكونًا من 10 أرقام بالضبط',
+  "National ID must be exactly 10 digits":
+      "يجب أن يكون الرقم الوطني مكونًا من 10 أرقام بالضبط",
   "New Email Address": "عنوان البريد الإلكتروني الجديد",
   "New Password": "كلمة مرور جديدة",
   "Notifications": "الإشعارات",
 
   // O
-  'Only letters are allowed': 'يسمح فقط بالحروف',
+  "Only letters are allowed": "يسمح فقط بالحروف",
   "Optimize shipping routes automatically.": "تحسين مسارات الشحن تلقائيًا.",
   "Order products from warehouses": "اطلب المنتجات من المستودعات",
   "Orders": "الطلبات",
 
   // P
-  'Password:': 'كلمة المرور',
+  "Password:": "كلمة المرور",
   "Password changed successfully!": "تم تغيير كلمة المرور بنجاح!",
-  'Password must be at least 8 characters long': 'كلمة المرور يجب ألا تقل عن 8 محارف',
-  'Passwords do not match': 'كلمات المرور غير متطابقة',
+  "Password must be at least 8 characters long":
+      "كلمة المرور يجب ألا تقل عن 8 محارف",
+  "Passwords do not match": "كلمات المرور غير متطابقة",
   "Please check your inputs": "الرجاء مراجعة مدخلاتك",
-  "Please check your spam folder if you can't find it.": 'يرجى التحقق من مجلد الرسائل غير المرغوب فيها إذا لم تتمكن من العثور عليه.',
-  'Please check the code sent to your email.': 'يرجى التحقق من الرمز المرسل إلى بريدك الإلكتروني.',
+  "Please check your spam folder if you can't find it.":
+      "يرجى التحقق من مجلد الرسائل غير المرغوب فيها إذا لم تتمكن من العثور عليه.",
+  "Please check the code sent to your email.":
+      "يرجى التحقق من الرمز المرسل إلى بريدك الإلكتروني.",
   "Please choose a valid account type": "يرجى اختيار نوع حساب صالح",
   "Please choose an account type": "يرجى اختيار نوع الحساب",
-  'Please confirm your password': 'يرجى تأكيد كلمة المرور',
-  "Please correct the errors in the form.": 'يرجى اصلاح الاخطاء في الادخالات',
-  "Please ensure your password meets the requirements and both fields match.": 'يرجى التأكد من أن كلمة المرور تلبي المتطلبات وأن كلا الحقلين متطابقين.',
-  "Please enter the 4-digit code sent to your email.": "يرجى إدخال الرمز المكون من 4 أرقام المرسل إلى بريدك الإلكتروني.",
-  "Please enter the complete code": 'يرجى إدخال الرمز الكامل',
-  "Please enter the Email associated with your account.": 'يرجى ادخال البريد الالكتروني المرتبط بحسابك.',
-  'Please enter the verification code': 'يرجى إدخال رمز التحقق',
-  'Please Enter a valid Email address': 'يرجى إدخال بريد إلكتروني صالح',
-  'Please Enter Email or Phone number': 'يرجى إدخال البريد الإلكتروني أو رقم الهاتف',
-  'Please Enter Phone Number': 'يرجى إدخال رقم الهاتف',
-  'Please Enter The Password': 'يرجى ادخال كلمة المرور',
-  'Please Enter your Email': 'يرجى ادخال البريد الالكتروني',
-  'Please Enter your phone number': 'يرجى ادخال رقم الهاتف',
-  'Please Enter Your Name': 'يرجى ادخال الاسم',
-  'Please upload your ID photo': 'يرجى ادخال صورة الهوية ',
-  'Phone number must contain only digits': 'رقم الهاتف يجب أن يحتوي على أرقام فقط',
-  'Phone number must start with 09': 'يجب أن يبدأ الرقم ب 09',
+  "Please confirm your password": "يرجى تأكيد كلمة المرور",
+  "Please correct the errors in the form.":
+      "يرجى اصلاح الاخطاء في الادخالات",
+  "Please ensure your password meets the requirements and both fields match.":
+      "يرجى التأكد من أن كلمة المرور تلبي المتطلبات وأن كلا الحقلين متطابقين.",
+  "Please enter the 4-digit code sent to your email.":
+      "يرجى إدخال الرمز المكون من 4 أرقام المرسل إلى بريدك الإلكتروني.",
+  "Please enter the complete code": "يرجى إدخال الرمز الكامل",
+  "Please enter the Email associated with your account.":
+      "يرجى ادخال البريد الالكتروني المرتبط بحسابك.",
+  "Please enter the verification code": "يرجى إدخال رمز التحقق",
+  "Please Enter a valid Email address":
+      "يرجى إدخال بريد إلكتروني صالح",
+  "Please Enter Email or Phone number":
+      "يرجى إدخال البريد الإلكتروني أو رقم الهاتف",
+  "Please Enter Phone Number": "يرجى إدخال رقم الهاتف",
+  "Please Enter The Password": "يرجى ادخال كلمة المرور",
+  "Please Enter your Email": "يرجى ادخال البريد الالكتروني",
+  "Please Enter your phone number": "يرجى ادخال رقم الهاتف",
+  "Please Enter Your Name": "يرجى ادخال الاسم",
+  "Please upload your ID photo": "يرجى ادخال صورة الهوية ",
+  "Phone number must contain only digits":
+      "رقم الهاتف يجب أن يحتوي على أرقام فقط",
+  "Phone number must start with 09": "يجب أن يبدأ الرقم ب 09",
   "Privacy Policy": "سياسة الخصوصية",
   "Profile": "حسابي",
 
@@ -164,13 +188,12 @@ const Map<String, String> ar = {
   "Read the Full Privacy Policy": "قراءة سياسة الخصوصية الكاملة",
   "Registration Error.": "خطأ في التسجيل",
   "Remove Photo": "إزالة الصورة",
-  'Required': 'مطلوب',
+  "Required": "مطلوب",
   "Resend Code": "إعادة إرسال الرمز",
   "resend_email_in": "إعادة إرسال البريد خلال @seconds ثانية",
   "Reset Password": "إعادة تعيين كلمة المرور",
   "Review our privacy practices": "اطلع على ممارسات الخصوصية الخاصة بنا",
   "Registration failed": "فشل إنشاء الحساب",
-
 
   // S
   "Search for products": "ابحث عن المنتجات",
@@ -181,252 +204,276 @@ const Map<String, String> ar = {
   "Send Email": "إرسال البريد الإلكتروني",
   "Send us an email": "أرسل لنا بريدًا إلكترونيًا",
   "Settings": "الإعدادات",
-  'Sign Up': 'إنشاء حساب',
+  "Sign Up": "إنشاء حساب",
   "Smart Inventory": "المخزون الذكي",
-  "smartware helps businesses manage inventory and warehouse operations with a fast, secure and simple experience.": "تساعد smartware الشركات على إدارة المخزون وعمليات المستودعات بطريقة سريعة وآمنة وبسيطة.",
+  "smartware helps businesses manage inventory and warehouse operations with a fast, secure and simple experience.":
+      "تساعد smartware الشركات على إدارة المخزون وعمليات المستودعات بطريقة سريعة وآمنة وبسيطة.",
   "Something went wrong": "حدث خطأ ما",
   "Special Sales": "عروض خاصة",
   "Success": "نجاح",
   "Support": "الدعم",
 
   // T
-  'terms': 'بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية.',
-  "Tell us about yourself and your business": 'عرّفنا بك وبنشاطك التجاري',
+  "terms": "بالمتابعة، أنت توافق على الشروط وسياسة الخصوصية.",
+  "Tell us about yourself and your business":
+      "عرّفنا بك وبنشاطك التجاري",
   "Top Selling": "الأكثر مبيعاً",
-  "Track stock in real-time with zero effort.": "تتبع المخزون لحظيًا بدون أي مجهود.",
+  "Track stock in real-time with zero effort.":
+      "تتبع المخزون لحظيًا بدون أي مجهود.",
 
   // U
-  "Understand your warehouse like a living system.": "افهم مستودعك كنظام حي يتفاعل معك.",
-  "Unlock premium features": "أكمل ملفك الشخصي لفتح المزيد من الميزات",
+  "Understand your warehouse like a living system.":
+      "افهم مستودعك كنظام حي يتفاعل معك.",
+  "Unlock premium features":
+      "أكمل ملفك الشخصي لفتح المزيد من الميزات",
   "Update & Resend Code": "تحديث وإعادة إرسال الرمز",
   "User data not found": "لم يتم العثور على بيانات المستخدم",
 
-
   // V
   "Verification Failed": "فشل التحقق",
-  "Verification login failed": "فشل تسجيل الدخول بعد التحقق من البريد الإلكتروني",
-  "verification_code_sent": "لقد أرسلنا رمز التحقق إلى @email",
+  "Verification login failed":
+      "فشل تسجيل الدخول بعد التحقق من البريد الإلكتروني",
+  "verification_code_sent":
+      "لقد أرسلنا رمز التحقق إلى @email",
   "Verify your Email": "تحقق من بريدك الإلكتروني",
   "Version": "الإصدار",
   "View Photo": "عرض الصورة",
   "Visit Website": "زيارة الموقع الإلكتروني",
   "Visit our official website": "زر موقعنا الرسمي",
-'verification_link_sent': 'تم إرسال رابط التحقق إلى @email',
+  "verification_link_sent":
+      "تم إرسال رابط التحقق إلى @email",
+
   // W
   "Warehouse Owner": "صاحب مستودع",
   "Warehouse Staff": "موظف مستودع",
   "Website": "الموقع الإلكتروني",
-  "We will send a new verification code to this email address.": "سوف نرسل رمز تحقق جديد إلى هذا البريد الإلكتروني.",
-  "We will send you an email with instructions to reset your password.": "سوف نرسل لك بريدًا إلكترونيًا يحتوي على تعليمات لإعادة تعيين كلمة المرور الخاصة بك.",
-  "Welcome back, @userName!": "مرحبًا بعودتك يا @userName!", 
+  "We will send a new verification code to this email address.":
+      "سوف نرسل رمز تحقق جديد إلى هذا البريد الإلكتروني.",
+  "We will send you an email with instructions to reset your password.":
+      "سوف نرسل لك بريدًا إلكترونيًا يحتوي على تعليمات لإعادة تعيين كلمة المرور الخاصة بك.",
+  "Welcome back, @userName!": "مرحبًا بعودتك يا @userName!",
   "Welcome Back!": "مرحبًا بعودتك!",
   "WhatsApp": "واتساب",
-  "Wrong email? Change it here": "البريد الإلكتروني خاطئ؟ قم بتغييره هنا",
-
-  // X
+  "Wrong email? Change it here":
+      "البريد الإلكتروني خاطئ؟ قم بتغييره هنا",
 
   // Y
-  'You must be at least 18 years old': 'يجب أن يكون عمرك 18 عامًا على الأقل',
-  "Your account has been recovered successfully.": "تم استعادة حسابك بنجاح.",
-  "Your choice for a smart warehouse": "خيارك لمستودع ذكي",
-  "Your data protected with layered security.": "بياناتك محمية بطبقات أمان متعددة.",
-  "Your password has been reset successfully.": "تم إعادة تعيين كلمة المرور بنجاح.",
+  "You must be at least 18 years old":
+      "يجب أن يكون عمرك 18 عامًا على الأقل",
+  "Your account has been recovered successfully.":
+      "تم استعادة حسابك بنجاح.",
+  "Your choice for a smart warehouse":
+      "خيارك لمستودع ذكي",
+  "Your data protected with layered security.":
+      "بياناتك محمية بطبقات أمان متعددة.",
+  "Your password has been reset successfully.":
+      "تم إعادة تعيين كلمة المرور بنجاح.",
   "Your Privacy Matters": "خصوصيتك مهمة",
-  "Your profile is fully completed": "تم إكمال ملفك الشخصي بالكامل",
-  "Your progress will be lost if you leave now.": 'اذا غادرت الان البيانات التي ادخلتها سوف تضيع.',
+  "Your profile is fully completed":
+      "تم إكمال ملفك الشخصي بالكامل",
+  "Your progress will be lost if you leave now.":
+      "اذا غادرت الان البيانات التي ادخلتها سوف تضيع.",
 
-  // Z
+  // Orders / Cart
   "Your Invoices": "فواتيرك",
-"Total to Pay": "الإجمالي المطلوب دفعه",
-"Confirm & Place Order": "تأكيد وإتمام الطلب",
-"Subtotal": "المجموع الفرعي",
-"Discount Savings": "قيمة الخصم",
-"Shipping": "الشحن",
-"Tax (8%)": "الضريبة (8%)",
-"Invoice Total": "إجمالي الفاتورة",
-
+  "Total to Pay": "الإجمالي المطلوب دفعه",
+  "Confirm & Place Order": "تأكيد وإتمام الطلب",
+  "Subtotal": "المجموع الفرعي",
+  "Discount Savings": "قيمة الخصم",
+  "Shipping": "الشحن",
+  "Tax (8%)": "الضريبة (8%)",
+  "Invoice Total": "إجمالي الفاتورة",
   "My Cart": "سلة مشترياتي",
-"Your Cart is Empty": "سلة مشترياتك فارغة",
-"Looks like you haven't added any items to your inventory cart yet.":
-    "يبدو أنك لم تضف أي منتجات إلى سلة مشترياتك بعد.",
-"Explore Products": "استكشاف المنتجات",
-"Remove": "إزالة",
-"Subtotal:": "المجموع الفرعي:",
-"Discount Savings:": "قيمة الخصم:",
-"Estimated Total:": "الإجمالي التقديري:",
-"Proceed to Checkout": "المتابعة إلى الدفع",
+  "Your Cart is Empty": "سلة مشترياتك فارغة",
+  "Looks like you haven't added any items to your inventory cart yet.":
+      "يبدو أنك لم تضف أي منتجات إلى سلة مشترياتك بعد.",
+  "Explore Products": "استكشاف المنتجات",
+  "Remove": "إزالة",
+  "Subtotal:": "المجموع الفرعي:",
+  "Discount Savings:": "قيمة الخصم:",
+  "Estimated Total:": "الإجمالي التقديري:",
+  "Proceed to Checkout": "المتابعة إلى الدفع",
 
- 
-"Hello, @userName!": "مرحبًا، @userName!",
-
+  // Home
+  "Hello, @userName!": "مرحبًا، @userName!",
   "Filtering": "تصفية المنتجات",
-"Refine your product search": "قم بتضييق نطاق البحث عن المنتجات",
-"Reset": "إعادة تعيين",
-"Business Categories": "فئات الأعمال",
-"Unit": "الوحدة",
-"Price Range": "نطاق السعر",
-"to": "إلى",
-"Apply Filters": "تطبيق الفلاتر",
-
+  "Refine your product search":
+      "قم بتضييق نطاق البحث عن المنتجات",
+  "Reset": "إعادة تعيين",
+  "Business Categories": "فئات الأعمال",
+  "Unit": "الوحدة",
+  "Price Range": "نطاق السعر",
+  "to": "إلى",
+  "Apply Filters": "تطبيق الفلاتر",
   "SKU:": "رمز المنتج:",
-"Description": "الوصف",
-"Container": "العبوة",
-"Quantity": "الكمية",
-"Choose how much you need": "اختر الكمية التي تحتاجها",
-
+  "Description": "الوصف",
+  "Container": "العبوة",
+  "Quantity": "الكمية",
+  "Choose how much you need": "اختر الكمية التي تحتاجها",
   "Total": "الإجمالي",
-"Add to cart": "إضافة إلى السلة",
-"Choose warehouse": "اختر المستودع",
+  "Add to cart": "إضافة إلى السلة",
+  "Choose warehouse": "اختر المستودع",
 
+  // Client Orders
   "My Orders": "طلباتي",
-"Pending": "قيد الانتظار",
-"Accepted": "مقبولة",
-"Previous": "السابقة",
-"No orders found": "لم يتم العثور على طلبات",
-"items": "عناصر",
-"Warehouse": "المستودع",
-"Waiting Approval": "بانتظار الموافقة",
-"Approved": "تمت الموافقة",
-"Delivered": "تم التوصيل",
-"Rejected": "مرفوض",
-"Cancelled": "ملغى",
+  "Pending": "قيد الانتظار",
+  "Accepted": "مقبولة",
+  "Previous": "السابقة",
+  "No orders found": "لم يتم العثور على طلبات",
+  "items": "عناصر",
+  "Warehouse": "المستودع",
+  "Waiting Approval": "بانتظار الموافقة",
+  "Approved": "تمت الموافقة",
+  "Delivered": "تم التوصيل",
+  "Rejected": "مرفوض",
+  "Cancelled": "ملغى",
 
+  // Profile
   "Complete Profile": "إكمال الملف الشخصي",
+  "Delete Account": "حذف الحساب",
+  "Delete your account permanently": "حذف حسابك نهائيًا",
+  "Are you sure you want to delete your account? This action is permanent and your account will be deleted forever.":
+      "هل أنت متأكد من رغبتك في حذف حسابك؟ هذا الإجراء نهائي وسيتم حذف حسابك بشكل دائم.",
+  "Delete Forever": "حذف نهائيًا",
 
-  
-"Delete Account": "حذف الحساب",
-"Delete your account permanently":
-    "حذف حسابك نهائيًا",
-"Are you sure you want to delete your account? This action is permanent and your account will be deleted forever.":
-    "هل أنت متأكد من رغبتك في حذف حسابك؟ هذا الإجراء نهائي وسيتم حذف حسابك بشكل دائم.",
-"Delete Forever": "حذف نهائيًا",
-'Your Warehouses': 'مستودعاتك',
-'Select a warehouse to view its performance.':
-    'اختر مستودعًا لعرض أدائه.',
-'Add New Facility': 'إضافة منشأة جديدة',
-'No warehouses yet': 'لا توجد مستودعات بعد',
-'Create a warehouse to start viewing analytics.':
-    'أنشئ مستودعًا لبدء عرض التحليلات.',
-  // Analytics
-'Your Warehouses' : 'مستودعاتك',
-'Select a warehouse to view its performance.' : 'اختر مستودعًا لعرض أدائه.',
-'Add New Facility' : 'إضافة منشأة جديدة',
-'No warehouses yet' : 'لا توجد مستودعات بعد',
-'Create a warehouse to start viewing analytics.' : 'أنشئ مستودعًا لبدء عرض التحليلات.',
+  // Analytics - Navigation
+  "Your Warehouses": "مستودعاتك",
+  "Select a warehouse to view its performance.":
+      "اختر مستودعًا لعرض أدائه.",
+  "Add New Facility": "إضافة منشأة جديدة",
+  "No warehouses yet": "لا توجد مستودعات بعد",
+  "Create a warehouse to start viewing analytics.":
+      "أنشئ مستودعًا لبدء عرض التحليلات.",
 
-// Warehouse Analytics
-'Warehouse analytics' : 'تحليلات المستودع',
-'Overview' : 'نظرة عامة',
-'Current warehouse performance' : 'الأداء الحالي للمستودع',
+  // Warehouse Analytics
+  "Warehouse analytics": "تحليلات المستودع",
+  "Overview": "نظرة عامة",
+  "Current warehouse performance":
+      "الأداء الحالي للمستودع",
 
-// Products
-'Top moving products' : 'المنتجات الأكثر حركة',
-'Products with the highest outgoing movement' : 'المنتجات ذات أعلى حركة صادرة',
-'View top moving products' : 'عرض المنتجات الأكثر حركة',
+  // Products
+  "Top moving products": "المنتجات الأكثر حركة",
+  "Products with the highest outgoing movement":
+      "المنتجات ذات أعلى حركة صادرة",
+  "View top moving products": "عرض المنتجات الأكثر حركة",
+  "Slow moving products": "المنتجات بطيئة الحركة",
+  "Products with little or no outgoing movement":
+      "المنتجات ذات الحركة الصادرة القليلة أو المعدومة",
+  "View slow moving products": "عرض المنتجات بطيئة الحركة",
 
-'Slow moving products' : 'المنتجات بطيئة الحركة',
-'Products with little or no outgoing movement' : 'المنتجات ذات الحركة الصادرة القليلة أو المعدومة',
-'View slow moving products' : 'عرض المنتجات بطيئة الحركة',
+  // Stock
+  "Out of stock risk": "خطر نفاد المخزون",
+  "Products with 10 units or less":
+      "المنتجات التي تحتوي على 10 وحدات أو أقل",
+  "No products are currently at risk":
+      "لا توجد منتجات معرضة للخطر حاليًا",
+  "View out of stock risk products":
+      "عرض المنتجات المعرضة لخطر نفاد المخزون",
 
-// Stock
-'Out of stock risk' : 'خطر نفاد المخزون',
-'Products with 10 units or less' : 'المنتجات التي تحتوي على 10 وحدات أو أقل',
-'No products are currently at risk' : 'لا توجد منتجات معرضة للخطر حاليًا',
-'View out of stock risk products' : 'عرض المنتجات المعرضة لخطر نفاد المخزون',
+  // Charts
+  "No outgoing movement data":
+      "لا توجد بيانات عن الحركة الصادرة",
+  "No slow movement data":
+      "لا توجد بيانات عن المنتجات بطيئة الحركة",
+  "No products at risk":
+      "لا توجد منتجات معرضة للخطر",
+  "Units sold": "الوحدات المباعة",
+  "Sold": "المباع",
+  "Stock": "المخزون",
+  "Top moving product": "المنتج الأكثر حركة",
+  "No data": "لا توجد بيانات",
+  "No risk": "لا يوجد خطر",
 
-// Charts
-'No outgoing movement data' : 'لا توجد بيانات عن الحركة الصادرة',
-'No slow movement data' : 'لا توجد بيانات عن المنتجات بطيئة الحركة',
-'No products at risk' : 'لا توجد منتجات معرضة للخطر',
+  // Bottom sheets
+  "No products": "لا توجد منتجات",
+  "There are no products to display.":
+      "لا توجد منتجات لعرضها.",
 
-'Units sold' : 'الوحدات المباعة',
-'Units sold' : 'الوحدات المباعة',
-'Sold' : 'المباع',
-'Stock' : 'المخزون',
+  // Product information
+  "SKU": "رمز المنتج",
+  "sold": "مباع",
+  "in stock": "في المخزون",
+  "Unnamed product": "منتج غير مسمى",
 
-// Bottom sheets
-'No products' : 'لا توجد منتجات',
-'There are no products to display.' : 'لا توجد منتجات لعرضها.',
+  // Inventory Trends
+  "no_inventory_trend_data": "لا توجد بيانات لاتجاه المخزون",
+  "inventory_trend_no_data_subtitle":
+      "لا توجد بيانات مخزون كافية لعرض الاتجاه.",
+  "products": "المنتجات",
+  "no_stock_movement_data": "لا توجد بيانات لحركة المخزون",
+  "stock_movement_no_data_subtitle":
+      "لا توجد بيانات لحركة المخزون لعرضها.",
+  "product_fallback": "المنتج @id",
+  "outgoing": "الصادر",
+  "no_category_data": "لا توجد بيانات للفئات",
+  "category_no_data_subtitle":
+      "لا توجد معلومات عن الفئات لعرضها.",
+  "unknown": "غير معروف",
+  "no_product_movement_data":
+      "لا توجد بيانات لحركة المنتجات",
+  "product_movement_no_data_subtitle":
+      "لا توجد بيانات لحركة المنتجات لعرضها.",
 
-'Products with the highest outgoing movement' : 'المنتجات ذات أعلى حركة صادرة',
-'Products with little or no outgoing movement' : 'المنتجات ذات الحركة الصادرة القليلة أو المعدومة',
-'Products with 10 units or less' : 'المنتجات التي تحتوي على 10 وحدات أو أقل',
+  // Inventory Status
+  "low_stock": "مخزون منخفض",
+  "pending_orders": "الطلبات المعلقة",
+  "products_need_attention": "منتجات تحتاج إلى انتباه",
+  "stock_needs_attention": "المخزون يحتاج إلى انتباه",
+  "low_stock_description":
+      "هذه المنتجات تحتوي حاليًا على 10 وحدات أو أقل في هذا المستودع.",
+  "units_left": "متبقي @count @unit",
+  "all_stock_levels_good": "جميع مستويات المخزون جيدة",
+  "no_products_need_attention":
+      "لا توجد منتجات تحتاج إلى انتباه حاليًا.",
+  "status": "الحالة",
+  "location_not_available": "الموقع غير متوفر",
 
-// Product information
-'SKU' : 'رمز المنتج',
-'sold' : 'مباع',
-'in stock' : 'في المخزون',
-'Unnamed product' : 'منتج غير مسمى',
+  // Owner Home
+  "quick_access": "الوصول السريع",
+  "your_warehouses": "مستودعاتك",
+  "view_all": "عرض الكل",
+  "inventory_status": "حالة المخزون",
+  "see_products": "عرض المنتجات",
 
-// Navigation
-'See All' : 'عرض الكل',
-  'Overview': 'نظرة عامة',
-'Current warehouse performance': 'أداء المستودع الحالي',
-'Top moving products': 'المنتجات الأكثر حركة',
-'Products with the highest outgoing movement':
-    'المنتجات ذات أعلى حركة صادرة',
-'View top moving products': 'عرض المنتجات الأكثر حركة',
-'Slow moving products': 'المنتجات بطيئة الحركة',
-'Products with little or no outgoing movement':
-    'المنتجات ذات الحركة الصادرة القليلة أو المعدومة',
-'View slow moving products': 'عرض المنتجات بطيئة الحركة',
-'Out of stock risk': 'خطر نفاد المخزون',
-'Products with 10 units or less':
-    'المنتجات التي تحتوي على 10 وحدات أو أقل',
-'No products are currently at risk':
-    'لا توجد منتجات معرضة للخطر حاليًا',
-'View out of stock risk products':
-    'عرض المنتجات المعرضة لخطر نفاد المخزون',
-'Warehouse analytics': 'تحليلات المستودع',
-'No outgoing movement data':
-    'لا توجد بيانات عن الحركة الصادرة',
-'Top moving product': 'المنتج الأكثر حركة',
-'Units sold': 'الوحدات المباعة',
-'Sold': 'المباع',
-'No slow movement data':
-    'لا توجد بيانات عن الحركة البطيئة',
-'No products at risk':
-    'لا توجد منتجات معرضة للخطر',
-'Stock': 'المخزون',
-'No data': 'لا توجد بيانات',
-'No risk': 'لا يوجد خطر',
-'No products': 'لا توجد منتجات',
-'There are no products to display.':
-    'لا توجد منتجات لعرضها.',
-'SKU': 'رمز المنتج',
-'sold': 'مباع',
-'in stock': 'في المخزون',
-  
-  'no_inventory_trend_data': 'لا توجد بيانات لاتجاه المخزون',
-  'inventory_trend_no_data_subtitle':
-      'لا توجد بيانات مخزون كافية لعرض الاتجاه.',
-  'products': 'المنتجات',
-  'no_stock_movement_data': 'لا توجد بيانات لحركة المخزون',
-  'stock_movement_no_data_subtitle':
-      'لا توجد بيانات لحركة المخزون لعرضها.',
-  'product_fallback': 'المنتج @id',
-  'outgoing': 'الصادر',
-  'no_category_data': 'لا توجد بيانات للفئات',
-  'category_no_data_subtitle':
-      'لا توجد معلومات عن الفئات لعرضها.',
-  'unknown': 'غير معروف',
-  'no_product_movement_data': 'لا توجد بيانات لحركة المنتجات',
-  'product_movement_no_data_subtitle':
-      'لا توجد بيانات لحركة المنتجات لعرضها.',
-  'sold': 'المباع',
-'products': 'المنتجات',
-  'low_stock': 'مخزون منخفض',
-  'pending_orders': 'الطلبات المعلقة',
-    'low_stock': 'مخزون منخفض',
-  'products_need_attention': 'منتجات تحتاج إلى انتباه',
-  'stock_needs_attention': 'المخزون يحتاج إلى انتباه',
-  'low_stock_description':
-      'هذه المنتجات تحتوي حاليًا على 10 وحدات أو أقل في هذا المستودع.',
-  'units_left': 'متبقي @count @unit',
-  'all_stock_levels_good': 'جميع مستويات المخزون جيدة',
-  'no_products_need_attention': 'لا توجد منتجات تحتاج إلى انتباه حاليًا.',
-   'products': 'المنتجات',
-  'low_stock': 'مخزون منخفض',
-  'status': 'الحالة',
-  'location_not_available': 'الموقع غير متوفر',
+  "manage_warehouse_operations":
+      "إدارة عمليات المستودع الخاص بك.",
+  "current_warehouse": "المستودع الحالي",
+  "select_warehouse": "اختر مستودعاً",
+
+  "smartware": "سمارت وير",
+  "warehouse_overview": "نظرة عامة\nعلى المستودع.",
+  "warehouses": "المستودعات",
+
+  "low_stock_items_need_attention":
+      "يوجد @count عنصر يحتاج إلى انتباه",
+  "inventory_is_looking_healthy":
+      "المخزون بحالة جيدة",
+
+  "add_product": "إضافة منتج",
+  "inventory": "المخزون",
+  "add_worker": "إضافة عامل",
+  "team": "الفريق",
+  "requests": "الطلبات",
+
+  "location_unavailable": "الموقع غير متوفر",
+  "products_count": "@count منتج",
+
+  "no_warehouses_yet": "لا توجد مستودعات بعد",
+  "create_first_facility":
+      "أنشئ منشأتك الأولى للبدء بإدارة المستودع.",
+  "add_facility": "إضافة منشأة",
+
+  "inventory_needs_attention":
+      "المخزون يحتاج إلى انتباه",
+  "inventory_looks_healthy":
+      "المخزون بحالة جيدة",
+  "products_have_stock_risk":
+      "يوجد @count منتج لديه خطر نفاد المخزون.",
+  "no_stock_out_risks":
+      "لم يتم اكتشاف مخاطر نفاد المخزون.",
+
+  "add_another_facility":
+      "إضافة منشأة أخرى",
+  "expand_warehouse_space":
+      "قم بتوسيع مساحة المستودع الخاص بك.",
 };
