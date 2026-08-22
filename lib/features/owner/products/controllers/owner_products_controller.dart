@@ -16,7 +16,8 @@ class OwnerProductsController extends GetxController {
   // STATE
   // ============================================================
 
-  final RxList<OwnerInventoryModel> products = <OwnerInventoryModel>[].obs;
+  final RxList<OwnerInventoryModel> products =
+      <OwnerInventoryModel>[].obs;
 
   final RxString searchQuery = ''.obs;
 
@@ -31,7 +32,8 @@ class OwnerProductsController extends GetxController {
   // ============================================================
 
   List<OwnerInventoryModel> get filteredProducts {
-    final query = searchQuery.value.trim().toLowerCase();
+    final query =
+        searchQuery.value.trim().toLowerCase();
 
     return products.where((inventory) {
       final product = inventory.product;
@@ -42,7 +44,8 @@ class OwnerProductsController extends GetxController {
           product.nameAr.toLowerCase().contains(query) ||
           product.sku.toLowerCase().contains(query);
 
-      final matchesCategory = selectedCategory.value == 'All';
+      final matchesCategory =
+          selectedCategory.value == 'All';
 
       return matchesSearch && matchesCategory;
     }).toList();
@@ -66,12 +69,15 @@ class OwnerProductsController extends GetxController {
 
   int get lowStockCount {
     return products.where((inventory) {
-      return inventory.quantity > 0 && inventory.quantity < 25;
+      return inventory.quantity > 0 &&
+          inventory.quantity < 25;
     }).length;
   }
 
   int get outOfStockCount {
-    return products.where((inventory) => inventory.quantity <= 0).length;
+    return products
+        .where((inventory) => inventory.quantity <= 0)
+        .length;
   }
 
   // ============================================================
@@ -95,7 +101,8 @@ class OwnerProductsController extends GetxController {
   // ============================================================
 
   Future<void> loadFacilityId() async {
-    final savedFacilityId = await PrefHelper.getOwnerFacilityId();
+    final savedFacilityId =
+        await PrefHelper.getOwnerFacilityId();
 
     if (savedFacilityId == null) {
       print('❌ Owner facility ID not found');
@@ -106,7 +113,9 @@ class OwnerProductsController extends GetxController {
 
     facilityId.value = savedFacilityId;
 
-    print('🏢 Owner Facility ID: ${facilityId.value}');
+    print(
+      '🏢 Owner Facility ID: ${facilityId.value}',
+    );
   }
 
   // ============================================================
@@ -126,8 +135,8 @@ class OwnerProductsController extends GetxController {
         print('❌ Invalid owner facility ID');
 
         Get.snackbar(
-          'Error',
-          'Owner facility was not found',
+          'Error'.tr,
+          'Owner facility was not found'.tr,
           snackPosition: SnackPosition.BOTTOM,
         );
 
@@ -139,7 +148,8 @@ class OwnerProductsController extends GetxController {
         '${facilityId.value}...',
       );
 
-      final result = await _repo.getWarehouseInventory(
+      final result =
+          await _repo.getWarehouseInventory(
         facilityId: facilityId.value,
       );
 
@@ -147,7 +157,9 @@ class OwnerProductsController extends GetxController {
 
       print('');
       print('✅ PRODUCTS UPDATED');
-      print('📦 Total products: ${products.length}');
+      print(
+        '📦 Total products: ${products.length}',
+      );
 
       for (final inventory in products) {
         print(
@@ -157,18 +169,28 @@ class OwnerProductsController extends GetxController {
         );
       }
 
-      print('════════════════════════════════════');
+      print(
+        '════════════════════════════════════',
+      );
     } catch (e, stackTrace) {
       print('');
-      print('════════ FETCH PRODUCTS ERROR ════════');
+      print(
+        '════════ FETCH PRODUCTS ERROR ════════',
+      );
       print('❌ Error: $e');
-      print('❌ Type: ${e.runtimeType}');
-      print('❌ StackTrace: $stackTrace');
-      print('════════════════════════════════════');
+      print(
+        '❌ Type: ${e.runtimeType}',
+      );
+      print(
+        '❌ StackTrace: $stackTrace',
+      );
+      print(
+        '════════════════════════════════════',
+      );
 
       Get.snackbar(
-        'Error',
-        'Failed to load products',
+        'Error'.tr,
+        'Failed to load products'.tr,
         snackPosition: SnackPosition.BOTTOM,
       );
     } finally {
@@ -184,7 +206,10 @@ class OwnerProductsController extends GetxController {
     print('');
     print('➕ OPENING ADD PRODUCT VIEW');
 
-    final result = await Get.to<bool>(() => const AddProductView());
+    final result =
+        await Get.to<bool>(
+      () => const AddProductView(),
+    );
 
     print('');
     print('⬅️ RETURNED FROM ADD PRODUCT');
@@ -193,7 +218,9 @@ class OwnerProductsController extends GetxController {
     if (result == true) {
       print('');
       print('🔄 PRODUCT CREATED');
-      print('🔄 REFETCHING PRODUCTS NOW...');
+      print(
+        '🔄 REFETCHING PRODUCTS NOW...',
+      );
 
       await fetchProducts();
 
@@ -203,7 +230,9 @@ class OwnerProductsController extends GetxController {
         '| Products: ${products.length}',
       );
     } else {
-      print('⚠️ Add Product closed without creating a product');
+      print(
+        '⚠️ Add Product closed without creating a product',
+      );
     }
   }
 
@@ -211,118 +240,163 @@ class OwnerProductsController extends GetxController {
   // OPEN PRODUCT DETAILS
   // ============================================================
 
- // ============================================================
-// OPEN PRODUCT DETAILS
-// ============================================================
+  void openProduct(
+    OwnerInventoryModel inventory,
+  ) {
+    Get.bottomSheet(
+      ProductDetailsSheet(
+        inventory: inventory,
 
-void openProduct(OwnerInventoryModel inventory) {
-  Get.bottomSheet(
-    ProductDetailsSheet(
-      inventory: inventory,
+        onEdit: () {
+          editProduct(inventory);
+        },
 
-      onEdit: () {
-        editProduct(inventory);
-      },
+        onDelete: () {
+          deleteProduct(inventory);
+        },
+      ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      enableDrag: true,
+    );
+  }
 
-      onDelete: () {
-        deleteProduct(inventory);
-      },
-    ),
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    enableDrag: true,
-  );
-}
   // ============================================================
-// DELETE PRODUCT
-// ============================================================
+  // DELETE PRODUCT
+  // ============================================================
 
-Future<void> deleteProduct(OwnerInventoryModel inventory) async {
-  try {
-    final productId = inventory.product.id;
+  Future<void> deleteProduct(
+    OwnerInventoryModel inventory,
+  ) async {
+    try {
+      final productId =
+          inventory.product.id;
 
+      print('');
+      print(
+        '════════ DELETE PRODUCT ════════',
+      );
+      print(
+        '🗑 Product ID: $productId',
+      );
+
+      isLoading.value = true;
+
+      await _repo.deleteProduct(
+        productId: productId,
+      );
+
+      // Remove immediately from the local list
+      products.removeWhere(
+        (item) =>
+            item.product.id == productId,
+      );
+
+      // Close the product details sheet
+      if (Get.isBottomSheetOpen ?? false) {
+        Get.back();
+      }
+
+      Get.snackbar(
+        'Success'.tr,
+        'Product deleted successfully'.tr,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
+      print(
+        '✅ Product deleted successfully',
+      );
+      print(
+        '📦 Remaining products: ${products.length}',
+      );
+      print(
+        '════════════════════════════════',
+      );
+    } catch (e, stackTrace) {
+      print('');
+      print(
+        '════════ DELETE PRODUCT ERROR ════════',
+      );
+      print('❌ Error: $e');
+      print(
+        '❌ Type: ${e.runtimeType}',
+      );
+      print(
+        '❌ StackTrace: $stackTrace',
+      );
+      print(
+        '════════════════════════════════════',
+      );
+
+      Get.snackbar(
+        'Error'.tr,
+        e
+            .toString()
+            .replaceFirst(
+              'ApiError: ',
+              '',
+            ),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // ============================================================
+  // EDIT PRODUCT
+  // ============================================================
+
+  Future<void> editProduct(
+    OwnerInventoryModel inventory,
+  ) async {
     print('');
-    print('════════ DELETE PRODUCT ════════');
-    print('🗑 Product ID: $productId');
-
-    isLoading.value = true;
-
-    await _repo.deleteProduct(
-      productId: productId,
+    print(
+      '════════ OPEN EDIT PRODUCT ════════',
+    );
+    print(
+      '✏️ Product ID: ${inventory.product.id}',
+    );
+    print(
+      '════════════════════════════════',
     );
 
-    // Remove immediately from the local list
-    products.removeWhere(
-      (item) => item.product.id == productId,
-    );
-
-    // Close the product details sheet
+    // Close details sheet
     if (Get.isBottomSheetOpen ?? false) {
       Get.back();
     }
 
-    Get.snackbar(
-      'Success',
-      'Product deleted successfully',
-      snackPosition: SnackPosition.BOTTOM,
+    final result =
+        await Get.to<bool>(
+      () => EditProductView(
+        inventory: inventory,
+      ),
     );
 
-    print('✅ Product deleted successfully');
-    print('📦 Remaining products: ${products.length}');
-    print('════════════════════════════════');
-  } catch (e, stackTrace) {
     print('');
-    print('════════ DELETE PRODUCT ERROR ════════');
-    print('❌ Error: $e');
-    print('❌ Type: ${e.runtimeType}');
-    print('❌ StackTrace: $stackTrace');
-    print('════════════════════════════════════');
-
-    Get.snackbar(
-      'Error',
-      e.toString().replaceFirst('ApiError: ', ''),
-      snackPosition: SnackPosition.BOTTOM,
+    print(
+      '⬅️ RETURNED FROM EDIT PRODUCT',
     );
-  } finally {
-    isLoading.value = false;
+    print(
+      '📌 Result: $result',
+    );
+
+    if (result == true) {
+      print(
+        '🔄 PRODUCT UPDATED',
+      );
+      print(
+        '🔄 REFETCHING PRODUCTS...',
+      );
+
+      await fetchProducts();
+
+      print(
+        '✅ PRODUCT LIST REFRESHED',
+      );
+    }
   }
-}
-// ============================================================
-// EDIT PRODUCT
-// ============================================================
 
-Future<void> editProduct(
-  OwnerInventoryModel inventory,
-) async {
-  print('');
-  print('════════ OPEN EDIT PRODUCT ════════');
-  print('✏️ Product ID: ${inventory.product.id}');
-  print('════════════════════════════════');
-
-  // Close details sheet
-  if (Get.isBottomSheetOpen ?? false) {
-    Get.back();
-  }
-
-  final result = await Get.to<bool>(
-    () => EditProductView(
-      inventory: inventory,
-    ),
-  );
-
-  print('');
-  print('⬅️ RETURNED FROM EDIT PRODUCT');
-  print('📌 Result: $result');
-
-  if (result == true) {
-    print('🔄 PRODUCT UPDATED');
-    print('🔄 REFETCHING PRODUCTS...');
-
-    await fetchProducts();
-
-    print('✅ PRODUCT LIST REFRESHED');
-  }
-}
   // ============================================================
   // REFRESH
   // ============================================================
@@ -340,7 +414,9 @@ Future<void> editProduct(
     super.onInit();
 
     print('');
-    print('════════ OWNER PRODUCTS INIT ════════');
+    print(
+      '════════ OWNER PRODUCTS INIT ════════',
+    );
 
     fetchProducts();
   }
