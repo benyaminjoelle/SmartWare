@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'package:smartware/core/constants/client_products.dart';
 import 'package:smartware/core/network/api_error.dart';
@@ -14,7 +15,6 @@ import 'package:smartware/features/owner/profile/models/owner_onboarding_repo.da
 import 'package:smartware/features/owner/profile/models/owner_prefrences_model.dart';
 
 import 'package:smartware/features/client/profile/widgets/product_type_model.dart';
-
 import 'package:smartware/widgets/app_dialog.dart';
 
 class OwnerProfileComplitionController extends GetxController {
@@ -111,39 +111,24 @@ class OwnerProfileComplitionController extends GetxController {
 
   Future<void> restoreOnboardingProgress() async {
     try {
-      final completion =
-          await PrefHelper.getOwnerProfileCompletion();
-
-      final savedStep =
-          await PrefHelper.getOwnerOnboardingStep();
+      final completion = await PrefHelper.getOwnerProfileCompletion();
+      final savedStep = await PrefHelper.getOwnerOnboardingStep();
 
       final preferencesCompleted =
           await PrefHelper.isOwnerPreferencesCompleted();
 
-      final documentsCompleted =
-          await PrefHelper.areOwnerDocumentsCompleted();
-
-      final profileCompleted =
-          await PrefHelper.isOwnerProfileCompleted();
-
-      final savedBusinessName =
-          await PrefHelper.getOwnerBusinessName();
-
-      final savedProducts =
-          await PrefHelper.getOwnerSelectedProducts();
+      final documentsCompleted = await PrefHelper.areOwnerDocumentsCompleted();
+      final profileCompleted = await PrefHelper.isOwnerProfileCompleted();
+      final savedBusinessName = await PrefHelper.getOwnerBusinessName();
+      final savedProducts = await PrefHelper.getOwnerSelectedProducts();
 
       // ==========================================================
       // RESTORE DATA
       // ==========================================================
 
       businessName.value = savedBusinessName;
-
-      businessNameController.text =
-          savedBusinessName;
-
-      selectedProducts.assignAll(
-        savedProducts,
-      );
+      businessNameController.text = savedBusinessName;
+      selectedProducts.assignAll(savedProducts);
 
       // ==========================================================
       // RESTORE OWNER BUSINESS TYPE
@@ -171,10 +156,10 @@ class OwnerProfileComplitionController extends GetxController {
         profileCompletion.value = 25;
         currentStep.value = 1;
       } else {
-        profileCompletion.value =
-            completion >= 0 ? completion : 0;
-
-        currentStep.value = savedStep;
+        // profileCompletion.value = completion >= 0 ? completion : 0;
+        profileCompletion.value = 0;
+        currentStep.value = 0;
+        // currentStep.value = savedStep;
       }
 
       // ==========================================================
@@ -304,20 +289,14 @@ class OwnerProfileComplitionController extends GetxController {
     // ==========================================================
 
     if (currentStep.value == 3) {
-      final success =
-          await completeFinalStep();
-
-      if (!success) {
-        return;
-      }
-
       profileCompletion.value = 100;
 
       await PrefHelper.saveOwnerProfileCompletion(100);
+      await PrefHelper.setOwnerProfileCompleted(true);
 
       return;
     }
-  }
+    }
 
   // ============================================================
   // PREVIOUS STEP
@@ -961,65 +940,41 @@ class OwnerProfileComplitionController extends GetxController {
 
   final country = ''.obs;
 
-  Future<bool> completeFinalStep() async {
-    try {
-      if (address.value.trim().isEmpty) {
-        Get.snackbar(
-          'Missing Information',
-          'Please enter your address.',
-        );
+  // Future<bool> completeFinalStep() async {
+  //   try {
+  //     if (address.value.trim().isEmpty) {
+  //       Get.snackbar('Missing Information', 'Please enter your address.');
 
-        return false;
-      }
+  //       return false;
+  //     }
 
-      if (city.value.trim().isEmpty) {
-        Get.snackbar(
-          'Missing Information',
-          'Please enter your city.',
-        );
+  //     if (city.value.trim().isEmpty) {
+  //       Get.snackbar('Missing Information', 'Please enter your city.');
 
-        return false;
-      }
+  //       return false;
+  //     }
 
-      await PrefHelper.setOwnerProfileCompleted(
-        true,
-      );
+  //     await PrefHelper.setOwnerProfileCompleted(true);
+  //     await PrefHelper.saveOwnerProfileCompletion(100);
+  //     await PrefHelper.saveOwnerOnboardingStep(4);
 
-      await PrefHelper.saveOwnerProfileCompletion(
-        100,
-      );
+  //     profileCompletion.value = 100;
 
-      await PrefHelper.saveOwnerOnboardingStep(
-        3,
-      );
+  //     debugPrint('✅ Owner profile completed: 100%');
 
-      profileCompletion.value = 100;
+  //     return true;
+  //   } catch (e) {
+  //     debugPrint('❌ Owner final step failed: $e');
 
-      debugPrint(
-        '✅ Owner profile completed: 100%',
-      );
+  //     if (e is ApiError) {
+  //       Get.snackbar('Error', e.message);
+  //     } else {
+  //       Get.snackbar('Error', 'Failed to complete your profile.');
+  //     }
 
-      return true;
-    } catch (e) {
-      debugPrint(
-        '❌ Owner final step failed: $e',
-      );
-
-      if (e is ApiError) {
-        Get.snackbar(
-          'Error',
-          e.message,
-        );
-      } else {
-        Get.snackbar(
-          'Error',
-          'Failed to complete your profile.',
-        );
-      }
-
-      return false;
-    }
-  }
+  //     return false;
+  //   }
+  // }
 
   // ============================================================
   // DOCUMENT ACTIONS

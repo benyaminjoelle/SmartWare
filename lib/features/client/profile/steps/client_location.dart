@@ -456,8 +456,7 @@ class ClientLocation extends StatelessWidget {
               );
             }),
           ),
-        ),
-                    
+        ),                
       ]),
     );
   }

@@ -94,7 +94,6 @@ class OwnerProfileCompletionView extends StatelessWidget {
         return const OwnerFacilityInfo();
       case 2:
       return const OwnerDocumentation();
-      
       case 3:
           return  OwnerLocation();
       default:

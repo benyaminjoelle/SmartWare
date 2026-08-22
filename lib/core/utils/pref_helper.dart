@@ -613,10 +613,8 @@ class PrefHelper {
 
     print('💾 Owner Facility ID saved: $facilityId');
   }
-
   static Future<int?> getOwnerFacilityId() async {
     final prefs = await SharedPreferences.getInstance();
-
     return prefs.getInt(_ownerFacilityId);
   }
 

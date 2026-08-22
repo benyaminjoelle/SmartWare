@@ -50,8 +50,9 @@ class ProductsRepo {
       }
 
       final items = data['data'];
-
+      
       if (items is! List) {
+        print("items");
         throw ApiError(message: 'Invalid inventory list');
       }
 
