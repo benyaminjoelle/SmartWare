@@ -7,17 +7,27 @@ import 'package:smartware/features/warehouse/models/warehouse_product_model.dart
 import 'package:smartware/widgets/app_snackbar.dart';
 
 class ProductDetailsController extends GetxController {
-    final Product product;
+  final Product product;
 
   ProductDetailsController({
     required this.product,
   });
-  final WarehouseController warehouseController = Get.find<WarehouseController>();
-  final CartController cartController = Get.find<CartController>();
+
+  final WarehouseController warehouseController =
+      Get.find<WarehouseController>();
+
+  final CartController cartController =
+      Get.find<CartController>();
+
   final quantityController = TextEditingController();
+
   final quantity = 1.obs;
+
   final availableWarehouses = <WarehouseProductModel>[].obs;
-  final Rxn<WarehouseProductModel> selectedWarehouse = Rxn<WarehouseProductModel>();
+
+  final Rxn<WarehouseProductModel> selectedWarehouse =
+      Rxn<WarehouseProductModel>();
+
   final isCheckingAvailability = false.obs;
   final hasCheckedAvailability = false.obs;
   final isAddingToCart = false.obs;
@@ -25,34 +35,34 @@ class ProductDetailsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     quantityController.text = quantity.value.toString();
-
   }
 
- Future<void> checkWarehouseAvailability() async {
-  try {
-    isCheckingAvailability.value = true;
+  Future<void> checkWarehouseAvailability() async {
+    try {
+      isCheckingAvailability.value = true;
 
-    await warehouseController.loadWarehousesForProduct(product.id);
+      await warehouseController.loadWarehousesForProduct(product.id);
 
-    availableWarehouses.assignAll(
-      warehouseController
-          .getWarehousesForProduct(product.id)
-          .where((warehouse) => warehouse.quantity > 0),
-    );
+      availableWarehouses.assignAll(
+        warehouseController
+            .getWarehousesForProduct(product.id)
+            .where((warehouse) => warehouse.quantity > 0),
+      );
 
-    hasCheckedAvailability.value = true;
+      hasCheckedAvailability.value = true;
 
-    final selected = selectedWarehouse.value;
+      final selected = selectedWarehouse.value;
 
-    if (selected != null &&
-        selected.quantity < quantity.value) {
-      selectedWarehouse.value = null;
+      if (selected != null &&
+          selected.quantity < quantity.value) {
+        selectedWarehouse.value = null;
+      }
+    } finally {
+      isCheckingAvailability.value = false;
     }
-  } finally {
-    isCheckingAvailability.value = false;
   }
-}
 
   double get selectedPrice {
     return selectedWarehouse.value?.discountedPrice ?? 0.0;
@@ -62,89 +72,105 @@ class ProductDetailsController extends GetxController {
     return selectedPrice * quantity.value;
   }
 
- void increaseQuantity() {
-  quantity.value++;
-  quantityController.text = quantity.value.toString();
-}
+  void increaseQuantity() {
+    quantity.value++;
 
-void decreaseQuantity() {
-  if (quantity.value <= 1) return;
-
-  quantity.value--;
-  quantityController.text = quantity.value.toString();
-}
-
-void setQuantity(int value) {
-  if (value < 1) return;
-
-  quantity.value = value;
-  quantityController.text = value.toString();
-}
-
-void onQuantityChanged(String value) {
-  // Allow the field to temporarily be empty
-  // while the user is typing.
-  if (value.isEmpty) {
-    return;
+    quantityController.text =
+        quantity.value.toString();
   }
 
-  final parsed = int.tryParse(value);
+  void decreaseQuantity() {
+    if (quantity.value <= 1) return;
 
-  if (parsed == null || parsed < 1) {
-    // Restore the previous valid quantity.
-    quantityController.text = quantity.value.toString();
+    quantity.value--;
 
-    quantityController.selection = TextSelection.collapsed(
-      offset: quantityController.text.length,
-    );
-
-    return;
+    quantityController.text =
+        quantity.value.toString();
   }
 
-  quantity.value = parsed;
-}
-void onQuantitySubmitted() {
-  if (quantityController.text.isEmpty) {
-    quantity.value = 1;
-    quantityController.text = '1';
+  void setQuantity(int value) {
+    if (value < 1) return;
 
-    quantityController.selection = TextSelection.collapsed(
-      offset: quantityController.text.length,
-    );
+    quantity.value = value;
+
+    quantityController.text =
+        value.toString();
   }
-}
 
-  void selectWarehouse(WarehouseProductModel warehouse) {
-  if (warehouse.quantity <= 0) return;
+  void onQuantityChanged(String value) {
+    // Allow the field to temporarily be empty
+    // while the user is typing.
+    if (value.isEmpty) {
+      return;
+    }
 
-  if (selectedWarehouse.value?.warehouseId == warehouse.warehouseId) {
-    selectedWarehouse.value = null;
-  } else {
-    selectedWarehouse.value = warehouse;
+    final parsed = int.tryParse(value);
+
+    if (parsed == null || parsed < 1) {
+      // Restore the previous valid quantity.
+      quantityController.text =
+          quantity.value.toString();
+
+      quantityController.selection =
+          TextSelection.collapsed(
+        offset: quantityController.text.length,
+      );
+
+      return;
+    }
+
+    quantity.value = parsed;
   }
-}
+
+  void onQuantitySubmitted() {
+    if (quantityController.text.isEmpty) {
+      quantity.value = 1;
+
+      quantityController.text = '1';
+
+      quantityController.selection =
+          TextSelection.collapsed(
+        offset: quantityController.text.length,
+      );
+    }
+  }
+
+  void selectWarehouse(
+    WarehouseProductModel warehouse,
+  ) {
+    if (warehouse.quantity <= 0) return;
+
+    if (selectedWarehouse.value?.warehouseId ==
+        warehouse.warehouseId) {
+      selectedWarehouse.value = null;
+    } else {
+      selectedWarehouse.value = warehouse;
+    }
+  }
 
   Future<void> addToCart() async {
     final warehouse = selectedWarehouse.value;
 
     if (warehouse == null) {
       AppSnackbar.show(
-        title: 'Warehouse Required',
-        message: 'Please choose a warehouse first.',
+        title: 'Warehouse Required'.tr,
+        message: 'Please choose a warehouse first.'.tr,
         position: SnackPosition.TOP,
         duration: const Duration(seconds: 2),
       );
+
       return;
     }
 
     if (warehouse.quantity < quantity.value) {
       AppSnackbar.show(
-        title: 'Not Enough Stock',
+        title: 'Not Enough Stock'.tr,
         message:
-            'This warehouse does not have enough stock.',
+            'This warehouse does not have enough stock.'.tr,
         position: SnackPosition.TOP,
         duration: const Duration(seconds: 2),
       );
+
       return;
     }
 
@@ -161,9 +187,12 @@ void onQuantitySubmitted() {
       );
 
       AppSnackbar.show(
-        title: 'Added to Cart',
+        title: 'Added to Cart'.tr,
         message:
-            '${product.name} from ${warehouse.warehouseName} added to your cart.',
+            '@product from @warehouse added to your cart.'.trParams({
+          'product': product.name,
+          'warehouse': warehouse.warehouseName,
+        }),
         position: SnackPosition.TOP,
         duration: const Duration(seconds: 2),
       );
@@ -172,7 +201,6 @@ void onQuantitySubmitted() {
     }
   }
 
- 
   // void _resetWarehouseSelection() {
   //   hasCheckedAvailability.value = false;
   //   selectedWarehouse.value = null;
