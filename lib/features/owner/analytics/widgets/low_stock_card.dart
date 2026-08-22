@@ -8,7 +8,10 @@ import 'package:smartware/features/owner/analytics/models/warehouse_repo.dart';
 class LowStockCard extends StatelessWidget {
   final OwnerAnalyticsController controller;
 
-  const LowStockCard({super.key, required this.controller});
+  const LowStockCard({
+    super.key,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +19,6 @@ class LowStockCard extends StatelessWidget {
     final colors = theme.colorScheme;
 
     return Scaffold(
-    
-
       body: SafeArea(
         child: Obx(() {
           final products = controller.stockOutRiskProducts;
@@ -58,7 +59,7 @@ class LowStockCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Low stock',
+                              'low_stock'.tr,
                               style: theme.textTheme.titleLarge?.copyWith(
                                 color: colors.onSurface,
                                 fontWeight: FontWeight.w900,
@@ -69,7 +70,7 @@ class LowStockCard extends StatelessWidget {
                             const SizedBox(height: 4),
 
                             Text(
-                              'Products that need attention',
+                              'products_need_attention'.tr,
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: colors.onSurfaceVariant,
                               ),
@@ -111,7 +112,9 @@ class LowStockCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: colors.error.withOpacity(0.07),
                       borderRadius: BorderRadius.circular(17),
-                      border: Border.all(color: colors.error.withOpacity(0.14)),
+                      border: Border.all(
+                        color: colors.error.withOpacity(0.14),
+                      ),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,7 +140,7 @@ class LowStockCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Stock needs attention',
+                                'stock_needs_attention'.tr,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   color: colors.onSurface,
                                   fontWeight: FontWeight.w800,
@@ -147,7 +150,7 @@ class LowStockCard extends StatelessWidget {
                               const SizedBox(height: 4),
 
                               Text(
-                                'These products currently have 10 units or less in this warehouse.',
+                                'low_stock_description'.tr,
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: colors.onSurfaceVariant,
                                   height: 1.4,
@@ -174,14 +177,19 @@ class LowStockCard extends StatelessWidget {
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
                   sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final product = products[index];
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final product = products[index];
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: _LowStockProduct(product: product),
-                      );
-                    }, childCount: products.length),
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _LowStockProduct(
+                            product: product,
+                          ),
+                        );
+                      },
+                      childCount: products.length,
+                    ),
                   ),
                 ),
             ],
@@ -199,7 +207,9 @@ class LowStockCard extends StatelessWidget {
 class _LowStockProduct extends StatelessWidget {
   final StockOutRiskProduct product;
 
-  const _LowStockProduct({required this.product});
+  const _LowStockProduct({
+    required this.product,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +279,10 @@ class _LowStockProduct extends StatelessWidget {
                 const SizedBox(height: 5),
 
                 Text(
-                  '${product.warehouseQuantity} ${product.unit} left',
+                  'units_left'.trParams({
+                    'count': product.warehouseQuantity.toString(),
+                    'unit': product.unit,
+                  }),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
@@ -299,7 +312,10 @@ class _LowStockProduct extends StatelessWidget {
           // ------------------------------------------------------------
           // STOCK INDICATOR
           // ------------------------------------------------------------
-          _StockIndicator(currentStock: currentStock, dangerLevel: dangerLevel),
+          _StockIndicator(
+            currentStock: currentStock,
+            dangerLevel: dangerLevel,
+          ),
         ],
       ),
     );
@@ -405,7 +421,7 @@ class _NoLowStockProducts extends StatelessWidget {
             const SizedBox(height: 14),
 
             Text(
-              'All stock levels look good',
+              'all_stock_levels_good'.tr,
               textAlign: TextAlign.center,
               style: theme.textTheme.titleMedium?.copyWith(
                 color: colors.onSurface,
@@ -416,7 +432,7 @@ class _NoLowStockProducts extends StatelessWidget {
             const SizedBox(height: 6),
 
             Text(
-              'No products need attention right now.',
+              'no_products_need_attention'.tr,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: colors.onSurfaceVariant,
