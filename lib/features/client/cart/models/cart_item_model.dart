@@ -32,10 +32,8 @@ class CartItem {
 
   // Final amount for this cart item
   double get discountedTotal => discountedUnitPrice * quantity;
-
   // Total amount saved
   double get savings => (unitPrice - discountedUnitPrice) * quantity;
-
   String get cartKey => '${product.sku}|$warehouseId';
 
   Map<String, dynamic> toJson() {
@@ -49,15 +47,37 @@ class CartItem {
     };
   }
 
+  static Map<String, dynamic> _normalizeProductJson(
+  Map<String, dynamic> productJson,
+) {
+  final categories = productJson['categories'];
+
+  if (categories is List) {
+    productJson['categories'] = categories.map((category) {
+      if (category is String) {
+        return {'name': category};
+      }
+      return category;
+    }).toList();
+  }
+
+  return productJson;
+}
+
   //useful for restoring saved cart sessions
   factory CartItem.fromJson(Map<String, dynamic> json) {
-    return CartItem(
-      product: Product.fromJson(json['product']),
-      warehouseId: json['warehouseId'] as int,
-      warehouseName: json['warehouse_name'] as String? ?? '',
-      unitPrice: (json['unitPrice'] as num).toDouble(),
-      discountPercentage: (json['discount_percentage'] as num?)?.toDouble(),
-      quantity: json['quantity'] as int? ?? 1,
-    );
-  }
+  return CartItem(
+    product: Product.fromJson(
+  _normalizeProductJson(
+    Map<String, dynamic>.from(json['product']),
+  ),
+),
+    warehouseId: json['warehouseId'] as int,
+    warehouseName: json['warehouseName']?.toString() ?? '',
+    unitPrice: (json['unitPrice'] as num).toDouble(),
+    discountPercentage:
+        (json['discountPercentage'] as num?)?.toDouble(),
+    quantity: json['quantity'] as int? ?? 1,
+  );
+}
 }

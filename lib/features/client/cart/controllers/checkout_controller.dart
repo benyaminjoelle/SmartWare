@@ -1,11 +1,15 @@
 import 'package:get/get.dart';
 import 'package:smartware/core/network/api_service.dart';
+import 'package:smartware/core/routes/app_routes.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/features/client/cart/controllers/client_cart_controller.dart';
 import 'package:smartware/features/client/cart/models/cart_item_model.dart';
+import 'package:smartware/features/client/root/controller/root_controller.dart';
 import 'package:smartware/widgets/app_snackbar.dart';
 
 class CheckoutController extends GetxController {
+  final ApiService apiService = ApiService();
+
   final CartController cartController = Get.find<CartController>();
 
   final RxString selectedPaymentMethod = 'credit_card'.obs;
@@ -24,9 +28,10 @@ class CheckoutController extends GetxController {
 
 Future<void> loadProfileStatus() async {
   isProfileCompleted.value =
-      await PrefHelper.getProfileCompleted();
-}
+      await PrefHelper.isClientProfileCompleted();
 
+  print('🔍 CLIENT PROFILE COMPLETED: ${isProfileCompleted.value}');
+}
   // ============================================================
   // WAREHOUSE INVOICES
   // ============================================================
@@ -82,14 +87,15 @@ Future<void> loadProfileStatus() async {
   // ============================================================
 
   Future<void> placeOrder() async {
-    if (!isProfileCompleted.value) {
-  Get.snackbar(
-    "Complete Your Profile",
-    "Please complete your profile setup before placing an order.",
-  );
-  return;
-}
-   if (cartController.cartItems.isEmpty) {
+  if (!isProfileCompleted.value) {
+    Get.snackbar(
+      "Complete Your Profile",
+      "Please complete your profile setup before placing an order.",
+    );
+    return;
+  }
+
+  if (cartController.cartItems.isEmpty) {
     Get.snackbar(
       "Error",
       "Your cart is empty!",
@@ -108,41 +114,78 @@ Future<void> loadProfileStatus() async {
       };
     }).toList();
 
-    final body = {
-      "items": items,
-    };
+  print('========== CART ITEMS SENT ==========');
 
-    print("========== CREATE ORDER ==========");
-    print(body);
-    print("==================================");
+for (final item in cartController.cartItems.values) {
+  print(
+    'Product: ${item.product.id} | '
+    'Warehouse: ${item.warehouseId} | '
+    'Qty: ${item.quantity}',
+  );
+}
 
-    final response = await ApiService().post(
+print('Total cart items: ${cartController.cartItems.length}');
+print('====================================');
+
+    final response = await apiService.post(
       '/orders',
-      body,
+      {
+        "items": items,
+      },
     );
+   
 
     print("========== ORDER RESPONSE ==========");
-    print(response);
-    print("====================================");
 
-    if (response is Map && response['success'] == true) {
-      cartController.clearCart();
+final responseData = Map<String, dynamic>.from(response);
 
-      Get.offAllNamed('/order-success');
-    } else {
-      Get.snackbar(
-        "Order Failed",
-        response is Map
-            ? response['message'] ?? 'Failed to create order.'
-            : 'Failed to create order.',
+final orders = responseData['data'];
+
+print("Number of orders: ${orders is List ? orders.length : 'NOT A LIST'}");
+
+if (orders is List) {
+  for (final order in orders) {
+    print(
+      "ORDER ID: ${order['id']} | "
+      "WAREHOUSE: ${order['src_facility_id']} | "
+      "PRODUCTS: ${order['products']?.length}",
+    );
+
+    for (final product in order['products'] ?? []) {
+      print(
+        "  Product ${product['product_id']} "
+        "Qty: ${product['quantity']}",
       );
     }
-  } catch (e) {
-    print("❌ CREATE ORDER ERROR: $e");
+  }
+}
 
-    AppSnackbar.show(
-      title:"Order Failed",
-      message: e.toString(),
+print("====================================");
+
+    if (response is Map && response['success'] == true) {
+  await cartController.saveOrderHistory(
+    Map<String, dynamic>.from(response),
+  );
+
+  cartController.clearCart();
+
+Get.offAllNamed(AppRoutes.clientRoot);
+
+final rootController = Get.find<RootController>();
+rootController.openOrders();
+  AppSnackbar.show(title: 'Sucess', message: 'Your order was submited sucessfully');
+} else {
+  Get.snackbar(
+    "Order Failed",
+    response is Map
+        ? response['message']?.toString() ?? "Failed to place order"
+        : "Failed to place order",
+  );
+}
+  } catch (e) {
+    Get.snackbar(
+      "Order Failed",
+      e.toString(),
     );
   } finally {
     isLoading.value = false;

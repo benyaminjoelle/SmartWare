@@ -10,6 +10,7 @@ class ProductController extends GetxController {
 
   final RxList<Product> products = <Product>[].obs;
   final RxList<Product> displayedProducts = <Product>[].obs;
+  final RxBool isLoading = false.obs;
 
   final RxSet<String> selectedUnit = <String>{}.obs;
   final RxSet<String> selectedCategories = <String>{}.obs;
@@ -139,9 +140,41 @@ class ProductController extends GetxController {
       return null;
     }
   }
+  Future<void> refreshProducts() async {
+  try {
+    isLoading.value = true;
+
+    await loadProducts();
+
+    // Re-apply the currently selected filters/search
+    applyFilters();
+  } finally {
+    isLoading.value = false;
+  }
+}
 
   void applyFilters() {
     final query = searchQuery.value.trim().toLowerCase();
+    //  print('════════ FILTER DEBUG ════════');
+    // print('🏪 Business preferences: $businessCategories');
+    // print('📦 Total products: ${products.length}');
+
+  // for (final product in products) {
+  //   final matchesBusinessCategory =
+  //       businessCategories.isEmpty ||
+  //       product.categories.any(
+  //         (category) => businessCategories.contains(category),
+  //       );
+
+  //   print(
+  //     '📦 ${product.id} | '
+  //     '${product.nameEn} | '
+  //     'categories: ${product.categories} | '
+  //     'MATCH: $matchesBusinessCategory',
+  //   );
+  // }
+
+  // print('══════════════════════════════');
 
     final filtered = products.where((product) {
       final matchesBusinessCategory =
@@ -168,7 +201,7 @@ class ProductController extends GetxController {
                 selectedCategories.contains(category),
           );
 
-      final matchesPrice = product.inventories.any(
+      final matchesPrice =  product.inventories.any(
         (inventory) =>
             inventory.unitPrice >=
                 priceRange.value.start &&

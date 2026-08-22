@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:smartware/core/network/api_service.dart';
 
 enum OrderTab {
   pending,
@@ -26,7 +27,7 @@ enum BatchStatus {
 
 class OwnerOrdersController extends GetxController {
   final isLoading = false.obs;
-
+  final ApiService apiService = ApiService();
   final selectedTab = OrderTab.pending.obs;
 
   // ===========================================================================
@@ -79,20 +80,55 @@ class OwnerOrdersController extends GetxController {
   // LOAD ORDERS
   // ===========================================================================
 
-  Future<void> loadOrders() async {
-    try {
-      isLoading.value = true;
+Future<void> loadOrders() async {
+  try {
+    isLoading.value = true;
 
-      await Future.delayed(
-        const Duration(milliseconds: 700),
-      );
+    final response = await apiService.get('/orders/pending');
 
-      _loadDummyData();
-    } finally {
-      isLoading.value = false;
+    if (response is Map && response['success'] == true) {
+      final data = response['data'];
+
+      if (data is List) {
+        pendingOrders.assignAll(
+          data.map((e) => _clientOrderFromJson(e)),
+        );
+      }
     }
+  } catch (e) {
+    print('Failed to load pending orders: $e');
+  } finally {
+    isLoading.value = false;
   }
+}
 
+ClientOrderModel _clientOrderFromJson(Map<String, dynamic> json) {
+  final products = json['products'] is List
+      ? json['products'] as List
+      : [];
+
+  return ClientOrderModel(
+    id: json['id'].toString(),
+    orderNumber: '#ORD-${json['id']}',
+    clientName: json['user']?['name']?.toString() ?? 'Client',
+    clientLocation: '',
+    clientImageUrl: null,
+    createdAt: DateTime.tryParse(
+          json['created_at']?.toString() ?? '',
+        ) ??
+        DateTime.now(),
+    items: products.map((item) {
+      final product = item['product'];
+
+      return OrderItemModel(
+        productName: product?['name_en']?.toString() ?? 'Product',
+        quantity: item['quantity'] ?? 0,
+        unit: product?['unit']?.toString() ?? '',
+        imageUrl: null,
+      );
+    }).toList(),
+  );
+}
   Future<void> refreshOrders() async {
     await loadOrders();
   }
