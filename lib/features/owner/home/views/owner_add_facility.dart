@@ -8,8 +8,6 @@ import 'package:smartware/features/owner/profile/steps/owner_location.dart';
 import 'package:smartware/features/owner/profile/steps/owner_preferences.dart';
 import 'package:smartware/widgets/progressbar.dart';
 
-
-
 class OwnerAddFacility extends StatelessWidget {
   const OwnerAddFacility({super.key});
 
@@ -34,7 +32,9 @@ class OwnerAddFacility extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                   BackButton(onPressed: controller.handleBack,),
+                    BackButton(
+                      onPressed: controller.handleBack,
+                    ),
                     Text(
                       "Complete Profile",
                       style: theme.textTheme.titleMedium?.copyWith(
@@ -86,17 +86,22 @@ class OwnerAddFacility extends StatelessWidget {
   /// =========================================================
   /// STEP ROUTER
   /// =========================================================
-  Widget _buildStep(OwnerProfileComplitionController controller) {
+  Widget _buildStep(
+    OwnerProfileComplitionController controller,
+  ) {
     switch (controller.currentStep.value) {
       case 0:
-        return const OwnerPreferences(); 
-        case 1:
+        return const OwnerPreferences();
+
+      case 1:
         return const OwnerFacilityInfo();
+
       case 2:
-      return const OwnerDocumentation();
-      
+        return const OwnerDocumentation();
+
       case 3:
-          return  OwnerLocation();
+        return OwnerLocation();
+
       default:
         return const SizedBox();
     }
