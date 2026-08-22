@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:smartware/features/owner/analytics/models/warehouse_model.dart';
 
@@ -199,7 +200,7 @@ class _WarehouseStats extends StatelessWidget {
       children: [
         Expanded(
           child: MiniStat(
-            label: 'Products',
+            label: 'products'.tr,
             value: warehouse.productCount.toString(),
             icon: Icons.inventory_2_outlined,
           ),
@@ -209,7 +210,7 @@ class _WarehouseStats extends StatelessWidget {
 
         Expanded(
           child: MiniStat(
-            label: 'Low stock',
+            label: 'low_stock'.tr,
             value: warehouse.stockOutRiskCount.toString(),
             icon: Icons.warning_amber_rounded,
             iconColor: colors.error,
@@ -220,7 +221,7 @@ class _WarehouseStats extends StatelessWidget {
 
         Expanded(
           child: MiniStat(
-            label: 'Status',
+            label: 'status'.tr,
             value: warehouse.status,
             icon: Icons.check_circle_outline_rounded,
             iconColor: colors.primary,
@@ -262,7 +263,7 @@ class _WarehouseLocation extends StatelessWidget {
           child: Text(
             location.isNotEmpty
                 ? location
-                : 'Location not available',
+                : 'location_not_available'.tr,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.bodySmall?.copyWith(
