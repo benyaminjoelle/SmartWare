@@ -297,5 +297,11 @@ const Map<String, String> en = {
 "Are you sure you want to delete your account? This action is permanent and your account will be deleted forever.":
     "Are you sure you want to delete your account? This action is permanent and your account will be deleted forever.",
 "Delete Forever": "Delete Forever",
-
+'Your Warehouses': 'Your Warehouses',
+'Select a warehouse to view its performance.':
+    'Select a warehouse to view its performance.',
+'Add New Facility': 'Add New Facility',
+'No warehouses yet': 'No warehouses yet',
+'Create a warehouse to start viewing analytics.':
+    'Create a warehouse to start viewing analytics.',
 };
