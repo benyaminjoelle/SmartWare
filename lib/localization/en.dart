@@ -1,4 +1,56 @@
 const Map<String, String> en = {
+  'id'
+'section_id'
+'product_id'
+'quantity'
+'unit_price'
+'product'
+'sku'
+'name_en'
+'name_ar'
+'unit'
+'product_image'
+'description_en'
+'description_ar'
+  "Owner facility was not found": "Owner facility was not found",
+"Failed to load products": "Failed to load products",
+"Product deleted successfully": "Product deleted successfully",
+  "Please select a unit": "Please select a unit",
+"Please select at least one category":
+    "Please select at least one category",
+"Failed to update product": "Failed to update product",
+"Category": "Category",
+"Error": "Error",
+"Failed to select image": "Failed to select image",
+"SKU is required": "SKU is required",
+"Use only letters, numbers, _ or -": "Use only letters, numbers, _ or -",
+"SKU must not exceed 100 characters":
+    "SKU must not exceed 100 characters",
+"Product name is required": "Product name is required",
+"Product name is too long": "Product name is too long",
+"Description is required": "Description is required",
+"Enter a valid quantity": "Enter a valid quantity",
+"Quantity cannot be negative": "Quantity cannot be negative",
+"Enter a valid unit price": "Enter a valid unit price",
+"Unit price cannot be negative": "Unit price cannot be negative",
+"Missing Unit": "Missing Unit",
+"Please select a unit.": "Please select a unit.",
+"Categories Unavailable": "Categories Unavailable",
+"No product categories are available for this warehouse.":
+    "No product categories are available for this warehouse.",
+"Missing Categories": "Missing Categories",
+"Please select at least one category.":
+    "Please select at least one category.",
+"Invalid Categories": "Invalid Categories",
+"The selected categories could not be resolved.":
+    "The selected categories could not be resolved.",
+"Invalid Quantity": "Invalid Quantity",
+"Please enter a valid quantity.": "Please enter a valid quantity.",
+"Invalid Unit Price": "Invalid Unit Price",
+"Please enter a valid unit price.":
+    "Please enter a valid unit price.",
+"Failed to create product.": "Failed to create product.",
+  
   // A
   "About Us": "About Us",
   "ACCOUNT MANAGEMENT": "ACCOUNT MANAGEMENT",
