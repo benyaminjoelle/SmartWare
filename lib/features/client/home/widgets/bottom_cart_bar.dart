@@ -49,7 +49,7 @@ class BottomCartBar extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Total',
+                        'Total'.tr,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: colors.onSurfaceVariant,
                         ),
@@ -106,8 +106,8 @@ class BottomCartBar extends StatelessWidget {
                           const SizedBox(width: 8),
                           Text(
                             hasWarehouse
-                                ? 'Add to cart'
-                                : 'Choose warehouse',
+                                ? 'Add to cart'.tr
+                                : 'Choose warehouse'.tr,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
