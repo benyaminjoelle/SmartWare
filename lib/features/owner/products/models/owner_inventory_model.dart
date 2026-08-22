@@ -15,7 +15,9 @@ class OwnerInventoryModel {
     required this.product,
   });
 
-  factory OwnerInventoryModel.fromJson(Map<String, dynamic> json) {
+  factory OwnerInventoryModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return OwnerInventoryModel(
       id: json['id'] ?? 0,
       sectionId: json['section_id'] ?? 0,
@@ -53,7 +55,9 @@ class OwnerProductModel {
     this.descriptionAr,
   });
 
-  factory OwnerProductModel.fromJson(Map<String, dynamic> json) {
+  factory OwnerProductModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return OwnerProductModel(
       id: json['id'] ?? 0,
       sku: json['sku'] ?? '',
