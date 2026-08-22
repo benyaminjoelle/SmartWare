@@ -70,9 +70,11 @@ class ClientRootView extends GetView<RootController> {
 
                       indicatorColor: Colors.transparent,
 
-                      overlayColor: WidgetStateProperty.all(Colors.transparent),
+                      overlayColor:
+                          WidgetStateProperty.all(Colors.transparent),
 
-                      labelTextStyle: WidgetStateProperty.resolveWith((states) {
+                      labelTextStyle:
+                          WidgetStateProperty.resolveWith((states) {
                         if (states.contains(WidgetState.selected)) {
                           return TextStyle(
                             color: theme.primary,
@@ -88,9 +90,13 @@ class ClientRootView extends GetView<RootController> {
                         );
                       }),
 
-                      iconTheme: WidgetStateProperty.resolveWith((states) {
+                      iconTheme:
+                          WidgetStateProperty.resolveWith((states) {
                         if (states.contains(WidgetState.selected)) {
-                          return IconThemeData(color: theme.primary, size: 26);
+                          return IconThemeData(
+                            color: theme.primary,
+                            size: 26,
+                          );
                         }
 
                         return IconThemeData(
