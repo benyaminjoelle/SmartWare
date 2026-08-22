@@ -62,9 +62,9 @@ class WarehouseAnalyticsView extends StatelessWidget {
 
                 const SizedBox(height: 28),
 
-                const AnalyticsSectionTitle(
-                  title: 'Overview',
-                  subtitle: 'Current warehouse performance',
+                AnalyticsSectionTitle(
+                  title: 'overview'.tr,
+                  subtitle: 'current_warehouse_performance'.tr,
                 ),
 
                 const SizedBox(height: 12),
@@ -79,10 +79,9 @@ class WarehouseAnalyticsView extends StatelessWidget {
                 // TOP MOVING PRODUCTS
                 // ============================================================
 
-                const AnalyticsSectionTitle(
-                  title: 'Top moving products',
-                  subtitle:
-                      'Products with the highest outgoing movement',
+                AnalyticsSectionTitle(
+                  title: 'top_moving_products'.tr,
+                  subtitle: 'top_moving_products_subtitle'.tr,
                 ),
 
                 const SizedBox(height: 12),
@@ -105,7 +104,7 @@ class WarehouseAnalyticsView extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     _ViewProductsButton(
-                      title: 'View top moving products',
+                      title: 'view_top_moving_products'.tr,
                       count: topMovingProducts.length,
                       icon: Icons.trending_up_rounded,
                       color: colors.primary,
@@ -125,10 +124,9 @@ class WarehouseAnalyticsView extends StatelessWidget {
                 // SLOW MOVING PRODUCTS
                 // ============================================================
 
-                const AnalyticsSectionTitle(
-                  title: 'Slow moving products',
-                  subtitle:
-                      'Products with little or no outgoing movement',
+                AnalyticsSectionTitle(
+                  title: 'slow_moving_products'.tr,
+                  subtitle: 'slow_moving_products_subtitle'.tr,
                 ),
 
                 const SizedBox(height: 12),
@@ -151,7 +149,7 @@ class WarehouseAnalyticsView extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     _ViewProductsButton(
-                      title: 'View slow moving products',
+                      title: 'view_slow_moving_products'.tr,
                       count: slowMovingProducts.length,
                       icon: Icons.trending_down_rounded,
                       color: colors.primary,
@@ -195,7 +193,7 @@ class WarehouseAnalyticsView extends StatelessWidget {
                     const SizedBox(height: 10),
 
                     _ViewProductsButton(
-                      title: 'View out of stock risk products',
+                      title: 'view_out_of_stock_risk_products'.tr,
                       count: stockOutRiskProducts.length,
                       icon: Icons.warning_amber_rounded,
                       color: colors.error,
@@ -267,7 +265,7 @@ class WarehouseAnalyticsView extends StatelessWidget {
               const SizedBox(height: 4),
 
               Text(
-                'Warehouse analytics',
+                'warehouse_analytics'.tr,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: colors.onSurfaceVariant,
                 ),
@@ -349,7 +347,7 @@ class _OutOfStockRiskHeader extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Out of stock risk',
+                      'out_of_stock_risk'.tr,
                       style: theme.textTheme.titleMedium?.copyWith(
                         color: colors.onSurface,
                         fontWeight: FontWeight.w900,
@@ -382,8 +380,8 @@ class _OutOfStockRiskHeader extends StatelessWidget {
 
               Text(
                 hasRisk
-                    ? 'Products with 10 units or less'
-                    : 'No products are currently at risk',
+                    ? 'products_with_10_units_or_less'.tr
+                    : 'no_products_currently_at_risk'.tr,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: colors.onSurfaceVariant,
                 ),
@@ -412,16 +410,6 @@ class _TopMovingProductsChart extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
 
-    /*
-     * IMPORTANT:
-     *
-     * We DO NOT return _ChartEmptyState when products is empty.
-     *
-     * The chart itself must still be rendered.
-     *
-     * When the API returns [],
-     * we create a few zero-value placeholder points.
-     */
     final bool hasData = products.isNotEmpty;
 
     final chartProducts = hasData
@@ -439,7 +427,7 @@ class _TopMovingProductsChart extends StatelessWidget {
       title: ChartTitle(
         text: hasData
             ? ''
-            : 'No outgoing movement data',
+            : 'no_outgoing_movement_data'.tr,
         textStyle: theme.textTheme.bodySmall?.copyWith(
           color: colors.onSurfaceVariant,
           fontWeight: FontWeight.w600,
@@ -448,7 +436,7 @@ class _TopMovingProductsChart extends StatelessWidget {
 
       tooltipBehavior: TooltipBehavior(
         enable: hasData,
-        header: 'Top moving product',
+        header: 'top_moving_product'.tr,
         color: colors.surface,
         textStyle: theme.textTheme.bodySmall?.copyWith(
           color: colors.onSurface,
@@ -480,7 +468,7 @@ class _TopMovingProductsChart extends StatelessWidget {
           color: colors.onSurfaceVariant,
         ),
         title: AxisTitle(
-          text: 'Units sold',
+          text: 'units_sold'.tr,
           textStyle: theme.textTheme.bodySmall?.copyWith(
             color: colors.onSurfaceVariant,
           ),
@@ -507,7 +495,7 @@ class _TopMovingProductsChart extends StatelessWidget {
               return product.totalSold.toDouble();
             },
 
-            name: 'Sold',
+            name: 'sold'.tr,
 
             color: colors.primary,
 
@@ -530,8 +518,11 @@ class _TopMovingProductsChart extends StatelessWidget {
           )
         else
           ColumnSeries<_EmptyChartPoint, String>(
-            dataSource: const [
-              _EmptyChartPoint('No data', 0),
+            dataSource: [
+              _EmptyChartPoint(
+                'no_data'.tr,
+                0,
+              ),
             ],
 
             xValueMapper: (point, _) {
@@ -542,7 +533,7 @@ class _TopMovingProductsChart extends StatelessWidget {
               return point.value;
             },
 
-            name: 'Sold',
+            name: 'sold'.tr,
 
             color: colors.primary.withOpacity(0.18),
 
@@ -590,7 +581,7 @@ class _SlowMovingChart extends StatelessWidget {
       title: ChartTitle(
         text: hasData
             ? ''
-            : 'No slow movement data',
+            : 'no_slow_movement_data'.tr,
         textStyle: theme.textTheme.bodySmall?.copyWith(
           color: colors.onSurfaceVariant,
           fontWeight: FontWeight.w600,
@@ -665,7 +656,7 @@ class _SlowMovingChart extends StatelessWidget {
                   0;
             },
 
-            name: 'Units sold',
+            name: 'units_sold'.tr,
 
             color: colors.primary,
 
@@ -693,8 +684,11 @@ class _SlowMovingChart extends StatelessWidget {
           )
         else
           LineSeries<_EmptyChartPoint, String>(
-            dataSource: const [
-              _EmptyChartPoint('No data', 0),
+            dataSource: [
+              _EmptyChartPoint(
+                'no_data'.tr,
+                0,
+              ),
               _EmptyChartPoint('', 0),
             ],
 
@@ -706,7 +700,7 @@ class _SlowMovingChart extends StatelessWidget {
               return point.value;
             },
 
-            name: 'Units sold',
+            name: 'units_sold'.tr,
 
             color: colors.primary.withOpacity(0.25),
 
@@ -760,7 +754,7 @@ class _StockOutRiskChart extends StatelessWidget {
       title: ChartTitle(
         text: hasData
             ? ''
-            : 'No products at risk',
+            : 'no_products_at_risk'.tr,
         textStyle: theme.textTheme.bodySmall?.copyWith(
           color: colors.onSurfaceVariant,
           fontWeight: FontWeight.w600,
@@ -822,7 +816,7 @@ class _StockOutRiskChart extends StatelessWidget {
                   .toDouble();
             },
 
-            name: 'Stock',
+            name: 'stock'.tr,
 
             color: colors.primary,
 
@@ -843,8 +837,11 @@ class _StockOutRiskChart extends StatelessWidget {
           )
         else
           ColumnSeries<_EmptyChartPoint, String>(
-            dataSource: const [
-              _EmptyChartPoint('No risk', 0),
+            dataSource: [
+              _EmptyChartPoint(
+                'no_risk'.tr,
+                0,
+              ),
             ],
 
             xValueMapper: (point, _) {
@@ -855,7 +852,7 @@ class _StockOutRiskChart extends StatelessWidget {
               return point.value;
             },
 
-            name: 'Stock',
+            name: 'stock'.tr,
 
             color: colors.primary.withOpacity(0.18),
 
@@ -1100,9 +1097,9 @@ void _showProductsSheet(
               child: products.isEmpty
                   ? _ChartEmptyState(
                       icon: Icons.inventory_2_outlined,
-                      title: 'No products',
+                      title: 'no_products'.tr,
                       subtitle:
-                          'There are no products to display.',
+                          'no_products_to_display'.tr,
                       color: colors.primary,
                     )
                   : ListView.separated(
@@ -1213,7 +1210,7 @@ class _ProductSheetTile extends StatelessWidget {
                 const SizedBox(height: 4),
 
                 Text(
-                  'SKU: ${product.sku}',
+                  '${'sku'.tr}: ${product.sku}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall
@@ -1352,16 +1349,16 @@ void _showTopMovingProducts(
 ) {
   _showProductsSheet(
     context,
-    title: 'Top moving products',
+    title: 'top_moving_products'.tr,
     subtitle:
-        'Products with the highest outgoing movement',
+        'top_moving_products_subtitle'.tr,
     products: products
         .map(
           (product) => _ProductSheetItem(
             name: product.nameEn,
             sku: product.sku,
             value: product.totalSold,
-            valueLabel: 'sold',
+            valueLabel: 'sold'.tr,
             unit: product.unit,
           ),
         )
@@ -1379,18 +1376,18 @@ void _showSlowMovingProducts(
 ) {
   _showProductsSheet(
     context,
-    title: 'Slow moving products',
+    title: 'slow_moving_products'.tr,
     subtitle:
-        'Products with little or no outgoing movement',
+        'slow_moving_products_subtitle'.tr,
     products: products
         .map(
           (product) => _ProductSheetItem(
             name: product.nameEn?.toString() ??
                 product.nameAr?.toString() ??
-                'Unnamed product',
+                'unnamed_product'.tr,
             sku: product.sku?.toString() ?? '',
             value: product.totalSold ?? 0,
-            valueLabel: 'sold',
+            valueLabel: 'sold'.tr,
             unit: product.unit?.toString() ?? '',
           ),
         )
@@ -1408,16 +1405,16 @@ void _showStockRiskProducts(
 ) {
   _showProductsSheet(
     context,
-    title: 'Out of stock risk products',
+    title: 'view_out_of_stock_risk_products'.tr,
     subtitle:
-        'Products with 10 units or less',
+        'products_with_10_units_or_less'.tr,
     products: products
         .map(
           (product) => _ProductSheetItem(
             name: product.displayName,
             sku: product.sku,
             value: product.warehouseQuantity,
-            valueLabel: 'in stock',
+            valueLabel: 'in_stock'.tr,
             unit: product.unit,
           ),
         )
