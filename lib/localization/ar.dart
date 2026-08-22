@@ -360,4 +360,40 @@ const Map<String, String> ar = {
 
 // Navigation
 'See All' : 'عرض الكل',
+  'Overview': 'نظرة عامة',
+'Current warehouse performance': 'أداء المستودع الحالي',
+'Top moving products': 'المنتجات الأكثر حركة',
+'Products with the highest outgoing movement':
+    'المنتجات ذات أعلى حركة صادرة',
+'View top moving products': 'عرض المنتجات الأكثر حركة',
+'Slow moving products': 'المنتجات بطيئة الحركة',
+'Products with little or no outgoing movement':
+    'المنتجات ذات الحركة الصادرة القليلة أو المعدومة',
+'View slow moving products': 'عرض المنتجات بطيئة الحركة',
+'Out of stock risk': 'خطر نفاد المخزون',
+'Products with 10 units or less':
+    'المنتجات التي تحتوي على 10 وحدات أو أقل',
+'No products are currently at risk':
+    'لا توجد منتجات معرضة للخطر حاليًا',
+'View out of stock risk products':
+    'عرض المنتجات المعرضة لخطر نفاد المخزون',
+'Warehouse analytics': 'تحليلات المستودع',
+'No outgoing movement data':
+    'لا توجد بيانات عن الحركة الصادرة',
+'Top moving product': 'المنتج الأكثر حركة',
+'Units sold': 'الوحدات المباعة',
+'Sold': 'المباع',
+'No slow movement data':
+    'لا توجد بيانات عن الحركة البطيئة',
+'No products at risk':
+    'لا توجد منتجات معرضة للخطر',
+'Stock': 'المخزون',
+'No data': 'لا توجد بيانات',
+'No risk': 'لا يوجد خطر',
+'No products': 'لا توجد منتجات',
+'There are no products to display.':
+    'لا توجد منتجات لعرضها.',
+'SKU': 'رمز المنتج',
+'sold': 'مباع',
+'in stock': 'في المخزون',
 };
