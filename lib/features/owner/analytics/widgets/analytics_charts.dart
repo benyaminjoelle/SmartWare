@@ -16,10 +16,10 @@ class InventoryTrendChart extends StatelessWidget {
     final products = controller.slowMovingProducts;
 
     if (products.isEmpty) {
-      return const _ChartEmptyState(
+      return _ChartEmptyState(
         icon: Icons.show_chart_rounded,
-        title: 'No inventory trend data',
-        subtitle: 'There is not enough inventory data to display a trend.',
+        title: 'no_inventory_trend_data'.tr,
+        subtitle: 'inventory_trend_no_data_subtitle'.tr,
       );
     }
 
@@ -31,7 +31,10 @@ class InventoryTrendChart extends StatelessWidget {
      * warehouse inventory indicator.
      */
     final data = <_ChartPoint>[
-      _ChartPoint('Products', products.length),
+      _ChartPoint(
+        'products'.tr,
+        products.length,
+      ),
     ];
 
     return SfCartesianChart(
@@ -61,7 +64,7 @@ class InventoryTrendChart extends StatelessWidget {
           dataSource: data,
           xValueMapper: (item, _) => item.label,
           yValueMapper: (item, _) => item.value,
-          name: 'Products',
+          name: 'products'.tr,
           borderRadius: const BorderRadius.vertical(
             top: Radius.circular(8),
           ),
@@ -92,10 +95,10 @@ class StockMovementChart extends StatelessWidget {
     final products = controller.slowMovingProducts;
 
     if (products.isEmpty) {
-      return const _ChartEmptyState(
+      return _ChartEmptyState(
         icon: Icons.swap_vert_rounded,
-        title: 'No stock movement data',
-        subtitle: 'There is no stock movement data to display.',
+        title: 'no_stock_movement_data'.tr,
+        subtitle: 'stock_movement_no_data_subtitle'.tr,
       );
     }
 
@@ -114,7 +117,9 @@ class StockMovementChart extends StatelessWidget {
           (product) => _MovementPoint(
             product.nameEn?.isNotEmpty == true
                 ? product.nameEn!
-                : 'Product ${product.id}',
+                : 'product_fallback'.trParams({
+                    'id': product.id.toString(),
+                  }),
             product.totalSold ?? 0,
           ),
         )
@@ -143,7 +148,7 @@ class StockMovementChart extends StatelessWidget {
         enable: true,
       ),
 
-      legend: const Legend(
+      legend: Legend(
         isVisible: true,
         position: LegendPosition.bottom,
       ),
@@ -153,7 +158,7 @@ class StockMovementChart extends StatelessWidget {
           dataSource: data,
           xValueMapper: (item, _) => item.name,
           yValueMapper: (item, _) => item.outgoing,
-          name: 'Outgoing',
+          name: 'outgoing'.tr,
           borderRadius: const BorderRadius.vertical(
             top: Radius.circular(6),
           ),
@@ -183,10 +188,10 @@ class CategoryChart extends StatelessWidget {
     final products = controller.slowMovingProducts;
 
     if (products.isEmpty) {
-      return const _ChartEmptyState(
+      return _ChartEmptyState(
         icon: Icons.pie_chart_outline_rounded,
-        title: 'No category data',
-        subtitle: 'There is no category information to display.',
+        title: 'no_category_data'.tr,
+        subtitle: 'category_no_data_subtitle'.tr,
       );
     }
 
@@ -206,7 +211,7 @@ class CategoryChart extends StatelessWidget {
     for (final product in products) {
       final unit = product.unit?.isNotEmpty == true
           ? product.unit!
-          : 'Unknown';
+          : 'unknown'.tr;
 
       grouped[unit] = (grouped[unit] ?? 0) + 1;
     }
@@ -223,7 +228,7 @@ class CategoryChart extends StatelessWidget {
     return SfCircularChart(
       margin: const EdgeInsets.all(8),
 
-      legend: const Legend(
+      legend: Legend(
         isVisible: true,
         position: LegendPosition.bottom,
         overflowMode: LegendItemOverflowMode.wrap,
@@ -273,10 +278,10 @@ class TopProductsChart extends StatelessWidget {
     final products = controller.slowMovingProducts;
 
     if (products.isEmpty) {
-      return const _ChartEmptyState(
+      return _ChartEmptyState(
         icon: Icons.bar_chart_rounded,
-        title: 'No product movement data',
-        subtitle: 'There is no product movement data to display.',
+        title: 'no_product_movement_data'.tr,
+        subtitle: 'product_movement_no_data_subtitle'.tr,
       );
     }
 
@@ -301,7 +306,9 @@ class TopProductsChart extends StatelessWidget {
       (product) {
         final name = product.nameEn?.isNotEmpty == true
             ? product.nameEn!
-            : 'Product ${product.id}';
+            : 'product_fallback'.trParams({
+                'id': product.id.toString(),
+              });
 
         return _TopProductPoint(
           name,
@@ -338,7 +345,7 @@ class TopProductsChart extends StatelessWidget {
           dataSource: data,
           xValueMapper: (item, _) => item.name,
           yValueMapper: (item, _) => item.quantity,
-          name: 'Sold',
+          name: 'sold'.tr,
           borderRadius: const BorderRadius.horizontal(
             right: Radius.circular(6),
           ),
