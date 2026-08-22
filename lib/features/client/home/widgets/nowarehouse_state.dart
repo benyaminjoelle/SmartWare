@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class NoWarehouseState extends StatelessWidget {
   const NoWarehouseState();
@@ -26,7 +27,7 @@ class NoWarehouseState extends StatelessWidget {
           const SizedBox(height: 10),
 
           Text(
-            'No warehouse can fulfill this quantity',
+            'No warehouse can fulfill this quantity'.tr,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w700,
@@ -36,7 +37,7 @@ class NoWarehouseState extends StatelessWidget {
           const SizedBox(height: 4),
 
           Text(
-            'Try reducing the quantity and check again.',
+            'Try reducing the quantity and check again.'.tr,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colors.onSurfaceVariant,
@@ -47,4 +48,3 @@ class NoWarehouseState extends StatelessWidget {
     );
   }
 }
-
