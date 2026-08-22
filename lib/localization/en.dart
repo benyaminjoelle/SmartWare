@@ -337,4 +337,39 @@ const Map<String, String> en = {
 'SKU': 'SKU',
 'sold': 'sold',
 'in stock': 'in stock',
+  
+  'no_inventory_trend_data': 'No inventory trend data',
+  'inventory_trend_no_data_subtitle':
+      'There is not enough inventory data to display a trend.',
+  'products': 'Products',
+  'no_stock_movement_data': 'No stock movement data',
+  'stock_movement_no_data_subtitle':
+      'There is no stock movement data to display.',
+  'product_fallback': 'Product @id',
+  'outgoing': 'Outgoing',
+  'no_category_data': 'No category data',
+  'category_no_data_subtitle':
+      'There is no category information to display.',
+  'unknown': 'Unknown',
+  'no_product_movement_data': 'No product movement data',
+  'product_movement_no_data_subtitle':
+      'There is no product movement data to display.',
+  'sold': 'Sold',
+
+  'products': 'Products',
+  'low_stock': 'Low stock',
+  'pending_orders': 'Pending orders',
+
+  'low_stock': 'Low stock',
+  'products_need_attention': 'Products that need attention',
+  'stock_needs_attention': 'Stock needs attention',
+  'low_stock_description':
+      'These products currently have 10 units or less in this warehouse.',
+  'units_left': '@count @unit left',
+  'all_stock_levels_good': 'All stock levels look good',
+  'no_products_need_attention': 'No products need attention right now.',
+'products': 'Products',
+  'low_stock': 'Low stock',
+  'status': 'Status',
+  'location_not_available': 'Location not available',
 };
