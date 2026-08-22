@@ -12,23 +12,23 @@ class OnboardingCarouselController extends GetxController {
   final List<FeatureItem> features = [
     FeatureItem(
       icon: Icons.warehouse_outlined,
-      title: "Smart Inventory",
-      description: "Track stock in real-time with zero effort.",
+      title: "Smart Inventory".tr,
+      description: "Track stock in real-time with zero effort.".tr,
     ),
     FeatureItem(
       icon: Icons.insights_outlined,
-      title: "Live Analytics",
-      description: "Understand your warehouse like a living system.",
+      title: "Live Analytics".tr,
+      description: "Understand your warehouse like a living system.".tr,
     ),
     FeatureItem(
       icon: Icons.local_shipping_outlined,
-      title: "Fast Logistics",
-      description: "Optimize shipping routes automatically.",
+      title: "Fast Logistics".tr,
+      description: "Optimize shipping routes automatically.".tr,
     ),
     FeatureItem(
       icon: Icons.security_outlined,
-      title: "Secure System",
-      description: "Your data protected with layered security.",
+      title: "Secure System".tr,
+      description: "Your data protected with layered security.".tr,
     ),
   ];
 
