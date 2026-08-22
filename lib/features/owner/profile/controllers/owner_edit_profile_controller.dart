@@ -7,7 +7,6 @@ import 'package:smartware/core/network/api_error.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
 
 import 'package:smartware/features/auth/models/auth_repo.dart';
-import 'package:smartware/features/owner/profile/controllers/owner_profile_complition_controller.dart';
 import 'package:smartware/features/owner/profile/models/owner_onboarding_repo.dart';
 
 import 'package:smartware/features/owner/profile/widgets/owner_change_facility_name.dart';
@@ -24,10 +23,6 @@ class OwnerEditProfileController extends GetxController {
   // OWNER ROLE
   // ============================================================
 
-  // IMPORTANT:
-  // Do NOT get this from PrefHelper.
-  // PrefHelper may contain "warehouseAdmin",
-  // but the backend expects "warehouse_admin".
   static const String ownerRole = 'warehouse_admin';
 
   // ============================================================
@@ -35,16 +30,22 @@ class OwnerEditProfileController extends GetxController {
   // ============================================================
 
   final AuthRepo _authRepo = AuthRepo();
-  final OwnerOnboardingRepo _ownerOnboardingRepo = OwnerOnboardingRepo();
+
+  final OwnerOnboardingRepo _ownerOnboardingRepo =
+      OwnerOnboardingRepo();
 
   // ============================================================
   // PROFILE DATA
   // ============================================================
 
   final RxString businessName = ''.obs;
+
   final RxString selectedBusinessName = ''.obs;
+
   final RxString email = ''.obs;
+
   final RxString pendingEmail = ''.obs;
+
   final RxString phone = ''.obs;
 
   // ============================================================
@@ -53,7 +54,9 @@ class OwnerEditProfileController extends GetxController {
 
   final RxString editBusinessType = ''.obs;
 
-  final RxList<String> editBusinessCategories = <String>[].obs;
+  /// Categories currently saved for this owner.
+  final RxList<String> editBusinessCategories =
+      <String>[].obs;
 
   final RxBool hasPreferences = false.obs;
 
@@ -115,27 +118,19 @@ class OwnerEditProfileController extends GetxController {
   void onInit() {
     super.onInit();
 
-    businessNameController = TextEditingController();
+    businessNameController =
+        TextEditingController();
 
-    emailController = TextEditingController();
+    emailController =
+        TextEditingController();
 
-    newEmailController = TextEditingController();
+    newEmailController =
+        TextEditingController();
 
-    phoneController = TextEditingController();
+    phoneController =
+        TextEditingController();
 
     _loadSavedProfileData();
-  }
-
-  // ============================================================
-  // COMPLETION CONTROLLER
-  // ============================================================
-
-  OwnerProfileComplitionController get _completionController {
-    if (Get.isRegistered<OwnerProfileComplitionController>()) {
-      return Get.find<OwnerProfileComplitionController>();
-    }
-
-    return Get.put(OwnerProfileComplitionController());
   }
 
   // ============================================================
@@ -145,80 +140,89 @@ class OwnerEditProfileController extends GetxController {
   Future<void> _loadSavedProfileData() async {
     try {
       debugPrint('');
-      debugPrint('════════ LOAD OWNER PROFILE DATA ════════');
+      debugPrint(
+        '════════ LOAD OWNER EDIT PROFILE ════════',
+      );
 
       // --------------------------------------------------------
       // BUSINESS NAME
       // --------------------------------------------------------
 
-      final savedBusinessName = await PrefHelper.getOwnerBusinessName();
+      final savedBusinessName =
+          await PrefHelper.getOwnerBusinessName();
 
       if (savedBusinessName.trim().isNotEmpty) {
-        businessName.value = savedBusinessName.trim();
+        businessName.value =
+            savedBusinessName.trim();
 
-        selectedBusinessName.value = savedBusinessName.trim();
+        selectedBusinessName.value =
+            savedBusinessName.trim();
 
-        businessNameController.text = savedBusinessName.trim();
+        businessNameController.text =
+            savedBusinessName.trim();
       }
 
       // --------------------------------------------------------
       // EMAIL
       // --------------------------------------------------------
 
-      final savedEmail = await PrefHelper.getUserEmail();
+      final savedEmail =
+          await PrefHelper.getUserEmail();
 
-     if (savedEmail.trim().isNotEmpty) {
+      if (savedEmail.trim().isNotEmpty) {
         email.value = savedEmail.trim();
 
-        emailController.text = savedEmail.trim();
+        emailController.text =
+            savedEmail.trim();
       }
 
       // --------------------------------------------------------
       // PHONE
       // --------------------------------------------------------
 
-      final savedPhone = await PrefHelper.getUserPhone();
+      final savedPhone =
+          await PrefHelper.getUserPhone();
 
-      if (savedPhone != null && savedPhone.trim().isNotEmpty) {
+      if (savedPhone != null &&
+          savedPhone.trim().isNotEmpty) {
         phone.value = savedPhone.trim();
 
-        phoneController.text = savedPhone.trim();
+        phoneController.text =
+            savedPhone.trim();
       }
 
       // --------------------------------------------------------
-      // OWNER PREFERENCES
+      // OWNER CATEGORIES
       // --------------------------------------------------------
 
       await loadEditPreferences();
 
       debugPrint('');
-      debugPrint('✅ OWNER PROFILE DATA LOADED');
+      debugPrint('✅ OWNER EDIT PROFILE LOADED');
 
-      debugPrint('🏢 Business Name: ${businessName.value}');
-
-      debugPrint('📧 Email: ${email.value}');
-
-      debugPrint('📱 Phone: ${phone.value}');
-
-      debugPrint('🏪 Business Type: ${editBusinessType.value}');
+      debugPrint(
+        '🏢 Facility: ${businessName.value}',
+      );
 
       debugPrint(
         '📦 Categories: '
         '${editBusinessCategories.toList()}',
       );
 
-      debugPrint('👤 API Owner Role: $ownerRole');
-
-      debugPrint('══════════════════════════════════════');
+      debugPrint(
+        '══════════════════════════════════════',
+      );
     } catch (e, stackTrace) {
-      debugPrint('❌ Failed to load owner profile data: $e');
+      debugPrint(
+        '❌ Failed to load owner profile: $e',
+      );
 
       debugPrint('$stackTrace');
     }
   }
 
   // ============================================================
-  // LOAD OWNER PREFERENCES
+  // LOAD SAVED OWNER CATEGORIES
   // ============================================================
 
   Future<void> loadEditPreferences() async {
@@ -230,61 +234,53 @@ class OwnerEditProfileController extends GetxController {
 
     try {
       debugPrint('');
-      debugPrint('════════ LOAD OWNER EDIT PREFERENCES ════════');
+      debugPrint(
+        '════════ LOAD OWNER CATEGORIES ════════',
+      );
 
-      final businessType = await PrefHelper.getOwnerBusinessType();
+      final businessType =
+          await PrefHelper.getOwnerBusinessType();
 
-      final categories = await PrefHelper.getOwnerSelectedProducts();
+      final categories =
+          await PrefHelper.getOwnerSelectedProducts();
 
-      debugPrint('💾 OWNER BUSINESS TYPE: $businessType');
+      debugPrint(
+        '💾 Saved Business Type: $businessType',
+      );
 
-      debugPrint('💾 OWNER CATEGORIES: $categories');
-
-      // --------------------------------------------------------
-      // NO DATA
-      // --------------------------------------------------------
-
-      if (businessType.trim().isEmpty || categories.isEmpty) {
-        hasPreferences.value = false;
-
-        editBusinessType.value = '';
-
-        editBusinessCategories.clear();
-
-        debugPrint('❌ No saved OWNER preferences found.');
-
-        return;
-      }
-
-      // --------------------------------------------------------
-      // LOAD DATA
-      // --------------------------------------------------------
-
-      hasPreferences.value = true;
-
-      editBusinessType.value = businessType.trim();
-
-      editBusinessCategories.assignAll(
-        categories
-            .map((category) => category.trim())
-            .where((category) => category.isNotEmpty)
-            .toList(),
+      debugPrint(
+        '💾 Saved Categories: $categories',
       );
 
       // --------------------------------------------------------
-      // SYNC COMPLETION CONTROLLER
+      // BUSINESS TYPE
       // --------------------------------------------------------
 
-      final completion = _completionController;
+      editBusinessType.value =
+          businessType.trim();
 
-      completion.selectedProducts.assignAll(editBusinessCategories);
+      // --------------------------------------------------------
+      // CATEGORIES
+      // --------------------------------------------------------
+
+      editBusinessCategories.assignAll(
+        categories
+            .map(
+              (category) => category.trim(),
+            )
+            .where(
+              (category) =>
+                  category.isNotEmpty,
+            )
+            .toList(),
+      );
+
+      hasPreferences.value =
+          editBusinessCategories.isNotEmpty;
 
       debugPrint('');
-      debugPrint('✅ OWNER PREFERENCES LOADED');
-
       debugPrint(
-        '🏪 Business Type: '
-        '${editBusinessType.value}',
+        '✅ SAVED OWNER CATEGORIES LOADED',
       );
 
       debugPrint(
@@ -292,21 +288,24 @@ class OwnerEditProfileController extends GetxController {
         '${editBusinessCategories.toList()}',
       );
 
-      debugPrint('════════════════════════════════════════');
+      debugPrint(
+        '══════════════════════════════════════',
+      );
     } catch (e, stackTrace) {
-      debugPrint('❌ Failed to load owner preferences: $e');
+      debugPrint(
+        '❌ Failed to load owner categories: $e',
+      );
 
       debugPrint('$stackTrace');
 
       hasPreferences.value = false;
 
-      editBusinessType.value = '';
-
       editBusinessCategories.clear();
 
       AppSnackbar.show(
         title: 'Error'.tr,
-        message: 'Unable to load your business preferences.'.tr,
+        message:
+            'Unable to load your saved categories.'.tr,
         icon: Icons.error_outline,
       );
     } finally {
@@ -315,82 +314,93 @@ class OwnerEditProfileController extends GetxController {
   }
 
   // ============================================================
-  // SET BUSINESS TYPE
-  // ============================================================
-
-  void setEditBusinessType(String value) {
-    final newValue = value.trim();
-
-    debugPrint('');
-    debugPrint('🔄 OWNER BUSINESS TYPE CHANGED');
-
-    debugPrint('Old: ${editBusinessType.value}');
-
-    debugPrint('New: $newValue');
-
-    editBusinessType.value = newValue;
-  }
-
-  // ============================================================
   // SET CATEGORIES
   // ============================================================
 
-  void setEditBusinessCategories(List<String> categories) {
+  void setEditBusinessCategories(
+    List<String> categories,
+  ) {
     final cleanedCategories = categories
-        .map((category) => category.trim())
-        .where((category) => category.isNotEmpty)
+        .map(
+          (category) => category.trim(),
+        )
+        .where(
+          (category) =>
+              category.isNotEmpty,
+        )
         .toList();
 
     debugPrint('');
-    debugPrint('🔄 OWNER CATEGORIES CHANGED');
+    debugPrint(
+      '🔄 OWNER CATEGORIES CHANGED',
+    );
 
-    debugPrint('Old: ${editBusinessCategories.toList()}');
+    debugPrint(
+      'Old: '
+      '${editBusinessCategories.toList()}',
+    );
 
-    debugPrint('New: $cleanedCategories');
+    debugPrint(
+      'New: $cleanedCategories',
+    );
 
-    editBusinessCategories.assignAll(cleanedCategories);
-
-    // ----------------------------------------------------------
-    // SYNC COMPLETION CONTROLLER
-    // ----------------------------------------------------------
-
-    final completion = _completionController;
-
-    completion.selectedProducts.assignAll(cleanedCategories);
-
-    debugPrint('✅ Owner categories synchronized.');
+    editBusinessCategories.assignAll(
+      cleanedCategories,
+    );
   }
 
   // ============================================================
-  // UPDATE OWNER PREFERENCES
+  // SET BUSINESS TYPE
+  // ============================================================
+  //
+  // Kept only so existing UI code does not break.
+  // Business type is NOT updated from edit preferences.
+  //
+  // ============================================================
+
+  void setEditBusinessType(String value) {
+    editBusinessType.value = value.trim();
+  }
+
+  // ============================================================
+  // UPDATE OWNER CATEGORIES ONLY
+  // ============================================================
+
+    // ============================================================
+  // UPDATE OWNER CATEGORIES ONLY
   // ============================================================
 
   Future<void> updateBusinessPreferences() async {
-    if (isPreferencesLoading.value) {
-      return;
-    }
-
     if (isLoading.value) {
-      debugPrint('⚠️ Preferences update already running.');
+      debugPrint(
+        '⚠️ Category update already running.',
+      );
 
       return;
     }
 
-    final completion = _completionController;
-
     // ----------------------------------------------------------
-    // GET CURRENT CATEGORIES
+    // GET SELECTED CATEGORIES
     // ----------------------------------------------------------
 
-    final categories = completion.selectedProducts
-        .map((category) => category.trim())
-        .where((category) => category.isNotEmpty)
+    final categories = editBusinessCategories
+        .map(
+          (category) => category.trim(),
+        )
+        .where(
+          (category) =>
+              category.isNotEmpty,
+        )
         .toList();
 
     debugPrint('');
-    debugPrint('════════ UPDATE OWNER PREFERENCES ════════');
+    debugPrint(
+      '════════ UPDATE OWNER CATEGORIES ════════',
+    );
 
-    debugPrint('📦 Categories: $categories');
+    debugPrint(
+      '📦 Categories: $categories',
+    );
 
     // ----------------------------------------------------------
     // VALIDATION
@@ -399,140 +409,221 @@ class OwnerEditProfileController extends GetxController {
     if (categories.isEmpty) {
       AppSnackbar.show(
         title: 'Incomplete Preferences'.tr,
-        message: 'Please select at least one product category.'.tr,
+        message:
+            'Please select at least one product category.'
+                .tr,
         icon: Icons.warning_amber_rounded,
       );
 
       return;
     }
 
+    // ----------------------------------------------------------
+    // GET EXISTING FACILITY
+    // ----------------------------------------------------------
+
+    final facilityId =
+        await PrefHelper.getOwnerFacilityId();
+
+    final facilityName =
+        await PrefHelper.getOwnerBusinessName();
+
+    if (facilityId == null || facilityId <= 0) {
+      debugPrint(
+        '❌ No existing facility ID found.',
+      );
+
+      AppSnackbar.show(
+        title: 'Error'.tr,
+        message:
+            'Unable to find your existing facility.'.tr,
+        icon: Icons.error_outline,
+      );
+
+      return;
+    }
+
+    if (facilityName.trim().isEmpty) {
+      debugPrint(
+        '❌ No existing facility name found.',
+      );
+
+      AppSnackbar.show(
+        title: 'Error'.tr,
+        message:
+            'Unable to find your existing facility.'.tr,
+        icon: Icons.error_outline,
+      );
+
+      return;
+    }
+
+    // ----------------------------------------------------------
+    // UPDATE
+    // ----------------------------------------------------------
+
     isLoading.value = true;
 
     try {
-      // ========================================================
-      // FACILITY NAME
-      // ========================================================
-
-      final facilityName = await PrefHelper.getOwnerBusinessName();
-
-      if (facilityName.trim().isEmpty) {
-        AppSnackbar.show(
-          title: 'Error'.tr,
-          message: 'Business facility information was not found.'.tr,
-          icon: Icons.error_outline,
-        );
-
-        return;
-      }
-
-      // ========================================================
-      // ROLE
-      // ========================================================
-      //
-      // DO NOT READ PrefHelper.getUserRole()
-      //
-      // That value currently contains:
-      //
-      // warehouseAdmin
-      //
-      // The API expects:
-      //
-      // warehouse_admin
-      //
-      // ========================================================
-
-      const role = ownerRole;
-
       debugPrint('');
-      debugPrint('📤 DATA SENT TO API');
+      debugPrint(
+        '════════ UPDATE EXISTING FACILITY ════════',
+      );
 
-      debugPrint('🏢 Facility Name: $facilityName');
+      debugPrint(
+        '🏢 Existing Facility ID: $facilityId',
+      );
 
-      debugPrint('👤 Role: $role');
+      debugPrint(
+        '🏢 Existing Facility Name: $facilityName',
+      );
 
-      debugPrint('📦 Categories: $categories');
+      debugPrint(
+        '👤 Role: $ownerRole',
+      );
 
-      // ========================================================
-      // API REQUEST
-      // ========================================================
+      debugPrint(
+        '📦 New Categories: $categories',
+      );
 
-      final result = await _ownerOnboardingRepo.savePreferences(
-        facilityName: facilityName,
-        role: role,
+      // --------------------------------------------------------
+      // SAME API METHOD
+      // --------------------------------------------------------
+      //
+      // We are using the existing savePreferences endpoint.
+      //
+      // IMPORTANT:
+      // This must update the existing facility on the backend,
+      // not create another facility.
+      //
+      // --------------------------------------------------------
+
+      final result =
+          await _ownerOnboardingRepo.savePreferences(
+        facilityName: facilityName.trim(),
+        role: ownerRole,
         categories: categories,
       );
 
-      // ========================================================
-      // SERVER RESPONSE
-      // ========================================================
+      // --------------------------------------------------------
+      // GET SERVER CATEGORIES (NAMES)
+      // --------------------------------------------------------
 
-      debugPrint('');
-      debugPrint('════════ OWNER PREFERENCES RESPONSE ════════');
+      final returnedCategories =
+          result.facility.categories
+              .map(
+                (category) =>
+                    category.name.trim(),
+              )
+              .where(
+                (category) =>
+                    category.isNotEmpty,
+              )
+              .toList();
 
-      debugPrint('💬 Message: ${result.message}');
+      // --------------------------------------------------------
+      // NEW: GET SERVER CATEGORIES (REAL {id, name} OBJECTS)
+      // --------------------------------------------------------
+      //
+      // Without this, AddProductController keeps reading the
+      // OLD ids saved back during onboarding — so if the owner
+      // adds/removes categories here, product creation would
+      // silently use stale/wrong category IDs.
+      //
+      // --------------------------------------------------------
 
-      debugPrint('🏢 Facility ID: ${result.facility.id}');
-
-      debugPrint('🏢 Facility Name: ${result.facilityName}');
-
-      debugPrint(
-        '🏪 Business Type: '
-        '${result.facility.businessType}',
-      );
-
-      final returnedCategories = result.facility.categories
-          .map((category) => category.name.trim())
-          .where((category) => category.isNotEmpty)
+      final categoryObjects = result.facility.categories
+          .map<Map<String, dynamic>>(
+            (category) => {
+              'id': category.id,
+              'name': category.name.trim(),
+            },
+          )
+          .where(
+            (category) =>
+                (category['id'] as int) > 0 &&
+                (category['name'] as String).isNotEmpty,
+          )
           .toList();
 
-      debugPrint('📦 Categories: $returnedCategories');
-
-      // ========================================================
-      // SAVE SERVER VALUES
-      // ========================================================
-
-      final finalBusinessType = result.facility.businessType.trim();
-
-      final finalCategories = returnedCategories;
-
-      await PrefHelper.saveOwnerBusinessType(finalBusinessType);
-
-      await PrefHelper.saveOwnerSelectedProducts(finalCategories);
-
-      await PrefHelper.saveOwnerBusinessCategories(finalCategories);
-
-      await PrefHelper.saveOwnerFacilityId(result.facility.id);
-
-      // ========================================================
-      // UPDATE LOCAL STATE
-      // ========================================================
-
-      editBusinessType.value = finalBusinessType;
-
-      editBusinessCategories.assignAll(finalCategories);
-
-      completion.selectedProducts.assignAll(finalCategories);
-
-      hasPreferences.value = true;
-
       debugPrint('');
-      debugPrint('💾 OWNER LOCAL STORAGE UPDATED');
+      debugPrint(
+        '════════ CATEGORY UPDATE RESPONSE ════════',
+      );
 
       debugPrint(
-        '🏪 Business Type: '
-        '$finalBusinessType',
+        '💬 Message: ${result.message}',
+      );
+
+      debugPrint(
+        '🏢 Facility ID: '
+        '${result.facility.id}',
       );
 
       debugPrint(
         '📦 Categories: '
-        '$finalCategories',
+        '$returnedCategories',
       );
 
-      debugPrint('👤 Role used: $role');
+      debugPrint(
+        '🆔 Category objects (id+name): '
+        '$categoryObjects',
+      );
 
-      // ========================================================
-      // SUCCESS
-      // ========================================================
+      // --------------------------------------------------------
+      // SAVE CATEGORIES LOCALLY
+      // --------------------------------------------------------
+
+      await PrefHelper.saveOwnerSelectedProducts(
+        returnedCategories,
+      );
+
+      await PrefHelper.saveOwnerBusinessCategories(
+        returnedCategories,
+      );
+
+      // NEW: keep AddProductController in sync with the
+      // owner's latest category IDs.
+      await PrefHelper.saveOwnerProductCategories(
+        categoryObjects,
+      );
+
+      // --------------------------------------------------------
+      // KEEP EXISTING FACILITY ID
+      // --------------------------------------------------------
+
+      await PrefHelper.saveOwnerFacilityId(
+        facilityId,
+      );
+
+      // --------------------------------------------------------
+      // UPDATE CONTROLLER STATE
+      // --------------------------------------------------------
+
+      editBusinessCategories.assignAll(
+        returnedCategories,
+      );
+
+      hasPreferences.value =
+          returnedCategories.isNotEmpty;
+
+      debugPrint('');
+      debugPrint(
+        '💾 LOCAL CATEGORIES UPDATED',
+      );
+
+      debugPrint(
+        '📦 Categories: '
+        '${editBusinessCategories.toList()}',
+      );
+
+      debugPrint(
+        '🏢 Facility ID KEPT: $facilityId',
+      );
+
+      // --------------------------------------------------------
+      // CLOSE ONLY EDIT SCREEN
+      // --------------------------------------------------------
 
       Get.back();
 
@@ -542,20 +633,29 @@ class OwnerEditProfileController extends GetxController {
         icon: Icons.check_circle_outline,
       );
 
-      debugPrint('✅ OWNER PREFERENCES UPDATE SUCCESS');
+      debugPrint(
+        '✅ OWNER CATEGORIES UPDATE SUCCESS',
+      );
     } catch (e, stackTrace) {
       debugPrint('');
-      debugPrint('════════ OWNER PREFERENCES UPDATE ERROR ════════');
+      debugPrint(
+        '════════ OWNER CATEGORY UPDATE ERROR ════════',
+      );
 
       debugPrint('❌ Error: $e');
 
-      debugPrint('❌ Type: ${e.runtimeType}');
+      debugPrint(
+        '❌ Type: ${e.runtimeType}',
+      );
 
-      debugPrint('❌ StackTrace: $stackTrace');
+      debugPrint(
+        '❌ StackTrace: $stackTrace',
+      );
 
       AppSnackbar.show(
         title: 'Update Failed'.tr,
-        message: _getFriendlyErrorMessage(e),
+        message:
+            _getFriendlyErrorMessage(e),
         icon: Icons.error_outline,
       );
     } finally {
@@ -564,36 +664,53 @@ class OwnerEditProfileController extends GetxController {
   }
 
   // ============================================================
-  // FRIENDLY ERROR
-  // ============================================================
-
-  String _getFriendlyErrorMessage(dynamic error) {
-    String message;
-
-    if (error is ApiError) {
-      message = error.message;
-    } else {
-      message = error.toString().replaceAll('Exception: ', '');
-    }
-
-    if (message.contains('email_already_exists') || message.contains('taken')) {
-      return 'This email address is already registered to another account.'.tr;
-    }
-
-    if (message.contains('phone_already_exists') ||
-        message.contains('phone_number_taken')) {
-      return 'This phone number is already registered to another account.'.tr;
-    }
-
-    return message.tr;
-  }
-
-  // ============================================================
   // SAVE PREFERENCES
   // ============================================================
 
   Future<void> savePreferences() async {
     await updateBusinessPreferences();
+  }
+
+  // ============================================================
+  // FRIENDLY ERROR
+  // ============================================================
+
+  String _getFriendlyErrorMessage(
+    dynamic error,
+  ) {
+    String message;
+
+    if (error is ApiError) {
+      message = error.message;
+    } else {
+      message =
+          error.toString().replaceAll(
+                'Exception: ',
+                '',
+              );
+    }
+
+    if (message.contains(
+          'email_already_exists',
+        ) ||
+        message.contains('taken')) {
+      return
+          'This email address is already registered to another account.'
+              .tr;
+    }
+
+    if (message.contains(
+          'phone_already_exists',
+        ) ||
+        message.contains(
+          'phone_number_taken',
+        )) {
+      return
+          'This phone number is already registered to another account.'
+              .tr;
+    }
+
+    return message.tr;
   }
 
   // ============================================================
@@ -607,15 +724,18 @@ class OwnerEditProfileController extends GetxController {
 
     timer?.cancel();
 
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (secondsRemaining.value > 0) {
-        secondsRemaining.value--;
-      } else {
-        isResendEnabled.value = true;
+    timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (timer) {
+        if (secondsRemaining.value > 0) {
+          secondsRemaining.value--;
+        } else {
+          isResendEnabled.value = true;
 
-        timer.cancel();
-      }
-    });
+          timer.cancel();
+        }
+      },
+    );
   }
 
   // ============================================================
@@ -625,27 +745,39 @@ class OwnerEditProfileController extends GetxController {
   void goToEmail() {
     newEmailController.clear();
 
-    Get.to(() => OwnerChangeEmail());
+    Get.to(
+      () => OwnerChangeEmail(),
+    );
   }
 
   void goToPhone() {
-    Get.to(() => OwnerChangePhone());
+    Get.to(
+      () => OwnerChangePhone(),
+    );
   }
 
   void goToPassword() {
-    Get.to(() => OwnerChangePassword());
+    Get.to(
+      () => OwnerChangePassword(),
+    );
   }
 
   void goToPreferences() {
-    Get.to(() => const OwnerChangePreferences());
+    Get.to(
+      () => const OwnerChangePreferences(),
+    );
   }
 
   void goToBusiness() {
-    Get.to(() => OwnerChangeFacilityName());
+    Get.to(
+      () => OwnerChangeFacilityName(),
+    );
   }
 
   void goToEmailVerification() {
-    Get.to(() => const OwnerVerifyNewEmail());
+    Get.to(
+      () => const OwnerVerifyNewEmail(),
+    );
 
     startResendTimer();
   }
@@ -655,19 +787,22 @@ class OwnerEditProfileController extends GetxController {
   // ============================================================
 
   Future<void> changePhoneNumber() async {
-    final newPhone = phoneController.text.trim();
+    final newPhone =
+        phoneController.text.trim();
 
     if (newPhone.isEmpty) {
       AppSnackbar.show(
         title: 'Required'.tr,
-        message: 'Please enter your phone number'.tr,
+        message:
+            'Please enter your phone number'.tr,
         icon: Icons.warning_amber_rounded,
       );
 
       return;
     }
 
-    final phoneRegex = RegExp(r'^09\d{8}$');
+    final phoneRegex =
+        RegExp(r'^09\d{8}$');
 
     if (!phoneRegex.hasMatch(newPhone)) {
       AppSnackbar.show(
@@ -684,7 +819,9 @@ class OwnerEditProfileController extends GetxController {
     if (newPhone == phone.value) {
       AppSnackbar.show(
         title: 'No Changes'.tr,
-        message: 'Please enter a different phone number'.tr,
+        message:
+            'Please enter a different phone number'
+                .tr,
         icon: Icons.info_outline,
       );
 
@@ -698,15 +835,20 @@ class OwnerEditProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-      final result = await _ownerOnboardingRepo.changePhoneNumber(
+      final result =
+          await _ownerOnboardingRepo.changePhoneNumber(
         phoneNumber: newPhone,
       );
 
-      phone.value = result.phoneNumber;
+      phone.value =
+          result.phoneNumber;
 
-      phoneController.text = result.phoneNumber;
+      phoneController.text =
+          result.phoneNumber;
 
-      await PrefHelper.saveUserPhone(result.phoneNumber);
+      await PrefHelper.saveUserPhone(
+        result.phoneNumber,
+      );
 
       Get.back();
 
@@ -718,7 +860,8 @@ class OwnerEditProfileController extends GetxController {
     } catch (e) {
       AppSnackbar.show(
         title: 'Phone Number Update Failed'.tr,
-        message: _getFriendlyErrorMessage(e),
+        message:
+            _getFriendlyErrorMessage(e),
         icon: Icons.error_outline,
       );
     } finally {
@@ -731,16 +874,21 @@ class OwnerEditProfileController extends GetxController {
   // ============================================================
 
   Future<void> sendEmailChangeRequest() async {
-    if (changeEmailFormKey.currentState?.validate() != true) {
+    if (changeEmailFormKey.currentState
+            ?.validate() !=
+        true) {
       return;
     }
 
-    final targetEmail = newEmailController.text.trim();
+    final targetEmail =
+        newEmailController.text.trim();
 
     if (targetEmail == email.value) {
       AppSnackbar.show(
         title: 'No Changes'.tr,
-        message: 'Please enter a different email address'.tr,
+        message:
+            'Please enter a different email address'
+                .tr,
         icon: Icons.info_outline,
       );
 
@@ -754,21 +902,27 @@ class OwnerEditProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-      await _authRepo.requestClientEmailChange(email: targetEmail);
+      await _authRepo.requestClientEmailChange(
+        email: targetEmail,
+      );
 
-      pendingEmail.value = targetEmail;
+      pendingEmail.value =
+          targetEmail;
 
       goToEmailVerification();
 
       AppSnackbar.show(
         title: 'Verification Link Sent'.tr,
-        message: 'We sent a verification link to your new email address.'.tr,
+        message:
+            'We sent a verification link to your new email address.'
+                .tr,
         icon: Icons.mark_email_read_outlined,
       );
     } catch (e) {
       AppSnackbar.show(
         title: 'Email Request Failed'.tr,
-        message: _getFriendlyErrorMessage(e),
+        message:
+            _getFriendlyErrorMessage(e),
         icon: Icons.error_outline,
       );
     } finally {
@@ -788,11 +942,15 @@ class OwnerEditProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-      email.value = pendingEmail.value;
+      email.value =
+          pendingEmail.value;
 
-      emailController.text = pendingEmail.value;
+      emailController.text =
+          pendingEmail.value;
 
-      await PrefHelper.saveUserEmail(pendingEmail.value);
+      await PrefHelper.saveUserEmail(
+        pendingEmail.value,
+      );
 
       pendingEmail.value = '';
 
@@ -803,13 +961,16 @@ class OwnerEditProfileController extends GetxController {
 
       AppSnackbar.show(
         title: 'Email Updated'.tr,
-        message: 'Your email address was updated successfully'.tr,
+        message:
+            'Your email address was updated successfully'
+                .tr,
         icon: Icons.check_circle_outline,
       );
     } catch (e) {
       AppSnackbar.show(
         title: 'Error'.tr,
-        message: _getFriendlyErrorMessage(e),
+        message:
+            _getFriendlyErrorMessage(e),
         icon: Icons.error_outline,
       );
     } finally {
@@ -837,19 +998,24 @@ class OwnerEditProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-      await _authRepo.requestClientEmailChange(email: pendingEmail.value);
+      await _authRepo.requestClientEmailChange(
+        email: pendingEmail.value,
+      );
 
       startResendTimer();
 
       AppSnackbar.show(
         title: 'Email Sent'.tr,
-        message: 'A new verification link has been sent to your email'.tr,
+        message:
+            'A new verification link has been sent to your email'
+                .tr,
         icon: Icons.email_outlined,
       );
     } catch (e) {
       AppSnackbar.show(
         title: 'Resend Failed'.tr,
-        message: _getFriendlyErrorMessage(e),
+        message:
+            _getFriendlyErrorMessage(e),
         icon: Icons.error_outline,
       );
     } finally {
@@ -862,7 +1028,9 @@ class OwnerEditProfileController extends GetxController {
   // ============================================================
 
   Future<void> savePersonalInfo() async {
-    if (personalInfoFormKey.currentState?.validate() != true) {
+    if (personalInfoFormKey.currentState
+            ?.validate() !=
+        true) {
       return;
     }
 
@@ -873,23 +1041,30 @@ class OwnerEditProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-      businessName.value = businessNameController.text.trim();
+      businessName.value =
+          businessNameController.text.trim();
 
-      selectedBusinessName.value = businessName.value;
+      selectedBusinessName.value =
+          businessName.value;
 
-      await PrefHelper.saveOwnerBusinessName(businessName.value);
+      await PrefHelper.saveOwnerBusinessName(
+        businessName.value,
+      );
 
       Get.back();
 
       AppSnackbar.show(
         title: 'Success'.tr,
-        message: 'Personal info updated'.tr,
+        message:
+            'Personal info updated'.tr,
         icon: Icons.check_circle_outline,
       );
     } catch (e) {
       AppSnackbar.show(
         title: 'Error'.tr,
-        message: 'Something went wrong. Please try again'.tr,
+        message:
+            'Something went wrong. Please try again'
+                .tr,
         icon: Icons.error_outline,
       );
     } finally {
@@ -902,7 +1077,9 @@ class OwnerEditProfileController extends GetxController {
   // ============================================================
 
   Future<void> saveContactSecurity() async {
-    if (contactSecurityFormKey.currentState?.validate() != true) {
+    if (contactSecurityFormKey.currentState
+            ?.validate() !=
+        true) {
       return;
     }
 
@@ -913,13 +1090,19 @@ class OwnerEditProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-      email.value = emailController.text.trim();
+      email.value =
+          emailController.text.trim();
 
-      phone.value = phoneController.text.trim();
+      phone.value =
+          phoneController.text.trim();
 
-      await PrefHelper.saveUserEmail(email.value);
+      await PrefHelper.saveUserEmail(
+        email.value,
+      );
 
-      await PrefHelper.saveUserPhone(phone.value);
+      await PrefHelper.saveUserPhone(
+        phone.value,
+      );
 
       passwordController.clear();
 
@@ -927,13 +1110,16 @@ class OwnerEditProfileController extends GetxController {
 
       AppSnackbar.show(
         title: 'Success'.tr,
-        message: 'Contact & security updated'.tr,
+        message:
+            'Contact & security updated'.tr,
         icon: Icons.check_circle_outline,
       );
     } catch (e) {
       AppSnackbar.show(
         title: 'Error'.tr,
-        message: 'Something went wrong. Please try again'.tr,
+        message:
+            'Something went wrong. Please try again'
+                .tr,
         icon: Icons.error_outline,
       );
     } finally {
@@ -946,111 +1132,113 @@ class OwnerEditProfileController extends GetxController {
   // ============================================================
 
   void togglePasswordVisibility() {
-    obscurePassword.value = !obscurePassword.value;
+    obscurePassword.value =
+        !obscurePassword.value;
   }
 
   // ============================================================
-// CHANGE PASSWORD
-// ============================================================
+  // CHANGE PASSWORD
+  // ============================================================
 
-Future<void> changePassword({
-  required String currentPassword,
-  required String newPassword,
-}) async {
-  if (isLoading.value) {
-    return;
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    if (isLoading.value) {
+      return;
+    }
+
+    if (currentPassword.isEmpty) {
+      AppSnackbar.show(
+        title: 'Required'.tr,
+        message:
+            'Please enter your current password'
+                .tr,
+        icon: Icons.warning_amber_rounded,
+      );
+
+      return;
+    }
+
+    if (newPassword.isEmpty) {
+      AppSnackbar.show(
+        title: 'Required'.tr,
+        message:
+            'Please enter your new password'
+                .tr,
+        icon: Icons.warning_amber_rounded,
+      );
+
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      AppSnackbar.show(
+        title: 'Weak Password'.tr,
+        message:
+            'Your new password must be at least 8 characters'
+                .tr,
+        icon: Icons.lock_outline,
+      );
+
+      return;
+    }
+
+    if (currentPassword == newPassword) {
+      AppSnackbar.show(
+        title: 'No Changes'.tr,
+        message:
+            'Your new password must be different from your current password'
+                .tr,
+        icon: Icons.info_outline,
+      );
+
+      return;
+    }
+
+    isLoading.value = true;
+
+    try {
+      await _ownerOnboardingRepo.changePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      );
+
+      Get.back();
+
+      AppSnackbar.show(
+        title: 'Password Updated'.tr,
+        message:
+            'Your password has been changed successfully'
+                .tr,
+        icon: Icons.check_circle_outline,
+      );
+    } catch (e) {
+      AppSnackbar.show(
+        title: 'Password Update Failed'.tr,
+        message:
+            _getFriendlyErrorMessage(e),
+        icon: Icons.error_outline,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
-
-  if (currentPassword.isEmpty) {
-    AppSnackbar.show(
-      title: 'Required'.tr,
-      message: 'Please enter your current password'.tr,
-      icon: Icons.warning_amber_rounded,
-    );
-
-    return;
-  }
-
-  if (newPassword.isEmpty) {
-    AppSnackbar.show(
-      title: 'Required'.tr,
-      message: 'Please enter your new password'.tr,
-      icon: Icons.warning_amber_rounded,
-    );
-
-    return;
-  }
-
-  if (newPassword.length < 8) {
-    AppSnackbar.show(
-      title: 'Weak Password'.tr,
-      message:
-          'Your new password must be at least 8 characters'.tr,
-      icon: Icons.lock_outline,
-    );
-
-    return;
-  }
-
-  if (currentPassword == newPassword) {
-    AppSnackbar.show(
-      title: 'No Changes'.tr,
-      message:
-          'Your new password must be different from your current password'
-              .tr,
-      icon: Icons.info_outline,
-    );
-
-    return;
-  }
-
-  isLoading.value = true;
-
-  try {
-    await _ownerOnboardingRepo.changePassword(
-      currentPassword: currentPassword,
-      newPassword: newPassword,
-    );
-
-    Get.back();
-
-    AppSnackbar.show(
-      title: 'Password Updated'.tr,
-      message:
-          'Your password has been changed successfully'.tr,
-      icon: Icons.check_circle_outline,
-    );
-  } catch (e) {
-    AppSnackbar.show(
-      title: 'Password Update Failed'.tr,
-      message: _getFriendlyErrorMessage(e),
-      icon: Icons.error_outline,
-    );
-  } finally {
-    isLoading.value = false;
-  }
-}
 
   // ============================================================
   // UPDATE BUSINESS NAME
   // ============================================================
 
   Future<void> updateBusinessName() async {
-    final newName = businessName.value.trim();
-
-    debugPrint('');
-    debugPrint('════════ UPDATE OWNER BUSINESS NAME ════════');
-
-    debugPrint('🏢 New Business Name: $newName');
-
-    // ----------------------------------------------------------
-    // VALIDATION
-    // ----------------------------------------------------------
+    final newName =
+        businessName.value.trim();
 
     if (newName.isEmpty) {
       AppSnackbar.show(
         title: 'Required'.tr,
-        message: 'Please enter a business name'.tr,
+        message:
+            'Please enter a business name'
+                .tr,
         icon: Icons.warning_amber_rounded,
       );
 
@@ -1060,33 +1248,38 @@ Future<void> changePassword({
     if (newName.length < 2) {
       AppSnackbar.show(
         title: 'Invalid Business Name'.tr,
-        message: 'Business name must contain at least 2 characters'.tr,
+        message:
+            'Business name must contain at least 2 characters'
+                .tr,
         icon: Icons.warning_amber_rounded,
       );
 
       return;
     }
 
-    if (newName == selectedBusinessName.value.trim()) {
+    if (newName ==
+        selectedBusinessName.value.trim()) {
       AppSnackbar.show(
         title: 'No Changes'.tr,
-        message: 'Please enter a different business name'.tr,
+        message:
+            'Please enter a different business name'
+                .tr,
         icon: Icons.info_outline,
       );
 
       return;
     }
 
-    // ----------------------------------------------------------
-    // FACILITY ID
-    // ----------------------------------------------------------
+    final facilityId =
+        await PrefHelper.getOwnerFacilityId();
 
-    final facilityId = await PrefHelper.getOwnerFacilityId();
-
-    if (facilityId == null || facilityId <= 0) {
+    if (facilityId == null ||
+        facilityId <= 0) {
       AppSnackbar.show(
         title: 'Error'.tr,
-        message: 'Unable to find your business facility.'.tr,
+        message:
+            'Unable to find your business facility.'
+                .tr,
         icon: Icons.error_outline,
       );
 
@@ -1100,65 +1293,34 @@ Future<void> changePassword({
     isLoading.value = true;
 
     try {
-      debugPrint('🏢 Facility ID: $facilityId');
-
-      debugPrint('📤 New Name: $newName');
-
-      final result = await _ownerOnboardingRepo.updateBusinessName(
+      final result =
+          await _ownerOnboardingRepo.updateBusinessName(
         businessName: newName,
         facilityId: facilityId,
       );
 
-      debugPrint('');
-      debugPrint('════════ BUSINESS NAME RESPONSE ════════');
+      final returnedName =
+          result.facility.facilityNameEn
+              ?.trim();
 
-      debugPrint('💬 Message: ${result.message}');
+      final finalBusinessName =
+          returnedName != null &&
+                  returnedName.isNotEmpty
+              ? returnedName
+              : newName;
 
-      debugPrint('🏢 Facility ID: ${result.facility.id}');
+      businessName.value =
+          finalBusinessName;
 
-      debugPrint(
-        '🏢 Business Name EN: '
-        '${result.facility.facilityNameEn}',
+      selectedBusinessName.value =
+          finalBusinessName;
+
+      businessNameController.text =
+          finalBusinessName;
+
+      await PrefHelper.saveOwnerBusinessName(
+        finalBusinessName,
       );
-
-      debugPrint(
-        '🏢 Business Name AR: '
-        '${result.facility.facilityNameAr}',
-      );
-
-      final returnedName = result.facility.facilityNameEn?.trim();
-
-      final finalBusinessName = returnedName != null && returnedName.isNotEmpty
-          ? returnedName
-          : newName;
-
-      // --------------------------------------------------------
-      // UPDATE CONTROLLER
-      // --------------------------------------------------------
-
-      businessName.value = finalBusinessName;
-
-      selectedBusinessName.value = finalBusinessName;
-
-      businessNameController.text = finalBusinessName;
-
-      // --------------------------------------------------------
-      // SAVE OWNER BUSINESS NAME
-      // --------------------------------------------------------
-
-      await PrefHelper.saveOwnerBusinessName(finalBusinessName);
-
-      debugPrint('');
-      debugPrint('💾 OWNER BUSINESS NAME UPDATED LOCALLY');
-
-      debugPrint(
-        '🏢 Business Name: '
-        '$finalBusinessName',
-      );
-
-      // --------------------------------------------------------
-      // CLOSE
-      // --------------------------------------------------------
 
       Get.back();
 
@@ -1167,21 +1329,11 @@ Future<void> changePassword({
         message: result.message.tr,
         icon: Icons.check_circle_outline,
       );
-
-      debugPrint('✅ OWNER BUSINESS NAME UPDATE SUCCESS');
-    } catch (e, stackTrace) {
-      debugPrint('');
-      debugPrint('════════ BUSINESS NAME UPDATE ERROR ════════');
-
-      debugPrint('❌ Error: $e');
-
-      debugPrint('❌ Type: ${e.runtimeType}');
-
-      debugPrint('❌ StackTrace: $stackTrace');
-
+    } catch (e) {
       AppSnackbar.show(
         title: 'Business Name Update Failed'.tr,
-        message: _getFriendlyErrorMessage(e),
+        message:
+            _getFriendlyErrorMessage(e),
         icon: Icons.error_outline,
       );
     } finally {

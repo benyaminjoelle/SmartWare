@@ -292,10 +292,13 @@ CustomTextField(
                   // ======================================================
                   // CATEGORIES
                   // ======================================================
-
-                  ProductCategorySelector(
-                    controller: controller,
-                  ),
+ProductCategorySelector(
+  availableCategories: controller.availableCategories,
+  isSelected: controller.isCategorySelected,
+  onToggle: controller.toggleCategory,
+  titleBuilder: controller.categoryTitle,
+  iconBuilder: controller.categoryIcon,
+),
 
                   const SizedBox(height: 24),
 

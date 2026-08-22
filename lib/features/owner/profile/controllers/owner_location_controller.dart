@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:smartware/core/routes/app_routes.dart';
 import 'package:smartware/features/owner/profile/models/owner_onboarding_repo.dart';
 import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/widgets/app_snackbar.dart';
@@ -676,77 +677,154 @@ class OwnerLocationController extends GetxController {
         _generateSessionToken();
   }
   // DONE
- Future<void> done() async {
+Future<void> done() async {
   final LatLng? location = selectedLocation.value;
 
   if (location == null) {
     AppSnackbar.show(
       title: 'Location Required',
-      message: 'Please select your business location on the map.',
+      message:
+          'Please select your business location on the map.',
       position: SnackPosition.TOP,
     );
+
     return;
   }
 
-  if (isSaving.value) return;
+  if (isSaving.value) {
+    return;
+  }
 
   isSaving.value = true;
 
   try {
-    final facilityId = await PrefHelper.getOwnerFacilityId();
+    // ========================================================
+    // GET FACILITY ID
+    // ========================================================
+
+    final facilityId =
+        await PrefHelper.getOwnerFacilityId();
 
     if (facilityId == null || facilityId <= 0) {
       AppSnackbar.show(
         title: 'Error',
-        message: 'Facility information was not found.',
+        message:
+            'Facility information was not found.',
         position: SnackPosition.TOP,
       );
+
       return;
     }
 
     // ========================================================
-    // SEND LOCATION TO LARAVEL
+    // SUBMIT LOCATION TO LARAVEL
     // ========================================================
 
-    await _repo.submitLocation(
+    debugPrint('');
+    debugPrint(
+      '════════ OWNER SUBMIT LOCATION START ════════',
+    );
+
+    debugPrint(
+      '📤 Request Data:',
+    );
+
+    debugPrint(
+      '{'
+      'facility_id: $facilityId, '
+      'latitude: ${location.latitude}, '
+      'longitude: ${location.longitude}, '
+      'address: ${selectedAddress.value.trim()}'
+      '}',
+    );
+
+    final result =
+        await _repo.submitLocation(
       facilityId: facilityId,
       latitude: location.latitude,
       longitude: location.longitude,
       address: selectedAddress.value.trim(),
     );
 
+    debugPrint('');
+    debugPrint(
+      '📥 Owner Location Response:',
+    );
+
+   
+
+    debugPrint(
+      '════════ OWNER LOCATION SUCCESS ════════',
+    );
+
     // ========================================================
-    // SAVE OWNER PROFILE COMPLETION
+    // MARK OWNER PROFILE AS COMPLETE
     // ========================================================
 
-    await PrefHelper.setOwnerProfileCompleted(true);
+    await PrefHelper.setOwnerProfileCompleted(
+      true,
+    );
 
-    await PrefHelper.saveOwnerProfileCompletion(100);
+    await PrefHelper.saveOwnerProfileCompletion(
+      100,
+    );
 
-    await PrefHelper.saveOwnerOnboardingStep(4);
+    await PrefHelper.saveOwnerOnboardingStep(
+      4,
+    );
 
     debugPrint('');
-    debugPrint('════════ OWNER PROFILE COMPLETED ════════');
-    debugPrint('✅ Location saved to Laravel');
-    debugPrint('✅ Owner profile completed: 100%');
-    debugPrint('✅ Owner onboarding step: 4');
-    debugPrint('════════════════════════════════════════');
-    debugPrint('');
+
+    debugPrint(
+      '════════ OWNER PROFILE COMPLETED ════════',
+    );
+
+    debugPrint(
+      '✅ Location saved to Laravel',
+    );
+
+    debugPrint(
+      '✅ Owner profile completed: 100%',
+    );
+
+    debugPrint(
+      '✅ Owner onboarding step: 4',
+    );
+
+    debugPrint(
+      '🚀 Navigating to owner profile...',
+    );
+
+    // ========================================================
+    // SUCCESS MESSAGE
+    // ========================================================
 
     AppSnackbar.show(
       title: 'Profile Complete',
-      message: 'Your profile has been completed successfully.',
+      message:
+          'Your profile has been completed successfully.',
       position: SnackPosition.TOP,
     );
 
     // ========================================================
-    // RETURN TO PROFILE PAGE
+    // NAVIGATE TO OWNER PROFILE
     // ========================================================
 
-    Get.back(result: true);
+    await Get.offNamed(
+      AppRoutes.ownerRoot,
+    );
 
-  } catch (e) {
-    debugPrint('❌ Save location error: $e');
+    debugPrint(
+      '✅ Owner profile navigation executed',
+    );
+  } catch (e, stackTrace) {
+    debugPrint(
+      '❌ Save location error: $e',
+    );
+
+    debugPrint(
+      '$stackTrace',
+    );
 
     AppSnackbar.show(
       title: 'Error',
