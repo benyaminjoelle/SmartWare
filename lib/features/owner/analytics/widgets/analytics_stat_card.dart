@@ -7,7 +7,10 @@ import 'package:smartware/features/owner/analytics/widgets/low_stock_card.dart';
 class AnalyticsSummaryGrid extends StatelessWidget {
   final OwnerAnalyticsController controller;
 
-  const AnalyticsSummaryGrid({super.key, required this.controller});
+  const AnalyticsSummaryGrid({
+    super.key,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,7 @@ class AnalyticsSummaryGrid extends StatelessWidget {
             switch (index) {
               case 0:
                 return AnalyticsStatCard(
-                  title: 'Products',
+                  title: 'products'.tr,
                   value: controller.totalProducts.value.toString(),
                   icon: Icons.inventory_2_outlined,
                   onTap: () {
@@ -42,21 +45,24 @@ class AnalyticsSummaryGrid extends StatelessWidget {
 
               case 1:
                 return AnalyticsStatCard(
-                  title: 'Low stock',
+                  title: 'low_stock'.tr,
                   value: controller.lowStockCount.value.toString(),
                   icon: Icons.warning_amber_rounded,
                   iconColor: colors.error,
                   onTap: () {
-                    Get.to(() => LowStockCard(controller: controller));
+                    Get.to(
+                      () => LowStockCard(
+                        controller: controller,
+                      ),
+                    );
                   },
                 );
 
               default:
                 return AnalyticsStatCard(
-                  title: 'Pending orders',
+                  title: 'pending_orders'.tr,
                   value: controller.pendingOrders.value.toString(),
                   icon: Icons.shopping_cart_outlined,
-
                   onTap: () {
                     // TODO: Open pending orders
                   },
@@ -119,7 +125,11 @@ class AnalyticsStatCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Icon(icon, size: 22, color: iconColor ?? colors.primary),
+                  Icon(
+                    icon,
+                    size: 22,
+                    color: iconColor ?? colors.primary,
+                  ),
 
                   Icon(
                     Icons.arrow_forward_ios_rounded,
