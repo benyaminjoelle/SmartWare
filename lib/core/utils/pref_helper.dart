@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrefHelper {
@@ -15,6 +17,8 @@ class PrefHelper {
   static const String _userRoleKey = 'user_role';
   static const String _businessTypeKey = 'business_type';
   static const String _businessCategoriesKey = 'business_categories';
+  static const String _ownerProductCategories =
+    'owner_product_categories';
   // ============================================================
   // THEME
   // ============================================================
@@ -483,6 +487,7 @@ class PrefHelper {
     await prefs.remove(_readNotificationsKey);
     await prefs.remove(_businessTypeKey);
     await prefs.remove(_businessCategoriesKey);
+    await prefs.remove(_ownerProductCategories);
 
     print('🧹 User data completely wiped out from local storage.');
   }
@@ -685,6 +690,7 @@ class PrefHelper {
     await prefs.remove(_ownerBusinessName);
 
     await prefs.remove(_ownerBusinessType);
+    await prefs.remove(_ownerProductCategories);
 
     await prefs.remove(_ownerSelectedProducts);
   }
@@ -709,4 +715,44 @@ class PrefHelper {
 
     return prefs.getStringList(_ownerBusinessCategories) ?? [];
   }
+  static Future<void> saveOwnerProductCategories(
+  List<Map<String, dynamic>> categories,
+) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  await prefs.setString(
+    _ownerProductCategories,
+    jsonEncode(categories),
+  );
+
+  print('💾 Owner product categories saved: $categories');
+}
+
+static Future<List<Map<String, dynamic>>> getOwnerProductCategories() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  final value = prefs.getString(_ownerProductCategories);
+
+  if (value == null || value.isEmpty) {
+    return [];
+  }
+
+  try {
+    final decoded = jsonDecode(value);
+
+    if (decoded is! List) {
+      return [];
+    }
+
+    return decoded
+        .whereType<Map>()
+        .map(
+          (category) => Map<String, dynamic>.from(category),
+        )
+        .toList();
+  } catch (e) {
+    print('❌ Failed to decode owner product categories: $e');
+    return [];
+  }
+}
 }

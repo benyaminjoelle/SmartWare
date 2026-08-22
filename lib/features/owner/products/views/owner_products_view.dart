@@ -15,7 +15,7 @@ class OwnerProductsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final OwnerProductsController controller =
-        Get.find<OwnerProductsController>();
+        Get.put<OwnerProductsController>(OwnerProductsController());
 
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
@@ -26,7 +26,7 @@ class OwnerProductsView extends StatelessWidget {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF1F5F9),
+      
         body: SafeArea(
           child: Obx(() {
             if (controller.isLoading.value &&

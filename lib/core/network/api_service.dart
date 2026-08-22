@@ -126,21 +126,55 @@ class ApiService {
   }
 
   // =========================
-  // DELETE
-  // =========================
-  Future<dynamic> delete(String endpoint) async {
-    try {
-      final response = await dio.delete(endpoint);
+// DELETE
+// =========================
 
-      if (response.statusCode == 401) {
-        return ApiError(message: 'Unauthorized');
-      }
+Future<dynamic> delete(String endpoint) async {
+  try {
+    final response = await dio.delete(
+      endpoint,
+      options: Options(
+        responseType: ResponseType.plain,
+      ),
+    );
 
-      return response.data;
-    } on DioException catch (e) {
-      return ApiError(message: e.message ?? 'Network error');
+    print('');
+    print('✅ DELETE RESPONSE [${response.statusCode}]');
+    print('✅ URL: ${response.requestOptions.uri}');
+    print('✅ DATA: ${response.data}');
+    print('');
+
+    if (response.statusCode == 401) {
+      return ApiError(message: 'Unauthorized');
     }
+
+    return response.data;
+  } on DioException catch (e) {
+    print('');
+    print('❌ DELETE ERROR');
+    print('❌ TYPE: ${e.type}');
+    print('❌ MESSAGE: ${e.message}');
+    print('❌ ERROR: ${e.error}');
+    print('❌ STATUS: ${e.response?.statusCode}');
+    print('❌ RESPONSE DATA: ${e.response?.data}');
+    print('❌ URL: ${e.requestOptions.uri}');
+    print('');
+
+    if (e.response?.data is Map<String, dynamic>) {
+      final data = e.response!.data as Map<String, dynamic>;
+
+      return ApiError(
+        message: data['message']?.toString() ??
+            data['error']?.toString() ??
+            'Failed to delete product',
+      );
+    }
+
+    return ApiError(
+      message: e.message ?? 'Network error',
+    );
   }
+}
 
   // =========================
   // PATCH

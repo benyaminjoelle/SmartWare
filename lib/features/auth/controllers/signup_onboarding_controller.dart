@@ -48,7 +48,7 @@ class SignupOnboardingController extends GetxController {
         Get.toNamed('/clientSignup');
         break;
 
-      case UserRole.warehouseAdmin:
+      case UserRole.warehouse_admin:
         Get.toNamed('/ownerSignup');
         break;
 

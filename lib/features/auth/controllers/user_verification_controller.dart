@@ -295,7 +295,7 @@ await PrefHelper.saveUserRole(user.role.name);
       // ========================================================
 
       switch (user.role) {
-        case UserRole.warehouseAdmin:
+        case UserRole.warehouse_admin:
           Get.offAllNamed('/ownerRoot');
           break;
 

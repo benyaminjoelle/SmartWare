@@ -17,7 +17,7 @@ class OwnerOrdersView extends StatelessWidget {
     final colors = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
+      
       body: SafeArea(
         child: GestureDetector(
           onTap: () {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartware/core/constants/const_ip.dart';
 
 class ProductImage extends StatelessWidget {
   final String? imageUrl;
@@ -10,19 +11,25 @@ class ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasImage =
-        imageUrl != null && imageUrl!.trim().isNotEmpty;
+    final colors = Theme.of(context).colorScheme;
+
+    final fullImageUrl = imageUrl == null || imageUrl!.isEmpty
+        ? null
+        : 'http://${ConstIp().ip}:8000/storage/$imageUrl';
+
+    print('🖼️ IMAGE URL: $fullImageUrl');
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(14),
       child: SizedBox(
         width: 62,
         height: 62,
-        child: hasImage
+        child: fullImageUrl != null
             ? Image.network(
-                imageUrl!,
+                fullImageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) {
+                errorBuilder: (context, error, stackTrace) {
+                  print('❌ IMAGE ERROR: $error');
                   return const _EmptyProductImage();
                 },
               )

@@ -65,7 +65,7 @@ class SplashController extends GetxController {
         Get.offAllNamed(AppRoutes.clientRoot);
         break;
 
-      case 'warehouseAdmin':
+      case 'warehouse_admin':
         print('➡️ GOING TO OWNER');
         Get.offAllNamed(AppRoutes.ownerRoot);
         break;

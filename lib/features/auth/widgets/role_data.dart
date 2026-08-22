@@ -42,7 +42,7 @@ List<RoleModel> getRoles(ColorScheme colors) {
       description: "Manage warehouses, storage, and incoming orders".tr,
       icon: Icons.warehouse_outlined,
       color: colors.tertiary,
-      type: UserRole.warehouseAdmin,
+      type: UserRole.warehouse_admin,
     ),
   ];
 }

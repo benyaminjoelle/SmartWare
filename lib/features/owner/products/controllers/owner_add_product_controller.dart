@@ -9,7 +9,15 @@ import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/features/owner/products/models/products_repo.dart';
 
 class AddProductController extends GetxController {
+  // ============================================================
+  // REPOSITORY
+  // ============================================================
+
   final ProductsRepo _repo = ProductsRepo();
+
+  // ============================================================
+  // FORM
+  // ============================================================
 
   final formKey = GlobalKey<FormState>();
 
@@ -17,11 +25,19 @@ class AddProductController extends GetxController {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final quantityController = TextEditingController();
-  final sectionIdController = TextEditingController();
   final unitPriceController = TextEditingController();
 
+  // ============================================================
+  // IMAGE
+  // ============================================================
+
   final ImagePicker _imagePicker = ImagePicker();
+
   final Rxn<File> selectedImage = Rxn<File>();
+
+  // ============================================================
+  // UNIT
+  // ============================================================
 
   final RxString selectedUnit = ''.obs;
 
@@ -36,23 +52,55 @@ class AddProductController extends GetxController {
     'pallet',
   ];
 
+  // ============================================================
+  // CATEGORIES
+  // ============================================================
+
+  /// Categories allowed for THIS owner.
+  ///
+  /// These names come from PrefHelper.
+  /// Nothing is hardcoded here.
   final RxList<String> availableCategories = <String>[].obs;
+
+  /// Categories selected by the user.
+  ///
+  /// These are category names because this keeps the existing
+  /// category selector compatible.
   final RxList<String> selectedCategories = <String>[].obs;
 
-  final Map<String, int> categoryIds = {
-    'canned_foods': 1,
-    'fresh_foods': 2,
-    'refrigerated_foods': 3,
-    'frozen_foods': 4,
-    'baby_care': 27,
-    'medical_equipment': 28,
-    'vitamins_supplements': 29,
-  };
+  /// Actual category objects returned from the backend and
+  /// persisted in PrefHelper.
+  ///
+  /// Example:
+  ///
+  /// [
+  ///   {
+  ///     "id": 1,
+  ///     "name": "Canned Foods"
+  ///   },
+  ///   {
+  ///     "id": 4,
+  ///     "name": "Frozen Foods"
+  ///   }
+  /// ]
+  final RxList<Map<String, dynamic>> _ownerCategories =
+      <Map<String, dynamic>>[].obs;
+
+  // ============================================================
+  // LOADING
+  // ============================================================
 
   final RxBool isLoading = false.obs;
 
-  // Prevent double submission.
+  // ============================================================
+  // DOUBLE SUBMISSION PROTECTION
+  // ============================================================
+
   bool _submitted = false;
+
+  // ============================================================
+  // INIT
+  // ============================================================
 
   @override
   void onInit() {
@@ -63,31 +111,103 @@ class AddProductController extends GetxController {
     _loadAllowedCategories();
   }
 
+  // ============================================================
+  // LOAD OWNER CATEGORIES
+  // ============================================================
+
   Future<void> _loadAllowedCategories() async {
     try {
-      final categories =
-          await PrefHelper.getOwnerSelectedProducts();
+      print('════════ LOAD OWNER CATEGORIES ════════');
 
-      if (categories == null || categories.isEmpty) {
-        print('⚠️ No owner categories found');
+      final categories =
+          await PrefHelper.getOwnerProductCategories();
+
+      if (categories.isEmpty) {
+        print('⚠️ No owner product categories found');
+
+        availableCategories.clear();
+        _ownerCategories.clear();
+
         return;
       }
 
-      availableCategories.assignAll(categories);
+      // ----------------------------------------------------------
+      // STORE ACTUAL CATEGORY DATA
+      // ----------------------------------------------------------
+
+      _ownerCategories.assignAll(categories);
+
+      // ----------------------------------------------------------
+      // EXPOSE CATEGORY NAMES TO THE UI
+      // ----------------------------------------------------------
+
+      availableCategories.assignAll(
+        categories
+            .map(
+              (category) => category['name']?.toString() ?? '',
+            )
+            .where((name) => name.isNotEmpty)
+            .toList(),
+      );
+
+      print('🏷 Owner categories loaded:');
+
+      for (final category in _ownerCategories) {
+        print(
+          '   ID: ${category['id']} | '
+          'Name: ${category['name']}',
+        );
+      }
 
       print(
-        '🏷 Owner categories: ${availableCategories.toList()}',
+        '🏷 Available category names: '
+        '${availableCategories.toList()}',
       );
+
+      print('══════════════════════════════════════');
     } catch (e) {
-      print('❌ Failed to load categories: $e');
+      print('❌ Failed to load owner categories: $e');
+
+      availableCategories.clear();
+      _ownerCategories.clear();
     }
   }
 
+  // ============================================================
+  // CATEGORY HELPERS
+  // ============================================================
+
+  /// Returns true if the category is currently selected.
   bool isCategorySelected(String category) {
     return selectedCategories.contains(category);
   }
 
+  /// Select/unselect a category.
+  ///
+  /// The category MUST exist in the owner's allowed categories.
   void toggleCategory(String category) {
+    // ----------------------------------------------------------
+    // SAFETY CHECK
+    // ----------------------------------------------------------
+
+    final exists = _ownerCategories.any(
+      (item) =>
+          item['name']?.toString() == category,
+    );
+
+    if (!exists) {
+      print(
+        '⚠️ Attempted to select category that is not allowed: '
+        '$category',
+      );
+
+      return;
+    }
+
+    // ----------------------------------------------------------
+    // TOGGLE
+    // ----------------------------------------------------------
+
     if (selectedCategories.contains(category)) {
       selectedCategories.remove(category);
     } else {
@@ -95,70 +215,129 @@ class AddProductController extends GetxController {
     }
 
     print(
-      '🏷 Selected categories: ${selectedCategories.toList()}',
+      '🏷 Selected categories: '
+      '${selectedCategories.toList()}',
+    );
+
+    print(
+      '🆔 Selected category IDs: '
+      '${selectedCategoryIds}',
     );
   }
 
+  /// Returns the actual backend IDs for the selected categories.
+  ///
+  /// These IDs come ONLY from PrefHelper/backend data.
   List<int> get selectedCategoryIds {
-    final ids = selectedCategories
-        .map((category) => categoryIds[category])
-        .whereType<int>()
-        .toList();
+    final ids = <int>[];
+
+    for (final selectedCategory in selectedCategories) {
+      final category = _ownerCategories.firstWhereOrNull(
+        (item) =>
+            item['name']?.toString() == selectedCategory,
+      );
+
+      if (category == null) {
+        print(
+          '⚠️ Could not find ID for selected category: '
+          '$selectedCategory',
+        );
+
+        continue;
+      }
+
+      final rawId = category['id'];
+
+      final id = rawId is int
+          ? rawId
+          : int.tryParse(rawId?.toString() ?? '');
+
+      if (id != null && id > 0) {
+        ids.add(id);
+      }
+    }
 
     print('🆔 Category IDs: $ids');
 
     return ids;
   }
 
-  String categoryTitle(String category) {
-    switch (category) {
-      case 'canned_foods':
-        return 'Canned Foods';
-      case 'fresh_foods':
-        return 'Fresh Foods';
-      case 'refrigerated_foods':
-        return 'Refrigerated Foods';
-      case 'frozen_foods':
-        return 'Frozen Foods';
-      case 'baby_care':
-        return 'Baby Care';
-      case 'medical_equipment':
-        return 'Medical Equipment';
-      case 'vitamins_supplements':
-        return 'Vitamins & Supplements';
-      default:
-        return category
-            .replaceAll('_', ' ')
-            .split(' ')
-            .map(
-              (word) => word.isEmpty
-                  ? word
-                  : '${word[0].toUpperCase()}${word.substring(1)}',
-            )
-            .join(' ');
+  /// Returns the backend ID for a category.
+  int? getCategoryId(String categoryName) {
+    final category = _ownerCategories.firstWhereOrNull(
+      (item) =>
+          item['name']?.toString() == categoryName,
+    );
+
+    if (category == null) {
+      return null;
     }
+
+    final rawId = category['id'];
+
+    if (rawId is int) {
+      return rawId;
+    }
+
+    return int.tryParse(rawId?.toString() ?? '');
   }
 
-  IconData categoryIcon(String category) {
-    switch (category) {
-      case 'canned_foods':
-        return Icons.inventory_2_outlined;
-      case 'fresh_foods':
-        return Icons.eco_outlined;
-      case 'refrigerated_foods':
-        return Icons.kitchen_outlined;
-      case 'frozen_foods':
-        return Icons.ac_unit;
-      case 'baby_care':
-        return Icons.child_care_outlined;
-      case 'medical_equipment':
-        return Icons.medical_services_outlined;
-      case 'vitamins_supplements':
-        return Icons.medication_outlined;
-      default:
-        return Icons.category_outlined;
+  // ============================================================
+  // CATEGORY TITLE
+  // ============================================================
+
+  String categoryTitle(String category) {
+    if (category.trim().isEmpty) {
+      return 'Category';
     }
+
+    return category;
   }
+
+  // ============================================================
+  // CATEGORY ICON
+  // ============================================================
+
+  IconData categoryIcon(String category) {
+    final normalized = category
+        .trim()
+        .toLowerCase();
+
+    if (normalized.contains('canned')) {
+      return Icons.inventory_2_outlined;
+    }
+
+    if (normalized.contains('fresh')) {
+      return Icons.eco_outlined;
+    }
+
+    if (normalized.contains('refrigerated')) {
+      return Icons.kitchen_outlined;
+    }
+
+    if (normalized.contains('frozen')) {
+      return Icons.ac_unit;
+    }
+
+    if (normalized.contains('baby')) {
+      return Icons.child_care_outlined;
+    }
+
+    if (normalized.contains('medical')) {
+      return Icons.medical_services_outlined;
+    }
+
+    if (normalized.contains('vitamin') ||
+        normalized.contains('supplement')) {
+      return Icons.medication_outlined;
+    }
+
+    return Icons.category_outlined;
+  }
+
+  // ============================================================
+  // IMAGE PICKER
+  // ============================================================
 
   Future<void> pickImage() async {
     try {
@@ -178,7 +357,9 @@ class AddProductController extends GetxController {
 
       selectedImage.value = File(image.path);
 
-      print('🖼️ Image selected: ${image.path}');
+      print(
+        '🖼️ Image selected: ${image.path}',
+      );
     } catch (e) {
       print('❌ Image error: $e');
 
@@ -190,17 +371,33 @@ class AddProductController extends GetxController {
     }
   }
 
+  // ============================================================
+  // REMOVE IMAGE
+  // ============================================================
+
   void removeImage() {
     selectedImage.value = null;
+
+    print('🖼️ Product image removed');
   }
+
+  // ============================================================
+  // UNIT
+  // ============================================================
 
   void selectUnit(String? unit) {
-    if (unit == null) return;
+    if (unit == null || unit.trim().isEmpty) {
+      return;
+    }
 
-    selectedUnit.value = unit;
+    selectedUnit.value = unit.trim();
 
-    print('📏 Unit: $unit');
+    print('📏 Unit: ${selectedUnit.value}');
   }
+
+  // ============================================================
+  // VALIDATION - SKU
+  // ============================================================
 
   String? validateSku(String? value) {
     final sku = value?.trim() ?? '';
@@ -220,6 +417,10 @@ class AddProductController extends GetxController {
     return null;
   }
 
+  // ============================================================
+  // VALIDATION - NAME
+  // ============================================================
+
   String? validateName(String? value) {
     final name = value?.trim() ?? '';
 
@@ -234,16 +435,28 @@ class AddProductController extends GetxController {
     return null;
   }
 
+  // ============================================================
+  // VALIDATION - DESCRIPTION
+  // ============================================================
+
   String? validateDescription(String? value) {
-    if ((value?.trim() ?? '').isEmpty) {
+    final description = value?.trim() ?? '';
+
+    if (description.isEmpty) {
       return 'Description is required';
     }
 
     return null;
   }
 
+  // ============================================================
+  // VALIDATION - QUANTITY
+  // ============================================================
+
   String? validateQuantity(String? value) {
-    final quantity = int.tryParse(value?.trim() ?? '');
+    final quantity = int.tryParse(
+      value?.trim() ?? '',
+    );
 
     if (quantity == null) {
       return 'Enter a valid quantity';
@@ -256,22 +469,14 @@ class AddProductController extends GetxController {
     return null;
   }
 
-  String? validateSectionId(String? value) {
-    final sectionId = int.tryParse(value?.trim() ?? '');
-
-    if (sectionId == null) {
-      return 'Enter a valid section ID';
-    }
-
-    if (sectionId <= 0) {
-      return 'Section ID must be greater than 0';
-    }
-
-    return null;
-  }
+  // ============================================================
+  // VALIDATION - UNIT PRICE
+  // ============================================================
 
   String? validateUnitPrice(String? value) {
-    final price = double.tryParse(value?.trim() ?? '');
+    final price = double.tryParse(
+      value?.trim() ?? '',
+    );
 
     if (price == null) {
       return 'Enter a valid unit price';
@@ -283,6 +488,10 @@ class AddProductController extends GetxController {
 
     return null;
   }
+
+  // ============================================================
+  // CREATE PRODUCT
+  // ============================================================
 
   Future<void> createProduct() async {
     print('');
@@ -297,7 +506,15 @@ class AddProductController extends GetxController {
       return;
     }
 
+    // ----------------------------------------------------------
+    // HIDE KEYBOARD
+    // ----------------------------------------------------------
+
     FocusManager.instance.primaryFocus?.unfocus();
+
+    // ----------------------------------------------------------
+    // FORM
+    // ----------------------------------------------------------
 
     final form = formKey.currentState;
 
@@ -311,14 +528,42 @@ class AddProductController extends GetxController {
       return;
     }
 
+    // ----------------------------------------------------------
+    // UNIT
+    // ----------------------------------------------------------
+
     if (selectedUnit.value.trim().isEmpty) {
       Get.snackbar(
         'Missing Unit',
         'Please select a unit',
         snackPosition: SnackPosition.BOTTOM,
       );
+
       return;
     }
+
+    // ----------------------------------------------------------
+    // OWNER CATEGORIES
+    // ----------------------------------------------------------
+
+    if (_ownerCategories.isEmpty) {
+      Get.snackbar(
+        'Categories Unavailable',
+        'Your allowed product categories could not be loaded.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
+      print(
+        '❌ Cannot create product because owner categories '
+        'are empty',
+      );
+
+      return;
+    }
+
+    // ----------------------------------------------------------
+    // SELECTED CATEGORIES
+    // ----------------------------------------------------------
 
     if (selectedCategories.isEmpty) {
       Get.snackbar(
@@ -326,37 +571,71 @@ class AddProductController extends GetxController {
         'Please select at least one category',
         snackPosition: SnackPosition.BOTTOM,
       );
+
       return;
     }
 
-    final categoryIdsToSend = selectedCategoryIds;
+    // ----------------------------------------------------------
+    // RESOLVE REAL BACKEND CATEGORY IDS
+    // ----------------------------------------------------------
+
+    final categoryIdsToSend =
+        selectedCategoryIds;
 
     if (categoryIdsToSend.isEmpty) {
       Get.snackbar(
         'Invalid Categories',
-        'Selected categories are invalid',
+        'The selected categories could not be resolved.',
         snackPosition: SnackPosition.BOTTOM,
       );
+
+      print(
+        '❌ Selected categories: '
+        '${selectedCategories.toList()}',
+      );
+
       return;
     }
+
+    // ----------------------------------------------------------
+    // QUANTITY
+    // ----------------------------------------------------------
 
     final quantity = int.tryParse(
       quantityController.text.trim(),
     );
 
-    final sectionId = int.tryParse(
-      sectionIdController.text.trim(),
-    );
+    if (quantity == null) {
+      Get.snackbar(
+        'Invalid Quantity',
+        'Please enter a valid quantity.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
+      return;
+    }
+
+    // ----------------------------------------------------------
+    // UNIT PRICE
+    // ----------------------------------------------------------
 
     final unitPrice = double.tryParse(
       unitPriceController.text.trim(),
     );
 
-    if (quantity == null ||
-        sectionId == null ||
-        unitPrice == null) {
+    if (unitPrice == null) {
+      Get.snackbar(
+        'Invalid Unit Price',
+        'Please enter a valid unit price.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
       return;
     }
+
+    // ----------------------------------------------------------
+    // SUBMIT
+    // ----------------------------------------------------------
 
     try {
       _submitted = true;
@@ -364,15 +643,52 @@ class AddProductController extends GetxController {
 
       print('');
       print('════════ CREATE PRODUCT START ════════');
-      print('📦 SKU: ${skuController.text.trim()}');
-      print('📝 Name: ${nameController.text.trim()}');
-      print('📏 Unit: ${selectedUnit.value}');
-      print('💰 Unit Price: $unitPrice');
-      print('🏷 Categories: $categoryIdsToSend');
-      print('📄 Description: ${descriptionController.text.trim()}');
-      print('🏢 Section ID: $sectionId');
-      print('📦 Quantity: $quantity');
+
+      print(
+        '📦 SKU: ${skuController.text.trim()}',
+      );
+
+      print(
+        '📝 Name: ${nameController.text.trim()}',
+      );
+
+      print(
+        '📏 Unit: ${selectedUnit.value}',
+      );
+
+      print(
+        '💰 Unit Price: $unitPrice',
+      );
+
+      print(
+        '📦 Quantity: $quantity',
+      );
+
+      print(
+        '🏷 Selected Categories: '
+        '${selectedCategories.toList()}',
+      );
+
+      print(
+        '🆔 Category IDs: '
+        '$categoryIdsToSend',
+      );
+
+      print(
+        '📄 Description: '
+        '${descriptionController.text.trim()}',
+      );
+
+      print(
+        '🖼️ Image: '
+        '${selectedImage.value?.path ?? 'No image'}',
+      );
+
       print('════════════════════════════════════');
+
+      // --------------------------------------------------------
+      // API REQUEST
+      // --------------------------------------------------------
 
       final result = await _repo.createProduct(
         sku: skuController.text.trim(),
@@ -381,36 +697,58 @@ class AddProductController extends GetxController {
         unitPrice: unitPrice,
         categories: categoryIdsToSend,
         descriptionEn: descriptionController.text.trim(),
-        sectionId: sectionId,
         quantity: quantity,
         productImage: selectedImage.value,
       );
 
+      // --------------------------------------------------------
+      // SUCCESS
+      // --------------------------------------------------------
+
       print('');
       print('════════ PRODUCT CREATED ════════');
-      print('🆔 Product ID: ${result.data.id}');
-      print('📦 SKU: ${result.data.sku}');
-      print('📝 Name: ${result.data.name}');
+
+      print(
+        '🆔 Product ID: ${result.data.id}',
+      );
+
+      print(
+        '📦 SKU: ${result.data.sku}',
+      );
+
+      print(
+        '📝 Name: ${result.data.name}',
+      );
+
       print('════════════════════════════════');
 
-      // IMPORTANT:
-      // Do NOT show a snackbar before Get.back().
-      // Return the result directly to the previous screen.
+      // --------------------------------------------------------
+      // RETURN TO PREVIOUS SCREEN
+      // --------------------------------------------------------
 
-      print('⬅️ POPPING ADD PRODUCT SCREEN WITH TRUE');
+      print(
+        '⬅️ POPPING ADD PRODUCT SCREEN WITH TRUE',
+      );
 
       if (Get.isOverlaysOpen) {
-        print('⚠️ Overlay is open, closing it first');
+        print(
+          '⚠️ Overlay is open, closing it first',
+        );
+
         Get.back();
       }
 
       Get.back<bool>(result: true);
 
-      print('✅ ADD PRODUCT SCREEN POPPED');
+      print(
+        '✅ ADD PRODUCT SCREEN POPPED',
+      );
     } on ApiError catch (e) {
       _submitted = false;
 
-      print('❌ API ERROR: ${e.message}');
+      print(
+        '❌ API ERROR: ${e.message}',
+      );
 
       Get.snackbar(
         'Error',
@@ -420,8 +758,13 @@ class AddProductController extends GetxController {
     } catch (e, stackTrace) {
       _submitted = false;
 
-      print('❌ CREATE PRODUCT ERROR: $e');
-      print('❌ StackTrace: $stackTrace');
+      print(
+        '❌ CREATE PRODUCT ERROR: $e',
+      );
+
+      print(
+        '❌ StackTrace: $stackTrace',
+      );
 
       Get.snackbar(
         'Error',
@@ -430,9 +773,16 @@ class AddProductController extends GetxController {
       );
     } finally {
       isLoading.value = false;
-      print('🏁 createProduct() FINISHED');
+
+      print(
+        '🏁 createProduct() FINISHED',
+      );
     }
   }
+
+  // ============================================================
+  // CLOSE
+  // ============================================================
 
   @override
   void onClose() {
@@ -440,7 +790,6 @@ class AddProductController extends GetxController {
     nameController.dispose();
     descriptionController.dispose();
     quantityController.dispose();
-    sectionIdController.dispose();
     unitPriceController.dispose();
 
     super.onClose();

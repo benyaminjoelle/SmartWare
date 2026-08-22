@@ -142,7 +142,7 @@ class LoginController extends GetxController {
       case UserRole.worker:
         return 'worker';
 
-      case UserRole.warehouseAdmin:
+      case UserRole.warehouse_admin:
         return 'warehouse_admin';
     }
   }
@@ -161,7 +161,7 @@ class LoginController extends GetxController {
         Get.offAllNamed(AppRoutes.workerSignup);
         break;
 
-      case UserRole.warehouseAdmin:
+      case UserRole.warehouse_admin:
         Get.offAllNamed(AppRoutes.ownerRoot);
         break;
     }

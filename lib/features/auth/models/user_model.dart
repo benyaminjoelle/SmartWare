@@ -1,4 +1,4 @@
-enum UserRole { warehouseAdmin, worker, client }
+enum UserRole { warehouse_admin, worker, client }
 
 class UserModel {
   final int id;
@@ -55,7 +55,7 @@ class UserModel {
   static UserRole _parseRole(String? role) {
     switch (role) {
       case 'warehouse_admin':
-        return UserRole.warehouseAdmin;
+        return UserRole.warehouse_admin;
 
       case 'worker':
         return UserRole.worker;

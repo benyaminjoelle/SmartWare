@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 
 import 'package:smartware/features/owner/products/models/owner_inventory_model.dart';
+import 'package:smartware/widgets/primary_button.dart';
 
 class ProductDetailsSheet extends StatelessWidget {
   final OwnerInventoryModel inventory;
 
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+
   const ProductDetailsSheet({
     super.key,
     required this.inventory,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -240,7 +246,34 @@ class ProductDetailsSheet extends StatelessWidget {
                 ),
               ],
 
-              const SizedBox(height: 12),
+              const SizedBox(height: 28),
+// ============================================================
+// ACTION BUTTONS
+// ============================================================
+
+Row(
+  children: [
+    Expanded(
+      child: PrimaryButton(
+        onPressed: () {
+          onEdit?.call();
+        },
+        text: "Edit Product",
+      ),
+    ),
+
+    const SizedBox(width: 12),
+
+    Expanded(
+      child: PrimaryButton(
+        onPressed: () {
+          onDelete?.call();
+        },
+        text: "Delete",
+      ),
+    ),
+  ],
+),
             ],
           ),
         ),

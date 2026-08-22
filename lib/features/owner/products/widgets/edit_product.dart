@@ -1,18 +1,31 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:smartware/features/owner/products/controllers/owner_add_product_controller.dart';
+
+import 'package:smartware/features/owner/products/controllers/owner_edit_product_controller.dart';
+import 'package:smartware/features/owner/products/models/owner_inventory_model.dart';
 import 'package:smartware/features/owner/products/widgets/product_category_selected.dart';
 
 import 'package:smartware/widgets/custom_textfield.dart';
 import 'package:smartware/widgets/primary_button.dart';
 
-class AddProductView extends StatelessWidget {
-  const AddProductView({super.key});
+class EditProductView extends StatelessWidget {
+  final OwnerInventoryModel inventory;
+
+  const EditProductView({
+    super.key,
+    required this.inventory,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put<AddProductController>(AddProductController());
+    final controller = Get.put(
+      EditProductController(
+        inventory: inventory,
+      ),
+    );
 
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
@@ -23,27 +36,17 @@ class AddProductView extends StatelessWidget {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-      
-
-        // ============================================================
-        // APP BAR
-        // ============================================================
-
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           title: Text(
-            'Add Product',
+            'Edit Product',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w800,
             ),
           ),
         ),
-
-        // ============================================================
-        // BODY
-        // ============================================================
 
         body: SafeArea(
           child: Form(
@@ -73,7 +76,11 @@ class AddProductView extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   Obx(() {
-                    final image = controller.selectedImage.value;
+                    final newImage =
+                        controller.selectedImage.value;
+
+                    final oldImage =
+                        controller.existingImage.value;
 
                     return GestureDetector(
                       onTap: controller.pickImage,
@@ -81,92 +88,62 @@ class AddProductView extends StatelessWidget {
                         width: double.infinity,
                         height: 190,
                         decoration: BoxDecoration(
-                          color: colors.surfaceContainerHighest
+                          color: colors
+                              .surfaceContainerHighest
                               .withOpacity(.2),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius:
+                              BorderRadius.circular(20),
                           border: Border.all(
-                            color: colors.outline.withOpacity(.15),
+                            color:
+                                colors.outline.withOpacity(.15),
                           ),
                         ),
-                        child: image == null
-                            ? Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 54,
-                                    height: 54,
-                                    decoration: BoxDecoration(
-                                      color: colors.primary
-                                          .withOpacity(.08),
-                                      borderRadius:
-                                          BorderRadius.circular(16),
-                                    ),
-                                    child: Icon(
-                                      Icons
-                                          .add_photo_alternate_outlined,
-                                      color: colors.primary,
-                                      size: 27,
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 12),
-
-                                  Text(
-                                    'Add Product Image',
-                                    style: theme
-                                        .textTheme
-                                        .titleSmall
-                                        ?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 4),
-
-                                  Text(
-                                    'Optional',
-                                    style: theme
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                      color:
-                                          colors.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : ClipRRect(
+                        child: newImage != null
+                            ? ClipRRect(
                                 borderRadius:
                                     BorderRadius.circular(20),
                                 child: Stack(
                                   fit: StackFit.expand,
                                   children: [
                                     Image.file(
-                                      image,
+                                      newImage,
                                       fit: BoxFit.cover,
                                     ),
 
-                                    Positioned(
-                                      top: 10,
-                                      right: 10,
-                                      child: CircleAvatar(
-                                        backgroundColor:
-                                            Colors.black
-                                                .withOpacity(.55),
-                                        child: IconButton(
-                                          onPressed:
-                                              controller.removeImage,
-                                          icon: const Icon(
-                                            Icons.close_rounded,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
+                                    _removeImageButton(
+                                      controller,
                                     ),
                                   ],
                                 ),
-                              ),
+                              )
+                            : oldImage != null &&
+                                    oldImage.isNotEmpty
+                                ? ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.circular(20),
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        Image.network(
+                                          oldImage,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (_, __, ___) {
+                                            return _imagePlaceholder(
+                                              context,
+                                            );
+                                          },
+                                        ),
+
+                                        _removeImageButton(
+                                          controller,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : _imagePlaceholder(
+                                    context,
+                                  ),
                       ),
                     );
                   }),
@@ -180,9 +157,12 @@ class AddProductView extends StatelessWidget {
                   CustomTextField(
                     label: 'SKU',
                     hint: 'Enter product SKU',
-                    controller: controller.skuController,
-                    validator: controller.validateSku,
-                    textInputAction: TextInputAction.next,
+                    controller:
+                        controller.skuController,
+                    validator:
+                        controller.validateSku,
+                    textInputAction:
+                        TextInputAction.next,
                   ),
 
                   const SizedBox(height: 18),
@@ -194,9 +174,12 @@ class AddProductView extends StatelessWidget {
                   CustomTextField(
                     label: 'Product Name',
                     hint: 'Enter product name',
-                    controller: controller.nameController,
-                    validator: controller.validateName,
-                    textInputAction: TextInputAction.next,
+                    controller:
+                        controller.nameController,
+                    validator:
+                        controller.validateName,
+                    textInputAction:
+                        TextInputAction.next,
                   ),
 
                   const SizedBox(height: 18),
@@ -216,13 +199,15 @@ class AddProductView extends StatelessWidget {
 
                   Obx(() {
                     return DropdownButtonFormField<String>(
-                      value: controller.selectedUnit.value.isEmpty
+                      value: controller
+                              .selectedUnit.value.isEmpty
                           ? null
                           : controller.selectedUnit.value,
                       decoration: InputDecoration(
                         hintText: 'Select unit',
                         filled: true,
-                        fillColor: colors.surfaceContainerHighest
+                        fillColor: colors
+                            .surfaceContainerHighest
                             .withOpacity(.2),
                         contentPadding:
                             const EdgeInsets.symmetric(
@@ -234,12 +219,14 @@ class AddProductView extends StatelessWidget {
                               BorderRadius.circular(16),
                           borderSide: BorderSide.none,
                         ),
-                        enabledBorder: OutlineInputBorder(
+                        enabledBorder:
+                            OutlineInputBorder(
                           borderRadius:
                               BorderRadius.circular(16),
                           borderSide: BorderSide(
                             color:
-                                colors.outline.withOpacity(.15),
+                                colors.outline
+                                    .withOpacity(.15),
                           ),
                         ),
                       ),
@@ -249,26 +236,31 @@ class AddProductView extends StatelessWidget {
                           child: Text(unit),
                         );
                       }).toList(),
-                      onChanged: controller.selectUnit,
+                      onChanged:
+                          controller.selectUnit,
                     );
                   }),
 
                   const SizedBox(height: 24),
 
                   // ======================================================
-                  // SECTION ID
+                  // UNIT PRICE
                   // ======================================================
-CustomTextField(
-  label: 'Unit Price',
-  hint: 'Enter product unit price',
-  controller: controller.unitPriceController,
-  validator: controller.validateUnitPrice,
-  keyboardType: const TextInputType.numberWithOptions(
-    decimal: true,
-  ),
-  textInputAction: TextInputAction.next,
-),
 
+                  CustomTextField(
+                    label: 'Unit Price',
+                    hint: 'Enter product unit price',
+                    controller:
+                        controller.unitPriceController,
+                    validator:
+                        controller.validateUnitPrice,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    textInputAction:
+                        TextInputAction.next,
+                  ),
 
                   const SizedBox(height: 18),
 
@@ -278,13 +270,15 @@ CustomTextField(
 
                   CustomTextField(
                     label: 'Quantity',
-                    hint: 'Enter initial quantity',
+                    hint: 'Enter quantity',
                     controller:
                         controller.quantityController,
                     validator:
                         controller.validateQuantity,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.next,
+                    keyboardType:
+                        TextInputType.number,
+                    textInputAction:
+                        TextInputAction.next,
                   ),
 
                   const SizedBox(height: 24),
@@ -293,9 +287,9 @@ CustomTextField(
                   // CATEGORIES
                   // ======================================================
 
-                  ProductCategorySelector(
-                    controller: controller,
-                  ),
+                  // ProductCategorySelector(
+                  //   controller: controller,
+                  // ),
 
                   const SizedBox(height: 24),
 
@@ -310,30 +304,25 @@ CustomTextField(
                         controller.descriptionController,
                     validator:
                         controller.validateDescription,
-                    keyboardType: TextInputType.multiline,
-                    textInputAction: TextInputAction.newline,
+                    keyboardType:
+                        TextInputType.multiline,
+                    textInputAction:
+                        TextInputAction.newline,
                   ),
 
                   const SizedBox(height: 30),
 
                   // ======================================================
-                  // CREATE PRODUCT
+                  // UPDATE
                   // ======================================================
 
                   Obx(() {
                     return PrimaryButton(
-                      text: 'Create Product',
+                      text: 'Update Product',
                       isLoading:
                           controller.isLoading.value,
-
-                      onPressed: () async {
-                        print('');
-                        print(
-                          '🚨🚨🚨 CREATE PRODUCT BUTTON PRESSED 🚨🚨🚨',
-                        );
-
-                        await controller.createProduct();
-                      },
+                      onPressed:
+                          controller.updateProduct,
                     );
                   }),
 
@@ -341,6 +330,68 @@ CustomTextField(
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _imagePlaceholder(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 54,
+          height: 54,
+          decoration: BoxDecoration(
+            color: colors.primary.withOpacity(.08),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Icon(
+            Icons.add_photo_alternate_outlined,
+            color: colors.primary,
+            size: 27,
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        Text(
+          'Change Product Image',
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+
+        const SizedBox(height: 4),
+
+        Text(
+          'Optional',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: colors.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _removeImageButton(
+    EditProductController controller,
+  ) {
+    return Positioned(
+      top: 10,
+      right: 10,
+      child: CircleAvatar(
+        backgroundColor:
+            Colors.black.withOpacity(.55),
+        child: IconButton(
+          onPressed: controller.removeImage,
+          icon: const Icon(
+            Icons.close_rounded,
+            color: Colors.white,
           ),
         ),
       ),

@@ -57,9 +57,8 @@ class ProductsRepo {
 
       final result = items
           .map(
-            (item) => OwnerInventoryModel.fromJson(
-              Map<String, dynamic>.from(item),
-            ),
+            (item) =>
+                OwnerInventoryModel.fromJson(Map<String, dynamic>.from(item)),
           )
           .toList();
 
@@ -104,46 +103,280 @@ class ProductsRepo {
     }
   }
 
-// ============================================================
-// CREATE PRODUCT + INVENTORY
+  // ============================================================
+  // CREATE PRODUCT + INVENTORY
+  // ============================================================
+
+  Future<CreateProductResponse> createProduct({
+    required String sku,
+    required String nameEn,
+    required String unit,
+    required List<int> categories,
+    required String descriptionEn,
+
+    required int quantity,
+    required double unitPrice,
+    File? productImage,
+  }) async {
+    try {
+      print('');
+      print('════════ CREATE PRODUCT START ════════');
+
+      // ----------------------------------------------------------
+      // GET CURRENT WAREHOUSE ID
+      // ----------------------------------------------------------
+
+      final warehouseId = await PrefHelper.getOwnerFacilityId();
+
+      print('🏭 Warehouse ID: $warehouseId');
+
+      if (warehouseId == null) {
+        throw ApiError(message: 'No warehouse/facility ID found.');
+      }
+
+      print('📦 SKU: $sku');
+      print('📝 Name: $nameEn');
+      print('📏 Unit: $unit');
+      print('💰 Unit Price: $unitPrice');
+      print('🏷 Categories: $categories');
+      print('📄 Description: $descriptionEn');
+
+      print('📦 Quantity: $quantity');
+      print('🖼 Image: ${productImage?.path}');
+
+      // ----------------------------------------------------------
+      // BUILD FORM DATA
+      // ----------------------------------------------------------
+
+      final formData = FormData();
+
+      formData.fields.add(MapEntry('warehouse_id', warehouseId.toString()));
+
+      formData.fields.add(MapEntry('sku', sku.trim()));
+
+      formData.fields.add(MapEntry('name_en', nameEn.trim()));
+
+      formData.fields.add(MapEntry('unit', unit.trim()));
+
+      formData.fields.add(MapEntry('unit_price', unitPrice.toString()));
+
+      formData.fields.add(MapEntry('description_en', descriptionEn.trim()));
+
+      formData.fields.add(MapEntry('quantity', quantity.toString()));
+
+      // ----------------------------------------------------------
+      // CATEGORIES
+      // ----------------------------------------------------------
+
+      for (final categoryId in categories) {
+        formData.fields.add(MapEntry('categories[]', categoryId.toString()));
+      }
+
+      // ----------------------------------------------------------
+      // IMAGE
+      // ----------------------------------------------------------
+
+      if (productImage != null) {
+        formData.files.add(
+          MapEntry(
+            'product_image',
+            await MultipartFile.fromFile(
+              productImage.path,
+              filename: productImage.path.split(Platform.pathSeparator).last,
+            ),
+          ),
+        );
+      }
+
+      // ----------------------------------------------------------
+      // DEBUG FORM DATA
+      // ----------------------------------------------------------
+
+      print('');
+      print('📤 FORM DATA:');
+
+      for (final field in formData.fields) {
+        print('   ${field.key}: ${field.value}');
+      }
+
+      if (formData.files.isNotEmpty) {
+        print(
+          '   product_image: '
+          '${formData.files.first.value.filename}',
+        );
+      }
+
+      print('');
+      print('➡️ Sending POST /api/products');
+
+      // ----------------------------------------------------------
+      // API REQUEST
+      // ----------------------------------------------------------
+
+      final response = await _api.post('$baseUrl/api/products', formData);
+
+      print('');
+      print('📥 CREATE PRODUCT RESPONSE:');
+      print(response);
+
+      if (response is ApiError) {
+        throw response;
+      }
+
+      if (response is! Map<String, dynamic>) {
+        throw ApiError(message: 'Invalid response from server');
+      }
+
+      final result = CreateProductResponse.fromJson(response);
+
+      print('');
+      print('════════ PRODUCT CREATED ════════');
+      print('💬 Message: ${result.message}');
+      print('🆔 Product ID: ${result.data.id}');
+      print('📦 SKU: ${result.data.sku}');
+      print('📝 Name: ${result.data.name}');
+      print('🏭 Warehouse ID: $warehouseId');
+      print('════════════════════════════════');
+
+      return result;
+    } on DioException catch (e) {
+      print('');
+      print('════════ CREATE PRODUCT DIO ERROR ════════');
+      print('❌ Status Code: ${e.response?.statusCode}');
+      print('❌ Response Data: ${e.response?.data}');
+      print('════════════════════════════════════════');
+
+      final data = e.response?.data;
+
+      String message = 'Failed to create product';
+
+      if (data is Map<String, dynamic>) {
+        if (data['message'] != null) {
+          message = data['message'].toString();
+        }
+
+        if (data['errors'] is Map) {
+          final errors = data['errors'] as Map;
+
+          if (errors.isNotEmpty) {
+            final firstError = errors.values.first;
+
+            if (firstError is List && firstError.isNotEmpty) {
+              message = firstError.first.toString();
+            }
+          }
+        }
+      }
+
+      throw ApiError(message: message);
+    } catch (e, stackTrace) {
+      print('');
+      print('════════ CREATE PRODUCT ERROR ════════');
+      print('❌ Error: $e');
+      print('❌ Type: ${e.runtimeType}');
+      print('❌ StackTrace: $stackTrace');
+      print('════════════════════════════════════');
+
+      if (e is ApiError) {
+        rethrow;
+      }
+
+      throw ApiError(message: 'Failed to create product');
+    }
+  }
+  // ============================================================
+// DELETE PRODUCT
 // ============================================================
 
-Future<CreateProductResponse> createProduct({
+Future<void> deleteProduct({
+  required int productId,
+}) async {
+  try {
+    print('');
+    print('════════ DELETE PRODUCT START ════════');
+    print('🗑 Product ID: $productId');
+
+    final response = await _api.delete(
+      '$baseUrl/api/products/$productId',
+    );
+
+    print('');
+    print('📥 DELETE PRODUCT RESPONSE:');
+    print(response);
+
+    if (response is ApiError) {
+      throw response;
+    }
+
+    print('');
+    print('════════ PRODUCT DELETED ════════');
+    print('🗑 Product ID: $productId');
+    print('════════════════════════════════');
+
+  } on DioException catch (e) {
+    print('');
+    print('════════ DELETE PRODUCT DIO ERROR ════════');
+    print('❌ Status Code: ${e.response?.statusCode}');
+    print('❌ Response Data: ${e.response?.data}');
+    print('════════════════════════════════════════');
+
+    final data = e.response?.data;
+
+    String message = 'Failed to delete product';
+
+    if (data is Map<String, dynamic>) {
+      if (data['message'] != null) {
+        message = data['message'].toString();
+      }
+
+      if (data['error'] != null) {
+        message = data['error'].toString();
+      }
+    }
+
+    throw ApiError(message: message);
+
+  } catch (e, stackTrace) {
+    print('');
+    print('════════ DELETE PRODUCT ERROR ════════');
+    print('❌ Error: $e');
+    print('❌ Type: ${e.runtimeType}');
+    print('❌ StackTrace: $stackTrace');
+    print('════════════════════════════════════');
+
+    if (e is ApiError) {
+      rethrow;
+    }
+
+    throw ApiError(message: 'Failed to delete product');
+  }
+}
+// ============================================================
+// UPDATE PRODUCT
+// ============================================================
+
+Future<void> updateProduct({
+  required int productId,
   required String sku,
   required String nameEn,
   required String unit,
   required List<int> categories,
   required String descriptionEn,
-  required int sectionId,
   required int quantity,
   required double unitPrice,
   File? productImage,
 }) async {
   try {
     print('');
-    print('════════ CREATE PRODUCT START ════════');
+    print('════════ UPDATE PRODUCT START ════════');
 
-    // ----------------------------------------------------------
-    // GET CURRENT WAREHOUSE ID
-    // ----------------------------------------------------------
-
-    final warehouseId = await PrefHelper.getOwnerFacilityId();
-
-    print('🏭 Warehouse ID: $warehouseId');
-
-    if (warehouseId == null) {
-      throw ApiError(
-        message: 'No warehouse/facility ID found.',
-      );
-    }
-
+    print('🆔 Product ID: $productId');
     print('📦 SKU: $sku');
     print('📝 Name: $nameEn');
     print('📏 Unit: $unit');
     print('💰 Unit Price: $unitPrice');
     print('🏷 Categories: $categories');
     print('📄 Description: $descriptionEn');
-    print('🏢 Section ID: $sectionId');
     print('📦 Quantity: $quantity');
     print('🖼 Image: ${productImage?.path}');
 
@@ -154,59 +387,27 @@ Future<CreateProductResponse> createProduct({
     final formData = FormData();
 
     formData.fields.add(
-      MapEntry(
-        'warehouse_id',
-        warehouseId.toString(),
-      ),
+      MapEntry('sku', sku.trim()),
     );
 
     formData.fields.add(
-      MapEntry(
-        'sku',
-        sku.trim(),
-      ),
+      MapEntry('name_en', nameEn.trim()),
     );
 
     formData.fields.add(
-      MapEntry(
-        'name_en',
-        nameEn.trim(),
-      ),
+      MapEntry('unit', unit.trim()),
     );
 
     formData.fields.add(
-      MapEntry(
-        'unit',
-        unit.trim(),
-      ),
+      MapEntry('unit_price', unitPrice.toString()),
     );
 
     formData.fields.add(
-      MapEntry(
-        'unit_price',
-        unitPrice.toString(),
-      ),
+      MapEntry('description_en', descriptionEn.trim()),
     );
 
     formData.fields.add(
-      MapEntry(
-        'description_en',
-        descriptionEn.trim(),
-      ),
-    );
-
-    formData.fields.add(
-      MapEntry(
-        'section_id',
-        sectionId.toString(),
-      ),
-    );
-
-    formData.fields.add(
-      MapEntry(
-        'quantity',
-        quantity.toString(),
-      ),
+      MapEntry('quantity', quantity.toString()),
     );
 
     // ----------------------------------------------------------
@@ -241,11 +442,11 @@ Future<CreateProductResponse> createProduct({
     }
 
     // ----------------------------------------------------------
-    // DEBUG FORM DATA
+    // DEBUG
     // ----------------------------------------------------------
 
     print('');
-    print('📤 FORM DATA:');
+    print('📤 UPDATE FORM DATA:');
 
     for (final field in formData.fields) {
       print('   ${field.key}: ${field.value}');
@@ -259,19 +460,21 @@ Future<CreateProductResponse> createProduct({
     }
 
     print('');
-    print('➡️ Sending POST /api/products');
+    print(
+      '➡️ Sending POST /api/products/$productId',
+    );
 
     // ----------------------------------------------------------
-    // API REQUEST
+    // REQUEST
     // ----------------------------------------------------------
 
     final response = await _api.post(
-      '$baseUrl/api/products',
+      '$baseUrl/api/products/$productId',
       formData,
     );
 
     print('');
-    print('📥 CREATE PRODUCT RESPONSE:');
+    print('📥 UPDATE PRODUCT RESPONSE:');
     print(response);
 
     if (response is ApiError) {
@@ -284,28 +487,21 @@ Future<CreateProductResponse> createProduct({
       );
     }
 
-    final result = CreateProductResponse.fromJson(response);
-
     print('');
-    print('════════ PRODUCT CREATED ════════');
-    print('💬 Message: ${result.message}');
-    print('🆔 Product ID: ${result.data.id}');
-    print('📦 SKU: ${result.data.sku}');
-    print('📝 Name: ${result.data.name}');
-    print('🏭 Warehouse ID: $warehouseId');
+    print('════════ PRODUCT UPDATED ════════');
+    print('🆔 Product ID: $productId');
     print('════════════════════════════════');
 
-    return result;
   } on DioException catch (e) {
     print('');
-    print('════════ CREATE PRODUCT DIO ERROR ════════');
+    print('════════ UPDATE PRODUCT DIO ERROR ════════');
     print('❌ Status Code: ${e.response?.statusCode}');
     print('❌ Response Data: ${e.response?.data}');
     print('════════════════════════════════════════');
 
     final data = e.response?.data;
 
-    String message = 'Failed to create product';
+    String message = 'Failed to update product';
 
     if (data is Map<String, dynamic>) {
       if (data['message'] != null) {
@@ -327,9 +523,10 @@ Future<CreateProductResponse> createProduct({
     }
 
     throw ApiError(message: message);
+
   } catch (e, stackTrace) {
     print('');
-    print('════════ CREATE PRODUCT ERROR ════════');
+    print('════════ UPDATE PRODUCT ERROR ════════');
     print('❌ Error: $e');
     print('❌ Type: ${e.runtimeType}');
     print('❌ StackTrace: $stackTrace');
@@ -340,7 +537,7 @@ Future<CreateProductResponse> createProduct({
     }
 
     throw ApiError(
-      message: 'Failed to create product',
+      message: 'Failed to update product',
     );
   }
 }
