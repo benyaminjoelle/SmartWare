@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:smartware/features/warehouse/models/warehouse_product_model.dart';
 
 class ClientWarehouseStockCard extends StatelessWidget {
@@ -73,8 +74,8 @@ class ClientWarehouseStockCard extends StatelessWidget {
                     ),
                     child: Text(
                       isAvailable
-                          ? '${warehouse.quantity} Available'
-                          : 'Out of Stock',
+                          ? '${warehouse.quantity} ${'Available'.tr}'
+                          : 'Out of Stock'.tr,
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: isAvailable
                             ? colors.onPrimaryContainer
@@ -150,7 +151,7 @@ class ClientWarehouseStockCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        '-${warehouse.discountPercentage!.toStringAsFixed(0)}% OFF',
+                        '-${warehouse.discountPercentage!.toStringAsFixed(0)}% ${'OFF'.tr}',
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: Colors.red.shade700,
                           fontWeight: FontWeight.bold,
