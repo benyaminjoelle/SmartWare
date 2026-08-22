@@ -307,4 +307,57 @@ const Map<String, String> ar = {
 'No warehouses yet': 'لا توجد مستودعات بعد',
 'Create a warehouse to start viewing analytics.':
     'أنشئ مستودعًا لبدء عرض التحليلات.',
+  // Analytics
+'Your Warehouses' : 'مستودعاتك',
+'Select a warehouse to view its performance.' : 'اختر مستودعًا لعرض أدائه.',
+'Add New Facility' : 'إضافة منشأة جديدة',
+'No warehouses yet' : 'لا توجد مستودعات بعد',
+'Create a warehouse to start viewing analytics.' : 'أنشئ مستودعًا لبدء عرض التحليلات.',
+
+// Warehouse Analytics
+'Warehouse analytics' : 'تحليلات المستودع',
+'Overview' : 'نظرة عامة',
+'Current warehouse performance' : 'الأداء الحالي للمستودع',
+
+// Products
+'Top moving products' : 'المنتجات الأكثر حركة',
+'Products with the highest outgoing movement' : 'المنتجات ذات أعلى حركة صادرة',
+'View top moving products' : 'عرض المنتجات الأكثر حركة',
+
+'Slow moving products' : 'المنتجات بطيئة الحركة',
+'Products with little or no outgoing movement' : 'المنتجات ذات الحركة الصادرة القليلة أو المعدومة',
+'View slow moving products' : 'عرض المنتجات بطيئة الحركة',
+
+// Stock
+'Out of stock risk' : 'خطر نفاد المخزون',
+'Products with 10 units or less' : 'المنتجات التي تحتوي على 10 وحدات أو أقل',
+'No products are currently at risk' : 'لا توجد منتجات معرضة للخطر حاليًا',
+'View out of stock risk products' : 'عرض المنتجات المعرضة لخطر نفاد المخزون',
+
+// Charts
+'No outgoing movement data' : 'لا توجد بيانات عن الحركة الصادرة',
+'No slow movement data' : 'لا توجد بيانات عن المنتجات بطيئة الحركة',
+'No products at risk' : 'لا توجد منتجات معرضة للخطر',
+
+'Units sold' : 'الوحدات المباعة',
+'Units sold' : 'الوحدات المباعة',
+'Sold' : 'المباع',
+'Stock' : 'المخزون',
+
+// Bottom sheets
+'No products' : 'لا توجد منتجات',
+'There are no products to display.' : 'لا توجد منتجات لعرضها.',
+
+'Products with the highest outgoing movement' : 'المنتجات ذات أعلى حركة صادرة',
+'Products with little or no outgoing movement' : 'المنتجات ذات الحركة الصادرة القليلة أو المعدومة',
+'Products with 10 units or less' : 'المنتجات التي تحتوي على 10 وحدات أو أقل',
+
+// Product information
+'SKU' : 'رمز المنتج',
+'sold' : 'مباع',
+'in stock' : 'في المخزون',
+'Unnamed product' : 'منتج غير مسمى',
+
+// Navigation
+'See All' : 'عرض الكل',
 };
