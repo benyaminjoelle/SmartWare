@@ -61,7 +61,7 @@ class OwnerAnalyticsView extends StatelessWidget {
                                 CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Your Warehouses',
+                                'Your Warehouses'.tr,
                                 style: theme
                                     .textTheme
                                     .headlineSmall
@@ -74,7 +74,7 @@ class OwnerAnalyticsView extends StatelessWidget {
                               const SizedBox(height: 6),
 
                               Text(
-                                'Select a warehouse to view its performance.',
+                                'Select a warehouse to view its performance.'.tr,
                                 style: theme
                                     .textTheme
                                     .bodyMedium
@@ -110,7 +110,7 @@ class OwnerAnalyticsView extends StatelessWidget {
               child: SizedBox(
                 width: 190,
                 child: PrimaryButton(
-                  text: 'Add New Facility',
+                  text: 'Add New Facility'.tr,
                   onPressed: () {
                     // TODO:
                     // Navigate to Add Facility screen
@@ -227,7 +227,7 @@ class _EmptyWarehousesState extends StatelessWidget {
             const SizedBox(height: 16),
 
             Text(
-              'No warehouses yet',
+              'No warehouses yet'.tr,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w800,
               ),
@@ -236,7 +236,7 @@ class _EmptyWarehousesState extends StatelessWidget {
             const SizedBox(height: 8),
 
             Text(
-              'Create a warehouse to start viewing analytics.',
+              'Create a warehouse to start viewing analytics.'.tr,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium,
             ),
@@ -246,7 +246,7 @@ class _EmptyWarehousesState extends StatelessWidget {
             SizedBox(
               width: 200,
               child: PrimaryButton(
-                text: 'Add New Facility',
+                text: 'Add New Facility'.tr,
                 onPressed: () {
                   // TODO:
                   // Navigate to Add Facility screen
