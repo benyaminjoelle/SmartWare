@@ -70,7 +70,7 @@ class OwnerOrderItem {
 
     return OwnerOrderItem(
       productId: json['product_id'],
-      productName: product['name_en']?.toString() ?? 'Product',
+      productName: product['name_en']?.toString() ?? '',
       unit: product['unit']?.toString() ?? '',
       quantity: json['quantity'] ?? 0,
       unitPrice: double.tryParse(
