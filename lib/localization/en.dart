@@ -304,4 +304,37 @@ const Map<String, String> en = {
 'No warehouses yet': 'No warehouses yet',
 'Create a warehouse to start viewing analytics.':
     'Create a warehouse to start viewing analytics.',
+  'Overview': 'Overview',
+'Current warehouse performance': 'Current warehouse performance',
+'Top moving products': 'Top moving products',
+'Products with the highest outgoing movement':
+    'Products with the highest outgoing movement',
+'View top moving products': 'View top moving products',
+'Slow moving products': 'Slow moving products',
+'Products with little or no outgoing movement':
+    'Products with little or no outgoing movement',
+'View slow moving products': 'View slow moving products',
+'Out of stock risk': 'Out of stock risk',
+'Products with 10 units or less':
+    'Products with 10 units or less',
+'No products are currently at risk':
+    'No products are currently at risk',
+'View out of stock risk products':
+    'View out of stock risk products',
+'Warehouse analytics': 'Warehouse analytics',
+'No outgoing movement data': 'No outgoing movement data',
+'Top moving product': 'Top moving product',
+'Units sold': 'Units sold',
+'Sold': 'Sold',
+'No slow movement data': 'No slow movement data',
+'No products at risk': 'No products at risk',
+'Stock': 'Stock',
+'No data': 'No data',
+'No risk': 'No risk',
+'No products': 'No products',
+'There are no products to display.':
+    'There are no products to display.',
+'SKU': 'SKU',
+'sold': 'sold',
+'in stock': 'in stock',
 };
