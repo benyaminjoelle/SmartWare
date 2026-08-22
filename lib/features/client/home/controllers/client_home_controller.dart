@@ -44,13 +44,16 @@ class ClientHomeController extends GetxController {
 
   String get greeting {
     final hour = DateTime.now().hour;
+
     if (hour < 12) {
-      return 'Good morning';
+      return 'Good morning'.tr;
     }
+
     if (hour < 18) {
-      return 'Good afternoon';
+      return 'Good afternoon'.tr;
     }
-    return 'Good evening';
+
+    return 'Good evening'.tr;
   }
 
   Future<void> getPreferences() async {
@@ -79,7 +82,7 @@ class ClientHomeController extends GetxController {
       debugPrint('❌ Get preferences failed: $e');
 
       AppSnackbar.show(
-        title: 'Error',
+        title: 'Error'.tr,
         message: e is ApiError
             ? e.message
             : 'Your profile is not completed',

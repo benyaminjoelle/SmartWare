@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:smartware/features/owner/products/controllers/owner_add_product_controller.dart';
-
 class ProductCategorySelector extends StatelessWidget {
-  final AddProductController controller;
+  /// Category names to display as chips.
+  final RxList<String> availableCategories;
+
+  /// Returns whether a given category name is currently selected.
+  final bool Function(String category) isSelected;
+
+  /// Called when a chip is tapped.
+  final void Function(String category) onToggle;
+
+  /// Display title for a category (defaults to the raw name if
+  /// no formatting is provided).
+  final String Function(String category)? titleBuilder;
+
+  /// Icon for a category (defaults to a generic category icon
+  /// if no formatting is provided).
+  final IconData Function(String category)? iconBuilder;
 
   const ProductCategorySelector({
     super.key,
-    required this.controller,
+    required this.availableCategories,
+    required this.isSelected,
+    required this.onToggle,
+    this.titleBuilder,
+    this.iconBuilder,
   });
 
   @override
@@ -38,7 +55,7 @@ class ProductCategorySelector extends StatelessWidget {
         const SizedBox(height: 14),
 
         Obx(() {
-          final categories = controller.availableCategories;
+          final categories = availableCategories;
 
           if (categories.isEmpty) {
             return Container(
@@ -64,15 +81,15 @@ class ProductCategorySelector extends StatelessWidget {
             spacing: 10,
             runSpacing: 10,
             children: categories.map((category) {
-              final selected =
-                  controller.isCategorySelected(category);
+              final selected = isSelected(category);
 
               return _CategoryChip(
-                title: controller.categoryTitle(category),
-                icon: controller.categoryIcon(category),
+                title: titleBuilder?.call(category) ?? category,
+                icon: iconBuilder?.call(category) ??
+                    Icons.category_outlined,
                 selected: selected,
                 onTap: () {
-                  controller.toggleCategory(category);
+                  onToggle(category);
                 },
               );
             }).toList(),

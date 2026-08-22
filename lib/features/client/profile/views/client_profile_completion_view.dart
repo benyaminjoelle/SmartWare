@@ -34,7 +34,7 @@ class ClientProfileCompletionView extends StatelessWidget {
                   children: [
                     BackButton(onPressed: controller.handleBack),
                     Text(
-                      "Complete Profile",
+                      "Complete Profile".tr,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -88,11 +88,13 @@ class ClientProfileCompletionView extends StatelessWidget {
     switch (controller.currentStep.value) {
       case 0:
         return const ClientPreferences();
+
       case 1:
         return const ClientDocumentations();
 
       case 2:
-        return  ClientLocation();
+        return ClientLocation();
+
       default:
         return const SizedBox();
     }

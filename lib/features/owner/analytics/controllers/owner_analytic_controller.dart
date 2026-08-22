@@ -1,69 +1,16 @@
 import 'package:get/get.dart';
-
 import 'package:smartware/features/owner/analytics/models/slow_moving_products.dart';
+import 'package:smartware/features/owner/analytics/models/top_moving_products.dart';
 import 'package:smartware/features/owner/analytics/models/warehouse_model.dart';
 import 'package:smartware/features/owner/analytics/models/warehouse_repo.dart';
-
-class InventoryTrend {
-  final String day;
-  final int quantity;
-
-  InventoryTrend({
-    required this.day,
-    required this.quantity,
-  });
-}
-
-class StockMovement {
-  final String day;
-  final int incoming;
-  final int outgoing;
-
-  StockMovement({
-    required this.day,
-    required this.incoming,
-    required this.outgoing,
-  });
-}
-
-class CategoryInventory {
-  final String category;
-  final int quantity;
-
-  CategoryInventory({
-    required this.category,
-    required this.quantity,
-  });
-}
-
-class TopProduct {
-  final String name;
-  final int quantity;
-
-  TopProduct({
-    required this.name,
-    required this.quantity,
-  });
-}
-
-class LowStockProduct {
-  final String name;
-  final int currentStock;
-  final int minimumStock;
-
-  LowStockProduct({
-    required this.name,
-    required this.currentStock,
-    required this.minimumStock,
-  });
-}
 
 class OwnerAnalyticsController extends GetxController {
   // ============================================================
   // REPOSITORY
   // ============================================================
 
-  final OwnerAnalyticsRepo _repo = OwnerAnalyticsRepo();
+  final OwnerAnalyticsRepo _repo =
+      OwnerAnalyticsRepo();
 
   // ============================================================
   // WAREHOUSES
@@ -71,13 +18,11 @@ class OwnerAnalyticsController extends GetxController {
 
   final isLoadingWarehouses = false.obs;
 
-  final warehouses = <WarehouseModel>[].obs;
+  final warehouses =
+      <WarehouseModel>[].obs;
 
-  // ============================================================
-  // SELECTED WAREHOUSE
-  // ============================================================
-
-  final selectedWarehouse = Rxn<WarehouseModel>();
+  final selectedWarehouse =
+      Rxn<WarehouseModel>();
 
   final isLoadingAnalytics = false.obs;
 
@@ -85,18 +30,19 @@ class OwnerAnalyticsController extends GetxController {
   // ANALYTICS DATA
   // ============================================================
 
-  final inventoryTrend = <InventoryTrend>[].obs;
-
-  final stockMovement = <StockMovement>[].obs;
-
-  final categoryInventory = <CategoryInventory>[].obs;
-
-  final topProducts = <TopProduct>[].obs;
-
-  final lowStockProducts = <LowStockProduct>[].obs;
-
+  /// Products that have little or no movement.
   final slowMovingProducts =
       <SlowMovingProductModel>[].obs;
+
+  /// Products whose warehouse quantity is <= 10.
+  final stockOutRiskProducts =
+      <StockOutRiskProduct>[].obs;
+
+  /// Products with the highest number of sold units.
+  final topMovingProducts =
+      <TopMovingProductModel>[].obs;
+
+  
 
   // ============================================================
   // SUMMARY
@@ -129,18 +75,37 @@ class OwnerAnalyticsController extends GetxController {
     try {
       isLoadingWarehouses.value = true;
 
-      final result = await _repo.getWarehouses();
+      print('');
+      print(
+        '════════ GET OWNER ANALYTICS WAREHOUSES ════════',
+      );
+
+      final result =
+          await _repo.getWarehouses();
 
       warehouses.assignAll(result);
 
+      print(
+        '🏢 Warehouses loaded: '
+        '${warehouses.length}',
+      );
+
       if (warehouses.isNotEmpty) {
-        await selectWarehouse(warehouses.first);
+        await selectWarehouse(
+          warehouses.first,
+        );
       } else {
         selectedWarehouse.value = null;
         _clearAnalytics();
       }
     } catch (e) {
-      print('❌ Failed to load owner warehouses: $e');
+      print(
+        '❌ Failed to load owner warehouses: $e',
+      );
+
+      warehouses.clear();
+      selectedWarehouse.value = null;
+      _clearAnalytics();
     } finally {
       isLoadingWarehouses.value = false;
     }
@@ -154,10 +119,18 @@ class OwnerAnalyticsController extends GetxController {
     WarehouseModel warehouse,
   ) async {
     print('');
-    print('════════ SELECT WAREHOUSE ════════');
-    print('🏢 Warehouse: ${warehouse.nameEn}');
-    print('🆔 Facility ID: ${warehouse.id}');
-    print('════════════════════════════════');
+    print(
+      '════════ SELECT WAREHOUSE ════════',
+    );
+    print(
+      '🏢 Warehouse: ${warehouse.nameEn}',
+    );
+    print(
+      '🆔 Facility ID: ${warehouse.id}',
+    );
+    print(
+      '════════════════════════════════',
+    );
 
     selectedWarehouse.value = warehouse;
 
@@ -167,7 +140,7 @@ class OwnerAnalyticsController extends GetxController {
   }
 
   // ============================================================
-  // LOAD WAREHOUSE ANALYTICS
+  // LOAD ALL WAREHOUSE ANALYTICS
   // ============================================================
 
   Future<void> loadWarehouseAnalytics(
@@ -177,33 +150,47 @@ class OwnerAnalyticsController extends GetxController {
       isLoadingAnalytics.value = true;
 
       print('');
-      print('════════ LOAD WAREHOUSE ANALYTICS ════════');
-      print('🏢 Facility ID: $warehouseId');
-
-      final warehouse = warehouses.firstWhere(
-        (warehouse) => warehouse.id == warehouseId,
+      print(
+        '════════ LOAD WAREHOUSE ANALYTICS ════════',
+      );
+      print(
+        '🏢 Facility ID: $warehouseId',
       );
 
       // --------------------------------------------------------
-      // SUMMARY FROM OWNED FACILITIES
+      // FIND SELECTED WAREHOUSE
       // --------------------------------------------------------
 
-      totalProducts.value = warehouse.productCount;
+      final warehouse =
+          warehouses.firstWhere(
+        (item) => item.id == warehouseId,
+      );
+
+      // --------------------------------------------------------
+      // SUMMARY
+      // --------------------------------------------------------
+
+      totalProducts.value =
+          warehouse.productCount;
 
       lowStockCount.value =
           warehouse.stockOutRiskCount;
 
-      // --------------------------------------------------------
-      // NOT PROVIDED YET
-      // --------------------------------------------------------
-
+      // These endpoints are not connected yet.
       totalStock.value = 0;
-
       pendingOrders.value = 0;
 
       // --------------------------------------------------------
       // SLOW MOVING PRODUCTS
       // --------------------------------------------------------
+
+      print('');
+      print(
+        '════════ GET SLOW MOVING PRODUCTS ════════',
+      );
+      print(
+        '🏢 Facility ID: $warehouseId',
+      );
 
       final slowMoving =
           await _repo.getSlowMovingProducts(
@@ -215,31 +202,119 @@ class OwnerAnalyticsController extends GetxController {
       );
 
       print(
-        '📦 Slow moving products loaded: '
+        '📦 Slow moving products: '
         '${slowMovingProducts.length}',
       );
 
       // --------------------------------------------------------
-      // OTHER ANALYTICS
+      // STOCK OUT RISK
       // --------------------------------------------------------
 
-      inventoryTrend.clear();
-
-      stockMovement.clear();
-
-      categoryInventory.clear();
-
-      topProducts.clear();
-
-      lowStockProducts.clear();
-
-      print('════════ ANALYTICS LOADED ════════');
-    } catch (e) {
+      print('');
       print(
-        '❌ Failed to load warehouse analytics: $e',
+        '════════ GET STOCK OUT RISK ════════',
+      );
+      print(
+        '🏢 Facility ID: $warehouseId',
       );
 
+      final stockRisk =
+          await _repo.getStockOutRisk(
+        facilityId: warehouseId,
+      );
+
+      stockOutRiskProducts.assignAll(
+        stockRisk,
+      );
+
+      print(
+        '⚠️ Stock out risk products: '
+        '${stockOutRiskProducts.length}',
+      );
+
+      // --------------------------------------------------------
+      // TOP MOVING PRODUCTS
+      // --------------------------------------------------------
+
+      print('');
+      print(
+        '════════ GET TOP MOVING PRODUCTS ════════',
+      );
+      print(
+        '🏢 Facility ID: $warehouseId',
+      );
+
+      final topMoving =
+          await _repo.getTopMovingProducts(
+        facilityId: warehouseId,
+      );
+
+      topMovingProducts.assignAll(
+        topMoving,
+      );
+
+      print(
+        '🚀 Top moving products: '
+        '${topMovingProducts.length}',
+      );
+
+      
+      // --------------------------------------------------------
+      // FINAL LOG
+      // --------------------------------------------------------
+
+      print('');
+      print(
+        '════════ ANALYTICS SUMMARY ════════',
+      );
+
+      print(
+        '📦 Total products: $totalProducts',
+      );
+
+      print(
+        '📦 Slow moving: '
+        '${slowMovingProducts.length}',
+      );
+
+      print(
+        '⚠️ Stock out risk: '
+        '${stockOutRiskProducts.length}',
+      );
+
+      print(
+        '🚀 Top moving: '
+        '${topMovingProducts.length}',
+      );
+
+    
+      print(
+        '════════ ANALYTICS LOADED ════════',
+      );
+    } catch (e, stackTrace) {
+      print('');
+      print(
+        '════════ ANALYTICS ERROR ════════',
+      );
+
+      print('❌ Error: $e');
+      print(
+        '❌ Type: ${e.runtimeType}',
+      );
+      print(
+        '❌ StackTrace: $stackTrace',
+      );
+
+      print(
+        '════════════════════════════════',
+      );
+
+      // Clear analytics only when
+      // the overall analytics load fails.
       slowMovingProducts.clear();
+      stockOutRiskProducts.clear();
+      topMovingProducts.clear();
+    
     } finally {
       isLoadingAnalytics.value = false;
     }
@@ -250,13 +325,10 @@ class OwnerAnalyticsController extends GetxController {
   // ============================================================
 
   void _clearAnalytics() {
-    inventoryTrend.clear();
-    stockMovement.clear();
-    categoryInventory.clear();
-    topProducts.clear();
-    lowStockProducts.clear();
     slowMovingProducts.clear();
-
+    stockOutRiskProducts.clear();
+    topMovingProducts.clear();
+   
     totalProducts.value = 0;
     totalStock.value = 0;
     lowStockCount.value = 0;
@@ -264,10 +336,21 @@ class OwnerAnalyticsController extends GetxController {
   }
 
   // ============================================================
-  // REFRESH
+  // REFRESH ANALYTICS
   // ============================================================
 
   Future<void> refreshAnalytics() async {
-    await loadWarehouses();
+    print('');
+    print(
+      '════════ REFRESH ANALYTICS ════════',
+    );
+
+    if (selectedWarehouse.value != null) {
+      await loadWarehouseAnalytics(
+        selectedWarehouse.value!.id,
+      );
+    } else {
+      await loadWarehouses();
+    }
   }
 }

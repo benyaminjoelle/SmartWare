@@ -12,36 +12,31 @@ class CheckoutView extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return Scaffold(
-    
       body: SafeArea(
         child: Obx(() {
           final invoices = controller.warehouseInvoices;
-        
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-        
                 Text(
-                  "Your Invoices",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(
+                  "Your Invoices".tr,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-        
+
                 const SizedBox(height: 16),
-        
+
                 // ==================================================
                 // ONE INVOICE PER WAREHOUSE
                 // ==================================================
-        
+
                 ...invoices.entries.map((entry) {
                   final items = entry.value;
-        
+
                   return _buildWarehouseInvoice(
                     context,
                     controller,
@@ -49,29 +44,28 @@ class CheckoutView extends StatelessWidget {
                     colors,
                   );
                 }),
-        
+
                 const SizedBox(height: 20),
-        
+
                 // ==================================================
                 // GRAND TOTAL
                 // ==================================================
-        
+
                 const Divider(thickness: 1.5),
-        
+
                 const SizedBox(height: 16),
-        
+
                 Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "Total to Pay",
-                      style: TextStyle(
+                    Text(
+                      "Total to Pay".tr,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-        
+
                     Text(
                       "\$${controller.grandTotal.toStringAsFixed(2)}",
                       style: TextStyle(
@@ -82,13 +76,13 @@ class CheckoutView extends StatelessWidget {
                     ),
                   ],
                 ),
-        
+
                 const SizedBox(height: 28),
-        
+
                 // ==================================================
                 // PLACE ORDER
                 // ==================================================
-        
+
                 SizedBox(
                   width: double.infinity,
                   height: 52,
@@ -106,9 +100,9 @@ class CheckoutView extends StatelessWidget {
                         ? const CircularProgressIndicator(
                             color: Colors.white,
                           )
-                        : const Text(
-                            "Confirm & Place Order",
-                            style: TextStyle(
+                        : Text(
+                            "Confirm & Place Order".tr,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -154,7 +148,6 @@ class CheckoutView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           // Warehouse name
           Row(
             children: [
@@ -162,9 +155,7 @@ class CheckoutView extends StatelessWidget {
                 Icons.warehouse_outlined,
                 color: colors.primary,
               ),
-
               const SizedBox(width: 8),
-
               Expanded(
                 child: Text(
                   warehouseName,
@@ -183,11 +174,9 @@ class CheckoutView extends StatelessWidget {
           ...items.map(
             (item) {
               return Padding(
-                padding:
-                    const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 10),
                 child: Row(
                   children: [
-
                     Expanded(
                       child: Text(
                         "${item.quantity} × ${item.product.name}",
@@ -195,7 +184,6 @@ class CheckoutView extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-
                     Text(
                       "\$${item.discountedTotal.toStringAsFixed(2)}",
                       style: const TextStyle(
@@ -213,16 +201,15 @@ class CheckoutView extends StatelessWidget {
           const SizedBox(height: 8),
 
           _buildPriceRow(
-            "Subtotal",
+            "Subtotal".tr,
             subtotal,
             colors,
           ),
 
           if (savings > 0) ...[
             const SizedBox(height: 6),
-
             _buildPriceRow(
-              "Discount Savings",
+              "Discount Savings".tr,
               -savings,
               colors,
               isDiscount: true,
@@ -232,7 +219,7 @@ class CheckoutView extends StatelessWidget {
           const SizedBox(height: 6),
 
           _buildPriceRow(
-            "Shipping",
+            "Shipping".tr,
             controller.shippingFee,
             colors,
           ),
@@ -240,7 +227,7 @@ class CheckoutView extends StatelessWidget {
           const SizedBox(height: 6),
 
           _buildPriceRow(
-            "Tax (8%)",
+            "Tax (8%)".tr,
             tax,
             colors,
           ),
@@ -252,17 +239,15 @@ class CheckoutView extends StatelessWidget {
           const SizedBox(height: 10),
 
           Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "Invoice Total",
-                style: TextStyle(
+              Text(
+                "Invoice Total".tr,
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
               ),
-
               Text(
                 "\$${total.toStringAsFixed(2)}",
                 style: TextStyle(
@@ -288,8 +273,7 @@ class CheckoutView extends StatelessWidget {
     final value = amount.abs();
 
     return Row(
-      mainAxisAlignment:
-          MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
@@ -302,7 +286,6 @@ class CheckoutView extends StatelessWidget {
                 : FontWeight.normal,
           ),
         ),
-
         Text(
           "$prefix${value.toStringAsFixed(2)}",
           style: TextStyle(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:smartware/features/warehouse/models/warehouse_product_model.dart';
 
 class WarehouseCard extends StatelessWidget {
@@ -77,7 +78,7 @@ class WarehouseCard extends StatelessWidget {
                     const SizedBox(height: 5),
 
                     Text(
-                      '${warehouse.quantity} available',
+                      '${warehouse.quantity} ${'available'.tr}',
                       style: theme.textTheme.labelSmall?.copyWith(
                         color: colors.onSurfaceVariant,
                       ),
@@ -111,7 +112,7 @@ class WarehouseCard extends StatelessWidget {
                   const SizedBox(height: 2),
 
                   Text(
-                    'per unit',
+                    'per unit'.tr,
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: colors.onSurfaceVariant,
                     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:smartware/features/owner/analytics/controllers/owner_analytic_controller.dart';
+import 'package:smartware/features/owner/analytics/widgets/low_stock_card.dart';
 
 class AnalyticsSummaryGrid extends StatelessWidget {
   final OwnerAnalyticsController controller;
@@ -20,7 +21,7 @@ class AnalyticsSummaryGrid extends StatelessWidget {
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: 4,
+          itemCount: 3,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 12,
@@ -41,22 +42,12 @@ class AnalyticsSummaryGrid extends StatelessWidget {
 
               case 1:
                 return AnalyticsStatCard(
-                  title: 'Total stock',
-                  value: controller.totalStock.value.toString(),
-                  icon: Icons.layers_outlined,
-                  onTap: () {
-                    // TODO: Open stock analytics
-                  },
-                );
-
-              case 2:
-                return AnalyticsStatCard(
                   title: 'Low stock',
                   value: controller.lowStockCount.value.toString(),
                   icon: Icons.warning_amber_rounded,
                   iconColor: colors.error,
                   onTap: () {
-                    // TODO: Open low stock products
+                    Get.to(() => LowStockCard(controller: controller));
                   },
                 );
 

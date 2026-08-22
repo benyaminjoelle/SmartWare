@@ -20,7 +20,7 @@ class ClientCartView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Cart'),
+        title: Text('My Cart'.tr),
         centerTitle: true,
       ),
       body: Obx(() {
@@ -54,28 +54,32 @@ class ClientCartView extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   SizedBox(height: media.size.height * 0.05),
 
                   // Header Title
                   Text(
-                    'Your Cart is Empty',
+                    'Your Cart is Empty'.tr,
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colors.onSurface,
                     ),
                     textAlign: TextAlign.center,
                   ),
+
                   const SizedBox(height: 12),
 
                   // Descriptive Subtitle
                   Text(
-                    'Looks like you haven\'t added any items to your inventory cart yet.',
+                    'Looks like you haven\'t added any items to your inventory cart yet.'
+                        .tr,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: colors.onSurface.withOpacity(0.7),
                       height: 1.4,
                     ),
                     textAlign: TextAlign.center,
                   ),
+
                   const SizedBox(height: 32),
 
                   // Action Button
@@ -84,7 +88,7 @@ class ClientCartView extends StatelessWidget {
                       Get.find<RootController>().changePage(0);
                     },
                     icon: const Icon(Icons.search_rounded),
-                    label: const Text('Explore Products'),
+                    label: Text('Explore Products'.tr),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 28,
@@ -110,10 +114,14 @@ class ClientCartView extends StatelessWidget {
             // Scrollable Items List
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 8,
+                ),
                 itemCount: cartItemsList.length,
                 itemBuilder: (context, index) {
                   final CartItem item = cartItemsList[index];
+
                   return Dismissible(
                     key: Key('${item.product.sku}|${item.warehouseId}'),
                     direction: DismissDirection.endToStart,
@@ -125,14 +133,21 @@ class ClientCartView extends StatelessWidget {
                         color: Colors.redAccent,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Icon(Icons.delete_sweep_rounded, color: Colors.white, size: 28),
-                          SizedBox(width: 8),
+                          const Icon(
+                            Icons.delete_sweep_rounded,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                          const SizedBox(width: 8),
                           Text(
-                            "Remove",
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            "Remove".tr,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -140,7 +155,7 @@ class ClientCartView extends StatelessWidget {
                     confirmDismiss: (direction) async {
                       return true;
                     },
-                  onDismissed: (direction) {
+                    onDismissed: (direction) {
                       controller.removeItem(
                         item.product.sku,
                         item.warehouseId,
@@ -177,33 +192,44 @@ class ClientCartView extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                           Text("Subtotal:", style: TextStyle(color: colors.onSurface.withOpacity(0.75))),
+                          Text(
+                            "Subtotal:".tr,
+                            style: TextStyle(
+                              color: colors.onSurface.withOpacity(0.75),
+                            ),
+                          ),
                           Text(
                             "\$${controller.rawSubtotal.toStringAsFixed(2)}",
-                            style:  TextStyle(
+                            style: TextStyle(
                               // decoration: TextDecoration.lineThrough,
                               color: colors.onSurface.withOpacity(0.75),
                             ),
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 6),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Discount Savings:",
-                            style: TextStyle(color: colors.tertiary, fontWeight: FontWeight.w600),
+                            "Discount Savings:".tr,
+                            style: TextStyle(
+                              color: colors.tertiary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           Text(
                             "-\$${controller.totalSavings.toStringAsFixed(2)}",
-                            style:  TextStyle(
+                            style: TextStyle(
                               color: colors.tertiary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 8),
                       const Divider(),
                       const SizedBox(height: 8),
@@ -213,9 +239,11 @@ class ClientCartView extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "Estimated Total:",
-                          style: TextStyle(fontWeight: FontWeight.w600),
+                        Text(
+                          "Estimated Total:".tr,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         Text(
                           "\$${controller.finalTotal.toStringAsFixed(2)}",
@@ -226,6 +254,7 @@ class ClientCartView extends StatelessWidget {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 16),
 
                     // Proceed Action Button
@@ -234,19 +263,22 @@ class ClientCartView extends StatelessWidget {
                       height: 48,
                       child: PrimaryButton(
                         onPressed: () async {
-                        // final completed = await PrefHelper.getProfileCompleted();
-                        // if (!completed) {
-                        //   AppSnackbar.show(
-                        //     position: SnackPosition.TOP,
-                        //     title: "Complete Your Profile",
-                        //     message: "Please complete your profile setup before placing an order.",
-                        //   );
-                        //   return;
-                        // }
-                        Get.toNamed('/checkout');
-                      },
+                          // final completed =
+                          //     await PrefHelper.getProfileCompleted();
+                          // if (!completed) {
+                          //   AppSnackbar.show(
+                          //     position: SnackPosition.TOP,
+                          //     title: "Complete Your Profile",
+                          //     message:
+                          //         "Please complete your profile setup before placing an order.",
+                          //   );
+                          //   return;
+                          // }
+
+                          Get.toNamed('/checkout');
+                        },
                         isLoading: false,
-                        text: 'Proceed to Checkout',
+                        text: 'Proceed to Checkout'.tr,
                       ),
                     ),
                   ],

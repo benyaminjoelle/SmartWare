@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smartware/features/owner/profile/controllers/owner_location_controller.dart';
+import 'package:smartware/features/owner/profile/controllers/owner_profile_complition_controller.dart';
+import 'package:smartware/features/owner/profile/widgets/owner_profile_completion_card.dart';
 import 'package:smartware/widgets/primary_button.dart';
 
 class OwnerLocation extends StatelessWidget {
@@ -15,7 +17,10 @@ class OwnerLocation extends StatelessWidget {
       Get.put<OwnerLocationController>(
     OwnerLocationController(),
   );
-
+ final OwnerProfileComplitionController pcontroller =
+      Get.put<OwnerProfileComplitionController>(
+    OwnerProfileComplitionController(),
+  );
   // ============================================================
   // BUILD
   // ============================================================
@@ -504,8 +509,7 @@ class OwnerLocation extends StatelessWidget {
               return PrimaryButton(
                 text: 'Done',
                 isLoading: controller.isSaving.value,
-                onPressed: controller.done,
-              );
+onPressed: controller.done,              );
             }),
           ),
           ),

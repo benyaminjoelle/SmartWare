@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 import 'package:smartware/features/client/home/controllers/product_details_controller.dart';
 import 'package:smartware/features/client/home/widgets/product_details_section_title.dart';
 import 'package:smartware/features/client/home/widgets/warehouse_card.dart';
@@ -17,9 +17,9 @@ class WarehouseSelection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionTitle(
-          title: 'Choose a warehouse',
-          subtitle: 'Prices may vary depending on the warehouse',
+        SectionTitle(
+          title: 'Choose a warehouse'.tr,
+          subtitle: 'Prices may vary depending on the warehouse'.tr,
         ),
 
         const SizedBox(height: 12),

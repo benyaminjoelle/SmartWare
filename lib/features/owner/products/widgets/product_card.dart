@@ -30,6 +30,9 @@ class ProductCard extends StatelessWidget {
     if (product.quantity <= 0) {
       statusColor = colors.error;
       statusText = 'Out of stock';
+    } else if (product.quantity < 25) {
+      statusColor = Colors.orange;
+      statusText = 'Low stock';
     } else {
       statusColor = colors.primary;
       statusText = 'In stock';
@@ -81,15 +84,13 @@ class ProductCard extends StatelessWidget {
 
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       productName,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyLarge
-                          ?.copyWith(
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -100,10 +101,8 @@ class ProductCard extends StatelessWidget {
                       productInfo.sku,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodySmall
-                          ?.copyWith(
-                        color:
-                            colors.onSurfaceVariant,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colors.onSurfaceVariant,
                       ),
                     ),
 
@@ -115,14 +114,9 @@ class ProductCard extends StatelessWidget {
                           child: Text(
                             'Unit: ${productInfo.unit}',
                             maxLines: 1,
-                            overflow:
-                                TextOverflow.ellipsis,
-                            style: theme
-                                .textTheme
-                                .labelSmall
-                                ?.copyWith(
-                              color: colors
-                                  .onSurfaceVariant,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: colors.onSurfaceVariant,
                             ),
                           ),
                         ),
@@ -132,10 +126,8 @@ class ProductCard extends StatelessWidget {
                         Container(
                           width: 4,
                           height: 4,
-                          decoration:
-                              BoxDecoration(
-                            color: colors
-                                .onSurfaceVariant,
+                          decoration: BoxDecoration(
+                            color: colors.onSurfaceVariant,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -146,15 +138,10 @@ class ProductCard extends StatelessWidget {
                           child: Text(
                             statusText,
                             maxLines: 1,
-                            overflow:
-                                TextOverflow.ellipsis,
-                            style: theme
-                                .textTheme
-                                .labelSmall
-                                ?.copyWith(
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelSmall?.copyWith(
                               color: statusColor,
-                              fontWeight:
-                                  FontWeight.w700,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ),
@@ -171,15 +158,13 @@ class ProductCard extends StatelessWidget {
               // ============================================================
 
               Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     product.quantity.toString(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(
+                    style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w800,
                       color: statusColor,
                     ),
@@ -191,10 +176,8 @@ class ProductCard extends StatelessWidget {
                     productInfo.unit,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(
-                      color:
-                          colors.onSurfaceVariant,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colors.onSurfaceVariant,
                       fontSize: 10,
                     ),
                   ),
@@ -202,14 +185,11 @@ class ProductCard extends StatelessWidget {
                   const SizedBox(height: 3),
 
                   Text(
-                    product.unitPrice
-                        .toStringAsFixed(2),
+                    product.unitPrice.toStringAsFixed(2),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelSmall
-                        ?.copyWith(
-                      color:
-                          colors.onSurfaceVariant,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: colors.onSurfaceVariant,
                     ),
                   ),
                 ],

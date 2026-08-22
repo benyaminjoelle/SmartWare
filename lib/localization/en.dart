@@ -234,4 +234,68 @@ const Map<String, String> en = {
   "Your progress will be lost if you leave now.": "Your progress will be lost if you leave now.",
 
   // Z
+  "Your Invoices": "Your Invoices",
+"Total to Pay": "Total to Pay",
+"Confirm & Place Order": "Confirm & Place Order",
+"Subtotal": "Subtotal",
+"Discount Savings": "Discount Savings",
+"Shipping": "Shipping",
+"Tax (8%)": "Tax (8%)",
+"Invoice Total": "Invoice Total",
+  
+  "My Cart": "My Cart",
+"Your Cart is Empty": "Your Cart is Empty",
+"Looks like you haven't added any items to your inventory cart yet.":
+    "Looks like you haven't added any items to your inventory cart yet.",
+"Explore Products": "Explore Products",
+"Remove": "Remove",
+"Subtotal:": "Subtotal:",
+"Discount Savings:": "Discount Savings:",
+"Estimated Total:": "Estimated Total:",
+"Proceed to Checkout": "Proceed to Checkout",
+
+
+"Hello, @userName!": "Hello, @userName!",
+
+  "Filtering": "Filtering",
+"Refine your product search": "Refine your product search",
+"Reset": "Reset",
+"Business Categories": "Business Categories",
+"Unit": "Unit",
+"Price Range": "Price Range",
+"to": "to",
+"Apply Filters": "Apply Filters",
+
+  "SKU:": "SKU:",
+"Description": "Description",
+"Container": "Container",
+"Quantity": "Quantity",
+"Choose how much you need": "Choose how much you need",
+
+  "Total": "Total",
+"Add to cart": "Add to cart",
+"Choose warehouse": "Choose warehouse",
+
+  "My Orders": "My Orders",
+"Pending": "Pending",
+"Accepted": "Accepted",
+"Previous": "Previous",
+"No orders found": "No orders found",
+"items": "items",
+"Warehouse": "Warehouse",
+"Waiting Approval": "Waiting Approval",
+"Approved": "Approved",
+"Delivered": "Delivered",
+"Rejected": "Rejected",
+"Cancelled": "Cancelled",
+
+  "Complete Profile": "Complete Profile",
+
+"Delete Account": "Delete Account",
+"Delete your account permanently":
+    "Delete your account permanently",
+"Are you sure you want to delete your account? This action is permanent and your account will be deleted forever.":
+    "Are you sure you want to delete your account? This action is permanent and your account will be deleted forever.",
+"Delete Forever": "Delete Forever",
+
 };

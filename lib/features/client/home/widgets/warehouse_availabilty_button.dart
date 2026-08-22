@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 import 'package:smartware/features/client/home/controllers/product_details_controller.dart';
 
 class WarehouseAvailabilityButton extends StatelessWidget {
@@ -47,8 +47,8 @@ class WarehouseAvailabilityButton extends StatelessWidget {
                       children: [
                         Text(
                           isLoading
-                              ? 'Checking availability...'
-                              : 'Find available warehouses',
+                              ? 'Checking availability...'.tr
+                              : 'Find available warehouses'.tr,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
@@ -59,18 +59,6 @@ class WarehouseAvailabilityButton extends StatelessWidget {
                                 fontWeight: FontWeight.w800,
                               ),
                         ),
-                        // const SizedBox(height: 2),
-                        // Text(
-                        //   'For ${controller.quantity.value} unit${controller.quantity.value == 1 ? '' : 's'}',
-                        //   maxLines: 1,
-                        //   overflow: TextOverflow.ellipsis,
-                        //   style: Theme.of(context)
-                        //       .textTheme
-                        //       .bodySmall
-                        //       ?.copyWith(
-                        //         color: colors.surface.withOpacity(0.75),
-                        //       ),
-                        // ),
                       ],
                     ),
                   ),

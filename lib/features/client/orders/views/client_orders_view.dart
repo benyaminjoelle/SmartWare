@@ -1,5 +1,7 @@
+```dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:smartware/features/client/orders/controllers/client_orders_controller.dart';
 import 'package:smartware/features/client/orders/widgets/client_order_details_sheet.dart';
 import 'package:smartware/features/client/profile/widgets/glass_container.dart';
@@ -20,108 +22,108 @@ class ClientOrdersView extends StatelessWidget {
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
-          'My Orders',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
+        centerTitle: true,
+        title: Text(
+          'My Orders'.tr,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w700,
           ),
         ),
-        centerTitle: false,
       ),
       body: SafeArea(
-        child: Obx(() {
-          if (controller.isLoading.value) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
 
-          return RefreshIndicator(
-            onRefresh: controller.refreshOrders,
-            child: ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(
-                20,
-                8,
-                20,
-                30,
+            // ===============================================================
+            // HEADER
+            // ===============================================================
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: Column(
+                children: [
+                  Text(
+                    'View your order status and details'.tr,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  _OrdersTabs(
+                    controller: controller,
+                  ),
+                ],
               ),
-              children: [
-                // =============================================================
-                // HEADER
-                // =============================================================
-
-                Text(
-                  'Track your orders',
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-
-                const SizedBox(height: 5),
-
-                Text(
-                  'View your order status and details',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colors.onSurfaceVariant,
-                  ),
-                ),
-
-                const SizedBox(height: 22),
-
-                // =============================================================
-                // TABS
-                // =============================================================
-
-                _OrdersTabs(
-                  controller: controller,
-                ),
-
-                const SizedBox(height: 22),
-
-                // =============================================================
-                // CURRENT TAB
-                // =============================================================
-
-                Obx(() {
-                  final orders = controller.currentOrders;
-
-                  if (orders.isEmpty) {
-                    return _OrdersEmptyState(
-                      tab: controller.selectedTab.value,
-                    );
-                  }
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _SectionIntro(
-                        tab: controller.selectedTab.value,
-                        count: orders.length,
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      ...orders.map(
-                        (order) {
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: 12,
-                            ),
-                            child: _ClientOrderCard(
-                              order: order,
-                              controller: controller,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                }),
-              ],
             ),
-          );
-        }),
+
+            const SizedBox(height: 18),
+
+            // ===============================================================
+            // ORDERS
+            // ===============================================================
+
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                final orders = controller.currentOrders;
+
+                if (orders.isEmpty) {
+                  return RefreshIndicator(
+                    onRefresh: controller.refreshOrders,
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 20,
+                      ),
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.45,
+                          child: _OrdersEmptyState(
+                            tab: controller.selectedTab.value,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return RefreshIndicator(
+                  onRefresh: controller.refreshOrders,
+                  child: ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(
+                      18,
+                      2,
+                      18,
+                      24,
+                    ),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: orders.length,
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(height: 14),
+                    itemBuilder: (_, index) {
+                      final order = orders[index];
+
+                      return _ClientOrderCard(
+                        order: order,
+                        controller: controller,
+                      );
+                    },
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -140,72 +142,81 @@ class _OrdersTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    return Obx(() {
+      final colors = Theme.of(context).colorScheme;
+      final selectedTab = controller.selectedTab.value;
 
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: colors.surfaceContainerHighest.withOpacity(0.55),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Row(
-        children: [
-          _OrderTabButton(
-            label: 'Pending',
-            tab: OrderTab.pending,
-            controller: controller,
-          ),
-          _OrderTabButton(
-            label: 'Accepted',
-            tab: OrderTab.accepted,
-            controller: controller,
-          ),
-          _OrderTabButton(
-            label: 'Previous',
-            tab: OrderTab.previous,
-            controller: controller,
-          ),
-        ],
-      ),
-    );
+      return GlassContainer(
+        padding: const EdgeInsets.all(5),
+        borderRadius: BorderRadius.circular(16),
+        child: Row(
+          children: [
+            _OrderTabButton(
+              label: 'Pending'.tr,
+              tab: OrderTab.pending,
+              selectedTab: selectedTab,
+              controller: controller,
+            ),
+            _OrderTabButton(
+              label: 'Accepted'.tr,
+              tab: OrderTab.accepted,
+              selectedTab: selectedTab,
+              controller: controller,
+            ),
+            _OrderTabButton(
+              label: 'Previous'.tr,
+              tab: OrderTab.previous,
+              selectedTab: selectedTab,
+              controller: controller,
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
 class _OrderTabButton extends StatelessWidget {
   final String label;
   final OrderTab tab;
+  final OrderTab selectedTab;
   final OrdersController controller;
 
   const _OrderTabButton({
     required this.label,
     required this.tab,
+    required this.selectedTab,
     required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
-    final isSelected = controller.selectedTab.value == tab;
+    final isSelected = selectedTab == tab;
 
     return Expanded(
       child: GestureDetector(
-        onTap: () => controller.changeTab(tab),
+        onTap: () {
+          controller.changeTab(tab);
+        },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
           padding: const EdgeInsets.symmetric(
-            vertical: 10,
-            horizontal: 5,
+            horizontal: 8,
+            vertical: 11,
           ),
           decoration: BoxDecoration(
             color: isSelected
                 ? colors.surface
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(12),
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.035),
+                      color: Colors.black.withOpacity(0.05),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -217,11 +228,10 @@ class _OrderTabButton extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: theme.textTheme.labelMedium?.copyWith(
                 color: isSelected
                     ? colors.onSurface
                     : colors.onSurfaceVariant,
-                fontSize: 12,
                 fontWeight: isSelected
                     ? FontWeight.w700
                     : FontWeight.w500,
@@ -230,87 +240,6 @@ class _OrderTabButton extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-// =============================================================================
-// SECTION INTRO
-// =============================================================================
-
-class _SectionIntro extends StatelessWidget {
-  final OrderTab tab;
-  final int count;
-
-  const _SectionIntro({
-    required this.tab,
-    required this.count,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-
-    String title;
-    String subtitle;
-
-    switch (tab) {
-      case OrderTab.pending:
-        title = 'Pending orders';
-        subtitle = 'Orders waiting for warehouse approval.';
-
-        break;
-
-      case OrderTab.accepted:
-        title = 'Active orders';
-        subtitle = 'Orders currently being processed.';
-
-        break;
-
-      case OrderTab.previous:
-        title = 'Previous orders';
-        subtitle = 'Your completed and past orders.';
-
-        break;
-    }
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                subtitle,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: colors.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        const SizedBox(width: 10),
-
-        Text(
-          '$count ${count == 1 ? 'order' : 'orders'}',
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: colors.primary,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -333,56 +262,48 @@ class _ClientOrderCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
 
-    final products = order["products"] is List
-        ? order["products"] as List
-        : [];
+    final products = order['products'] is List
+        ? order['products'] as List
+        : <dynamic>[];
 
-    final quantity = products.fold<int>(
-      0,
-      (sum, item) {
-        return sum + ((item["quantity"] ?? 0) as int);
-      },
-    );
+    final quantity = _calculateQuantity(products);
 
     final status =
-        order["status"]?.toString() ?? "pending";
+        order['status']?.toString().toLowerCase() ?? 'pending';
 
     final orderId =
-        order["id"]?.toString() ?? "";
+        order['id']?.toString() ?? '-';
 
     final orderDate =
-        order["order_date"]?.toString() ?? "";
+        order['order_date']?.toString() ?? '';
 
     final expectedPrice =
-        order["expected_price"]?.toString() ?? "0";
+        order['expected_price']?.toString() ?? '0';
 
     final warehouseId =
-        order["src_facility_id"]?.toString() ?? "-";
+        order['src_facility_id']?.toString() ?? '-';
 
     return Material(
       color: colors.surface,
-      borderRadius: BorderRadius.circular(19),
+      borderRadius: BorderRadius.circular(20),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          Get.bottomSheet(
-            ClientOrderDetailsSheet(
-              order: order,
-              controller: controller,
-            ),
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
+          _showOrderDetails(
+            context,
+            order,
           );
         },
-        borderRadius: BorderRadius.circular(19),
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              // ---------------------------------------------------------------
+              // -------------------------------------------------------------
               // TOP
-              // ---------------------------------------------------------------
+              // -------------------------------------------------------------
 
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _OrderIcon(
                     status: status,
@@ -404,7 +325,7 @@ class _ClientOrderCard extends StatelessWidget {
                           ),
                         ),
 
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 5),
 
                         Row(
                           children: [
@@ -413,18 +334,15 @@ class _ClientOrderCard extends StatelessWidget {
                               size: 14,
                               color: colors.onSurfaceVariant,
                             ),
-
-                            const SizedBox(width: 4),
-
+                            const SizedBox(width: 5),
                             Expanded(
                               child: Text(
-                                'Warehouse #$warehouseId',
+                                '${'Warehouse'.tr} #$warehouseId',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style:
                                     theme.textTheme.bodySmall?.copyWith(
-                                  color:
-                                      colors.onSurfaceVariant,
+                                  color: colors.onSurfaceVariant,
                                 ),
                               ),
                             ),
@@ -451,15 +369,15 @@ class _ClientOrderCard extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              // ---------------------------------------------------------------
+              // -------------------------------------------------------------
               // BOTTOM INFO
-              // ---------------------------------------------------------------
+              // -------------------------------------------------------------
 
               Row(
                 children: [
                   _OrderInfo(
                     icon: Icons.inventory_2_outlined,
-                    text: '$quantity items',
+                    text: '$quantity ${'items'.tr}',
                   ),
 
                   const SizedBox(width: 14),
@@ -471,13 +389,15 @@ class _ClientOrderCard extends StatelessWidget {
 
                   const Spacer(),
 
-                  Text(
-                    orderDate,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style:
-                        theme.textTheme.labelSmall?.copyWith(
-                      color: colors.onSurfaceVariant,
+                  Flexible(
+                    child: Text(
+                      orderDate,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.end,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
                     ),
                   ),
 
@@ -496,6 +416,39 @@ class _ClientOrderCard extends StatelessWidget {
       ),
     );
   }
+
+  int _calculateQuantity(List products) {
+    return products.fold<int>(
+      0,
+      (sum, item) {
+        final value = item['quantity'];
+
+        if (value is int) {
+          return sum + value;
+        }
+
+        if (value is num) {
+          return sum + value.toInt();
+        }
+
+        return sum;
+      },
+    );
+  }
+
+  void _showOrderDetails(
+    BuildContext context,
+    dynamic order,
+  ) {
+    Get.bottomSheet(
+      ClientOrderDetailsSheet(
+        order: order,
+        controller: controller,
+      ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+    );
+  }
 }
 
 // =============================================================================
@@ -512,18 +465,22 @@ class _OrderIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final color = _statusColor(
+      status,
+      colors,
+    );
 
     return Container(
       width: 46,
       height: 46,
       decoration: BoxDecoration(
-        color: colors.primaryContainer,
+        color: color.withOpacity(0.10),
         borderRadius: BorderRadius.circular(13),
       ),
       child: Icon(
         Icons.shopping_bag_outlined,
         size: 21,
-        color: colors.primary,
+        color: color,
       ),
     );
   }
@@ -542,37 +499,13 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
-    final statusColor =
-        _statusColor(status, colors);
-
-    String text;
-
-    switch (status.toLowerCase()) {
-      case 'pending':
-        text = 'Waiting';
-        break;
-
-      case 'approved':
-        text = 'Accepted';
-        break;
-
-      case 'delivered':
-        text = 'Delivered';
-        break;
-
-      case 'rejected':
-        text = 'Rejected';
-        break;
-
-      case 'cancelled':
-        text = 'Cancelled';
-        break;
-
-      default:
-        text = status.capitalizeFirst ?? status;
-    }
+    final color = _statusColor(
+      status,
+      colors,
+    );
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -580,16 +513,13 @@ class _StatusBadge extends StatelessWidget {
         vertical: 5,
       ),
       decoration: BoxDecoration(
-        color: statusColor.withOpacity(0.11),
+        color: color.withOpacity(0.11),
         borderRadius: BorderRadius.circular(9),
       ),
       child: Text(
-        text,
-        style: Theme.of(context)
-            .textTheme
-            .labelSmall
-            ?.copyWith(
-          color: statusColor,
+        _translatedStatus(status),
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: color,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -612,7 +542,8 @@ class _OrderInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Flexible(
       child: Row(
@@ -631,10 +562,7 @@ class _OrderInfo extends StatelessWidget {
               text,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelSmall
-                  ?.copyWith(
+              style: theme.textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -661,74 +589,114 @@ class _OrdersEmptyState extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
 
-    String title;
-    String subtitle;
+    final content = _emptyStateContent(tab);
 
-    switch (tab) {
-      case OrderTab.pending:
-        title = 'No pending orders';
-        subtitle =
-            'New orders will appear here while waiting for approval.';
-        break;
-
-      case OrderTab.accepted:
-        title = 'No active orders';
-        subtitle =
-            'Accepted orders will appear here while they are being processed.';
-        break;
-
-      case OrderTab.previous:
-        title = 'No previous orders';
-        subtitle =
-            'Your completed orders will appear here.';
-        break;
-    }
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 38,
-      ),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(19),
-      ),
-      child: Column(
-        children: [
-          Icon(
-            Icons.shopping_bag_outlined,
-            size: 40,
-            color: colors.onSurfaceVariant.withOpacity(0.45),
-          ),
-
-          const SizedBox(height: 12),
-
-          Text(
-            title,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w700,
+    return Center(
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 38,
+        ),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.shopping_bag_outlined,
+              size: 46,
+              color: colors.onSurfaceVariant.withOpacity(0.45),
             ),
-          ),
 
-          const SizedBox(height: 5),
+            const SizedBox(height: 14),
 
-          Text(
-            subtitle,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: colors.onSurfaceVariant,
+            Text(
+              content.title.tr,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
-          ),
-        ],
+
+            const SizedBox(height: 6),
+
+            Text(
+              content.subtitle.tr,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
+
+  _EmptyStateContent _emptyStateContent(OrderTab tab) {
+    switch (tab) {
+      case OrderTab.pending:
+        return const _EmptyStateContent(
+          title: 'No pending orders',
+          subtitle:
+              'New orders will appear here while waiting for approval.',
+        );
+
+      case OrderTab.accepted:
+        return const _EmptyStateContent(
+          title: 'No active orders',
+          subtitle:
+              'Accepted orders will appear here while they are being processed.',
+        );
+
+      case OrderTab.previous:
+        return const _EmptyStateContent(
+          title: 'No previous orders',
+          subtitle:
+              'Your completed orders will appear here.',
+        );
+    }
+  }
+}
+
+class _EmptyStateContent {
+  final String title;
+  final String subtitle;
+
+  const _EmptyStateContent({
+    required this.title,
+    required this.subtitle,
+  });
 }
 
 // =============================================================================
-// STATUS COLOR
+// STATUS HELPERS
 // =============================================================================
+
+String _translatedStatus(String status) {
+  switch (status.toLowerCase()) {
+    case 'pending':
+      return 'Waiting Approval'.tr;
+
+    case 'approved':
+      return 'Approved'.tr;
+
+    case 'delivered':
+      return 'Delivered'.tr;
+
+    case 'rejected':
+      return 'Rejected'.tr;
+
+    case 'cancelled':
+      return 'Cancelled'.tr;
+
+    default:
+      return status.tr;
+  }
+}
 
 Color _statusColor(
   String status,

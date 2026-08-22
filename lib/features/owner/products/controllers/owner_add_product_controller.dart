@@ -9,7 +9,15 @@ import 'package:smartware/core/utils/pref_helper.dart';
 import 'package:smartware/features/owner/products/models/products_repo.dart';
 
 class AddProductController extends GetxController {
+  // ============================================================
+  // REPOSITORY
+  // ============================================================
+
   final ProductsRepo _repo = ProductsRepo();
+
+  // ============================================================
+  // FORM
+  // ============================================================
 
   final formKey = GlobalKey<FormState>();
 
@@ -17,11 +25,19 @@ class AddProductController extends GetxController {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final quantityController = TextEditingController();
-  final sectionIdController = TextEditingController();
   final unitPriceController = TextEditingController();
 
+  // ============================================================
+  // IMAGE
+  // ============================================================
+
   final ImagePicker _imagePicker = ImagePicker();
+
   final Rxn<File> selectedImage = Rxn<File>();
+
+  // ============================================================
+  // UNIT
+  // ============================================================
 
   final RxString selectedUnit = ''.obs;
 
@@ -36,135 +52,412 @@ class AddProductController extends GetxController {
     'pallet',
   ];
 
-  final RxList<String> availableCategories = <String>[].obs;
-  final RxList<String> selectedCategories = <String>[].obs;
+  // ============================================================
+  // OWNER CATEGORIES
+  // ============================================================
 
-  final Map<String, int> categoryIds = {
-    'canned_foods': 1,
-    'fresh_foods': 2,
-    'refrigerated_foods': 3,
-    'frozen_foods': 4,
-    'baby_care': 27,
-    'medical_equipment': 28,
-    'vitamins_supplements': 29,
-  };
+  /// Category names shown by the UI.
+  final RxList<String> availableCategories =
+      <String>[].obs;
+
+  /// Category names selected by the user.
+  final RxList<String> selectedCategories =
+      <String>[].obs;
+
+  /// REAL owner categories.
+  ///
+  /// Example:
+  ///
+  /// [
+  ///   {
+  ///     'id': 1,
+  ///     'name': 'Canned Foods',
+  ///   },
+  ///   {
+  ///     'id': 2,
+  ///     'name': 'Frozen Foods',
+  ///   },
+  /// ]
+  final RxList<Map<String, dynamic>> ownerCategories =
+      <Map<String, dynamic>>[].obs;
+
+  // ============================================================
+  // LOADING
+  // ============================================================
 
   final RxBool isLoading = false.obs;
 
-  // Prevent double submission.
+  final RxBool isLoadingCategories = false.obs;
+
   bool _submitted = false;
+
+  // ============================================================
+  // INIT
+  // ============================================================
 
   @override
   void onInit() {
     super.onInit();
 
-    print('════════ ADD PRODUCT CONTROLLER INIT ════════');
-
-    _loadAllowedCategories();
+    loadOwnerCategories();
   }
 
-  Future<void> _loadAllowedCategories() async {
-    try {
-      final categories =
-          await PrefHelper.getOwnerSelectedProducts();
+  // ============================================================
+  // LOAD OWNER CATEGORIES
+  // ============================================================
 
-      if (categories == null || categories.isEmpty) {
-        print('⚠️ No owner categories found');
+  Future<void> loadOwnerCategories() async {
+    if (isLoadingCategories.value) {
+      return;
+    }
+
+    try {
+      isLoadingCategories.value = true;
+
+      debugPrint(
+        '════════ LOAD OWNER PRODUCT CATEGORIES ════════',
+      );
+
+      // ----------------------------------------------------------
+      // THIS IS THE IMPORTANT PART
+      //
+      // We read the REAL category objects saved after onboarding.
+      // ----------------------------------------------------------
+
+      final storedCategories =
+          await PrefHelper.getOwnerProductCategories();
+
+      debugPrint(
+        '📦 Stored categories: $storedCategories',
+      );
+
+      if (storedCategories.isEmpty) {
+        ownerCategories.clear();
+        availableCategories.clear();
+
+        debugPrint(
+          '❌ No owner categories found.',
+        );
+
         return;
       }
 
-      availableCategories.assignAll(categories);
+      // ----------------------------------------------------------
+      // NORMALIZE
+      // ----------------------------------------------------------
 
-      print(
-        '🏷 Owner categories: ${availableCategories.toList()}',
+      final validCategories =
+          <Map<String, dynamic>>[];
+
+      final usedIds = <int>{};
+      final usedNames = <String>{};
+
+      for (final category in storedCategories) {
+        final rawId = category['id'];
+        final rawName = category['name'];
+
+        final id = rawId is int
+            ? rawId
+            : int.tryParse(
+                rawId?.toString() ?? '',
+              );
+
+        final name =
+            rawName?.toString().trim() ?? '';
+
+        if (id == null || id <= 0) {
+          debugPrint(
+            '⚠️ Invalid category ID: $category',
+          );
+          continue;
+        }
+
+        if (name.isEmpty) {
+          debugPrint(
+            '⚠️ Empty category name: $category',
+          );
+          continue;
+        }
+
+        if (usedIds.contains(id)) {
+          continue;
+        }
+
+        if (usedNames.contains(name.toLowerCase())) {
+          continue;
+        }
+
+        usedIds.add(id);
+        usedNames.add(name.toLowerCase());
+
+        validCategories.add({
+          'id': id,
+          'name': name,
+        });
+      }
+
+      // ----------------------------------------------------------
+      // STORE IN CONTROLLER
+      // ----------------------------------------------------------
+
+      ownerCategories.assignAll(
+        validCategories,
       );
-    } catch (e) {
-      print('❌ Failed to load categories: $e');
+
+      availableCategories.assignAll(
+        validCategories
+            .map(
+              (category) =>
+                  category['name'].toString(),
+            )
+            .toList(),
+      );
+
+      debugPrint(
+        '✅ Owner categories loaded.',
+      );
+
+      for (final category in ownerCategories) {
+        debugPrint(
+          '   ID: ${category['id']} | '
+          'NAME: ${category['name']}',
+        );
+      }
+
+      debugPrint(
+        '════════════════════════════════════════',
+      );
+    } catch (e, stackTrace) {
+      debugPrint(
+        '❌ Failed to load owner categories: $e',
+      );
+
+      debugPrint('$stackTrace');
+
+      ownerCategories.clear();
+      availableCategories.clear();
+    } finally {
+      isLoadingCategories.value = false;
     }
   }
 
-  bool isCategorySelected(String category) {
-    return selectedCategories.contains(category);
-  }
+  // ============================================================
+  // CATEGORY SELECTION
+  // ============================================================
 
-  void toggleCategory(String category) {
-    if (selectedCategories.contains(category)) {
-      selectedCategories.remove(category);
-    } else {
-      selectedCategories.add(category);
-    }
-
-    print(
-      '🏷 Selected categories: ${selectedCategories.toList()}',
+  bool isCategorySelected(
+    String categoryName,
+  ) {
+    return selectedCategories.contains(
+      categoryName,
     );
   }
 
+  void toggleCategory(
+    String categoryName,
+  ) {
+    final cleanName =
+        categoryName.trim();
+
+    if (cleanName.isEmpty) {
+      return;
+    }
+
+    // ----------------------------------------------------------
+    // FIND REAL CATEGORY OBJECT
+    // ----------------------------------------------------------
+
+    final category =
+        ownerCategories.firstWhereOrNull(
+      (item) {
+        final name =
+            item['name']?.toString().trim() ?? '';
+
+        return name == cleanName;
+      },
+    );
+
+    if (category == null) {
+      debugPrint(
+        '❌ Category not found: $cleanName',
+      );
+
+      debugPrint(
+        'Available: ${ownerCategories.toList()}',
+      );
+
+      return;
+    }
+
+    // ----------------------------------------------------------
+    // TOGGLE
+    // ----------------------------------------------------------
+
+    if (selectedCategories.contains(cleanName)) {
+      selectedCategories.remove(cleanName);
+
+      debugPrint(
+        '➖ Removed: $cleanName',
+      );
+    } else {
+      selectedCategories.add(cleanName);
+
+      debugPrint(
+        '➕ Selected: $cleanName',
+      );
+
+      debugPrint(
+        '🆔 Real category ID: ${category['id']}',
+      );
+    }
+
+    debugPrint(
+      '📦 Selected: ${selectedCategories.toList()}',
+    );
+
+    debugPrint(
+      '🆔 IDs: $selectedCategoryIds',
+    );
+  }
+
+  // ============================================================
+  // SELECTED CATEGORY IDS
+  // ============================================================
+
   List<int> get selectedCategoryIds {
-    final ids = selectedCategories
-        .map((category) => categoryIds[category])
-        .whereType<int>()
-        .toList();
+    final ids = <int>[];
 
-    print('🆔 Category IDs: $ids');
+    for (final selectedName
+        in selectedCategories) {
+      final category =
+          ownerCategories.firstWhereOrNull(
+        (item) {
+          final name =
+              item['name']?.toString().trim() ?? '';
 
-    return ids;
-  }
+          return name == selectedName;
+        },
+      );
 
-  String categoryTitle(String category) {
-    switch (category) {
-      case 'canned_foods':
-        return 'Canned Foods';
-      case 'fresh_foods':
-        return 'Fresh Foods';
-      case 'refrigerated_foods':
-        return 'Refrigerated Foods';
-      case 'frozen_foods':
-        return 'Frozen Foods';
-      case 'baby_care':
-        return 'Baby Care';
-      case 'medical_equipment':
-        return 'Medical Equipment';
-      case 'vitamins_supplements':
-        return 'Vitamins & Supplements';
-      default:
-        return category
-            .replaceAll('_', ' ')
-            .split(' ')
-            .map(
-              (word) => word.isEmpty
-                  ? word
-                  : '${word[0].toUpperCase()}${word.substring(1)}',
-            )
-            .join(' ');
+      if (category == null) {
+        debugPrint(
+          '⚠️ Cannot resolve category: '
+          '$selectedName',
+        );
+
+        continue;
+      }
+
+      final rawId = category['id'];
+
+      final id = rawId is int
+          ? rawId
+          : int.tryParse(
+              rawId?.toString() ?? '',
+            );
+
+      if (id != null && id > 0) {
+        ids.add(id);
+      }
     }
+
+    return ids.toSet().toList();
   }
 
-  IconData categoryIcon(String category) {
-    switch (category) {
-      case 'canned_foods':
-        return Icons.inventory_2_outlined;
-      case 'fresh_foods':
-        return Icons.eco_outlined;
-      case 'refrigerated_foods':
-        return Icons.kitchen_outlined;
-      case 'frozen_foods':
-        return Icons.ac_unit;
-      case 'baby_care':
-        return Icons.child_care_outlined;
-      case 'medical_equipment':
-        return Icons.medical_services_outlined;
-      case 'vitamins_supplements':
-        return Icons.medication_outlined;
-      default:
-        return Icons.category_outlined;
+  // ============================================================
+  // GET CATEGORY ID
+  // ============================================================
+
+  int? getCategoryId(
+    String categoryName,
+  ) {
+    final category =
+        ownerCategories.firstWhereOrNull(
+      (item) =>
+          item['name']?.toString().trim() ==
+          categoryName.trim(),
+    );
+
+    if (category == null) {
+      return null;
     }
+
+    final rawId = category['id'];
+
+    if (rawId is int) {
+      return rawId;
+    }
+
+    return int.tryParse(
+      rawId?.toString() ?? '',
+    );
   }
+
+  // ============================================================
+  // CATEGORY TITLE
+  // ============================================================
+
+  String categoryTitle(
+    String category,
+  ) {
+    final clean =
+        category.trim();
+
+    return clean.isEmpty
+        ? 'Category'
+        : clean;
+  }
+
+  // ============================================================
+  // CATEGORY ICON
+  // ============================================================
+
+  IconData categoryIcon(
+    String category,
+  ) {
+    final normalized =
+        category.trim().toLowerCase();
+
+    if (normalized.contains('canned')) {
+      return Icons.inventory_2_outlined;
+    }
+
+    if (normalized.contains('fresh')) {
+      return Icons.eco_outlined;
+    }
+
+    if (normalized.contains('refrigerated')) {
+      return Icons.kitchen_outlined;
+    }
+
+    if (normalized.contains('frozen')) {
+      return Icons.ac_unit;
+    }
+
+    if (normalized.contains('baby')) {
+      return Icons.child_care_outlined;
+    }
+
+    if (normalized.contains('medical')) {
+      return Icons.medical_services_outlined;
+    }
+
+    if (normalized.contains('vitamin') ||
+        normalized.contains('supplement')) {
+      return Icons.medication_outlined;
+    }
+
+    return Icons.category_outlined;
+  }
+
+  // ============================================================
+  // IMAGE PICKER
+  // ============================================================
 
   Future<void> pickImage() async {
     try {
-      print('🖼️ Opening image picker...');
-
-      final image = await _imagePicker.pickImage(
+      final image =
+          await _imagePicker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 85,
         maxWidth: 1600,
@@ -172,20 +465,17 @@ class AddProductController extends GetxController {
       );
 
       if (image == null) {
-        print('⚠️ Image selection cancelled');
         return;
       }
 
-      selectedImage.value = File(image.path);
-
-      print('🖼️ Image selected: ${image.path}');
+      selectedImage.value =
+          File(image.path);
     } catch (e) {
-      print('❌ Image error: $e');
-
       Get.snackbar(
         'Error',
         'Failed to select image',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition:
+            SnackPosition.BOTTOM,
       );
     }
   }
@@ -194,22 +484,39 @@ class AddProductController extends GetxController {
     selectedImage.value = null;
   }
 
-  void selectUnit(String? unit) {
-    if (unit == null) return;
+  // ============================================================
+  // UNIT
+  // ============================================================
 
-    selectedUnit.value = unit;
+  void selectUnit(
+    String? unit,
+  ) {
+    if (unit == null ||
+        unit.trim().isEmpty) {
+      return;
+    }
 
-    print('📏 Unit: $unit');
+    selectedUnit.value =
+        unit.trim();
   }
 
-  String? validateSku(String? value) {
-    final sku = value?.trim() ?? '';
+  // ============================================================
+  // VALIDATORS
+  // ============================================================
+
+  String? validateSku(
+    String? value,
+  ) {
+    final sku =
+        value?.trim() ?? '';
 
     if (sku.isEmpty) {
       return 'SKU is required';
     }
 
-    if (!RegExp(r'^[A-Za-z0-9_-]+$').hasMatch(sku)) {
+    if (!RegExp(
+      r'^[A-Za-z0-9_-]+$',
+    ).hasMatch(sku)) {
       return 'Use only letters, numbers, _ or -';
     }
 
@@ -220,8 +527,11 @@ class AddProductController extends GetxController {
     return null;
   }
 
-  String? validateName(String? value) {
-    final name = value?.trim() ?? '';
+  String? validateName(
+    String? value,
+  ) {
+    final name =
+        value?.trim() ?? '';
 
     if (name.isEmpty) {
       return 'Product name is required';
@@ -234,16 +544,26 @@ class AddProductController extends GetxController {
     return null;
   }
 
-  String? validateDescription(String? value) {
-    if ((value?.trim() ?? '').isEmpty) {
+  String? validateDescription(
+    String? value,
+  ) {
+    final description =
+        value?.trim() ?? '';
+
+    if (description.isEmpty) {
       return 'Description is required';
     }
 
     return null;
   }
 
-  String? validateQuantity(String? value) {
-    final quantity = int.tryParse(value?.trim() ?? '');
+  String? validateQuantity(
+    String? value,
+  ) {
+    final quantity =
+        int.tryParse(
+      value?.trim() ?? '',
+    );
 
     if (quantity == null) {
       return 'Enter a valid quantity';
@@ -256,22 +576,13 @@ class AddProductController extends GetxController {
     return null;
   }
 
-  String? validateSectionId(String? value) {
-    final sectionId = int.tryParse(value?.trim() ?? '');
-
-    if (sectionId == null) {
-      return 'Enter a valid section ID';
-    }
-
-    if (sectionId <= 0) {
-      return 'Section ID must be greater than 0';
-    }
-
-    return null;
-  }
-
-  String? validateUnitPrice(String? value) {
-    final price = double.tryParse(value?.trim() ?? '');
+  String? validateUnitPrice(
+    String? value,
+  ) {
+    final price =
+        double.tryParse(
+      value?.trim() ?? '',
+    );
 
     if (price == null) {
       return 'Enter a valid unit price';
@@ -284,155 +595,247 @@ class AddProductController extends GetxController {
     return null;
   }
 
+  // ============================================================
+  // CREATE PRODUCT
+  // ============================================================
+
   Future<void> createProduct() async {
-    print('');
-    print('🚨 CREATE PRODUCT BUTTON PRESSED');
+    if (_submitted ||
+        isLoading.value) {
+      return;
+    }
+
+    FocusManager
+        .instance
+        .primaryFocus
+        ?.unfocus();
+
+    final form =
+        formKey.currentState;
+
+    if (form == null ||
+        !form.validate()) {
+      return;
+    }
 
     // ----------------------------------------------------------
-    // PREVENT DOUBLE REQUEST
+    // UNIT
     // ----------------------------------------------------------
 
-    if (_submitted || isLoading.value) {
-      print('⚠️ CREATE ALREADY IN PROGRESS');
-      return;
-    }
-
-    FocusManager.instance.primaryFocus?.unfocus();
-
-    final form = formKey.currentState;
-
-    if (form == null) {
-      print('❌ Form state is null');
-      return;
-    }
-
-    if (!form.validate()) {
-      print('❌ Form validation failed');
-      return;
-    }
-
-    if (selectedUnit.value.trim().isEmpty) {
+    if (selectedUnit.value
+        .trim()
+        .isEmpty) {
       Get.snackbar(
         'Missing Unit',
-        'Please select a unit',
-        snackPosition: SnackPosition.BOTTOM,
+        'Please select a unit.',
+        snackPosition:
+            SnackPosition.BOTTOM,
       );
+
+      return;
+    }
+
+    // ----------------------------------------------------------
+    // CATEGORIES
+    // ----------------------------------------------------------
+
+    if (ownerCategories.isEmpty) {
+      // Try once more in case categories were loaded after
+      // controller initialization.
+      await loadOwnerCategories();
+    }
+
+    if (ownerCategories.isEmpty) {
+      Get.snackbar(
+        'Categories Unavailable',
+        'No product categories are available for this warehouse.',
+        snackPosition:
+            SnackPosition.BOTTOM,
+      );
+
       return;
     }
 
     if (selectedCategories.isEmpty) {
       Get.snackbar(
         'Missing Categories',
-        'Please select at least one category',
-        snackPosition: SnackPosition.BOTTOM,
+        'Please select at least one category.',
+        snackPosition:
+            SnackPosition.BOTTOM,
       );
+
       return;
     }
 
-    final categoryIdsToSend = selectedCategoryIds;
+    // ----------------------------------------------------------
+    // REAL CATEGORY IDS
+    // ----------------------------------------------------------
 
-    if (categoryIdsToSend.isEmpty) {
+    final categoryIds =
+        selectedCategoryIds;
+
+    debugPrint(
+      '════════ CREATE PRODUCT CATEGORIES ════════',
+    );
+
+    debugPrint(
+      '🏷 Names: ${selectedCategories.toList()}',
+    );
+
+    debugPrint(
+      '🆔 REAL IDs: $categoryIds',
+    );
+
+    debugPrint(
+      '════════════════════════════════════════',
+    );
+
+    if (categoryIds.isEmpty) {
       Get.snackbar(
         'Invalid Categories',
-        'Selected categories are invalid',
-        snackPosition: SnackPosition.BOTTOM,
+        'The selected categories could not be resolved.',
+        snackPosition:
+            SnackPosition.BOTTOM,
       );
+
       return;
     }
 
-    final quantity = int.tryParse(
+    // ----------------------------------------------------------
+    // QUANTITY
+    // ----------------------------------------------------------
+
+    final quantity =
+        int.tryParse(
       quantityController.text.trim(),
     );
 
-    final sectionId = int.tryParse(
-      sectionIdController.text.trim(),
-    );
+    if (quantity == null) {
+      Get.snackbar(
+        'Invalid Quantity',
+        'Please enter a valid quantity.',
+        snackPosition:
+            SnackPosition.BOTTOM,
+      );
 
-    final unitPrice = double.tryParse(
+      return;
+    }
+
+    // ----------------------------------------------------------
+    // PRICE
+    // ----------------------------------------------------------
+
+    final unitPrice =
+        double.tryParse(
       unitPriceController.text.trim(),
     );
 
-    if (quantity == null ||
-        sectionId == null ||
-        unitPrice == null) {
+    if (unitPrice == null) {
+      Get.snackbar(
+        'Invalid Unit Price',
+        'Please enter a valid unit price.',
+        snackPosition:
+            SnackPosition.BOTTOM,
+      );
+
       return;
     }
+
+    // ----------------------------------------------------------
+    // CREATE
+    // ----------------------------------------------------------
 
     try {
       _submitted = true;
       isLoading.value = true;
 
-      print('');
-      print('════════ CREATE PRODUCT START ════════');
-      print('📦 SKU: ${skuController.text.trim()}');
-      print('📝 Name: ${nameController.text.trim()}');
-      print('📏 Unit: ${selectedUnit.value}');
-      print('💰 Unit Price: $unitPrice');
-      print('🏷 Categories: $categoryIdsToSend');
-      print('📄 Description: ${descriptionController.text.trim()}');
-      print('🏢 Section ID: $sectionId');
-      print('📦 Quantity: $quantity');
-      print('════════════════════════════════════');
-
-      final result = await _repo.createProduct(
-        sku: skuController.text.trim(),
-        nameEn: nameController.text.trim(),
-        unit: selectedUnit.value.trim(),
-        unitPrice: unitPrice,
-        categories: categoryIdsToSend,
-        descriptionEn: descriptionController.text.trim(),
-        sectionId: sectionId,
-        quantity: quantity,
-        productImage: selectedImage.value,
+      debugPrint(
+        '════════ CREATE PRODUCT START ════════',
       );
 
-      print('');
-      print('════════ PRODUCT CREATED ════════');
-      print('🆔 Product ID: ${result.data.id}');
-      print('📦 SKU: ${result.data.sku}');
-      print('📝 Name: ${result.data.name}');
-      print('════════════════════════════════');
+      final result =
+          await _repo.createProduct(
+        sku:
+            skuController.text.trim(),
+        nameEn:
+            nameController.text.trim(),
+        unit:
+            selectedUnit.value.trim(),
+        unitPrice:
+            unitPrice,
+        categories:
+            categoryIds,
+        descriptionEn:
+            descriptionController
+                .text
+                .trim(),
+        quantity:
+            quantity,
+        productImage:
+            selectedImage.value,
+      );
 
-      // IMPORTANT:
-      // Do NOT show a snackbar before Get.back().
-      // Return the result directly to the previous screen.
+      debugPrint(
+        '════════ PRODUCT CREATED ════════',
+      );
 
-      print('⬅️ POPPING ADD PRODUCT SCREEN WITH TRUE');
+      debugPrint(
+        '🆔 Product ID: ${result.data.id}',
+      );
 
-      if (Get.isOverlaysOpen) {
-        print('⚠️ Overlay is open, closing it first');
-        Get.back();
-      }
+      debugPrint(
+        '📦 SKU: ${result.data.sku}',
+      );
 
-      Get.back<bool>(result: true);
+      debugPrint(
+        '📝 Name: ${result.data.name}',
+      );
 
-      print('✅ ADD PRODUCT SCREEN POPPED');
+      debugPrint(
+        '🏷 Category IDs sent: $categoryIds',
+      );
+
+      debugPrint(
+        '══════════════════════════════════',
+      );
+
+      Get.back<bool>(
+        result: true,
+      );
     } on ApiError catch (e) {
       _submitted = false;
-
-      print('❌ API ERROR: ${e.message}');
 
       Get.snackbar(
         'Error',
         e.message,
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition:
+            SnackPosition.BOTTOM,
       );
     } catch (e, stackTrace) {
       _submitted = false;
 
-      print('❌ CREATE PRODUCT ERROR: $e');
-      print('❌ StackTrace: $stackTrace');
+      debugPrint(
+        '❌ Create product error: $e',
+      );
+
+      debugPrint(
+        '$stackTrace',
+      );
 
       Get.snackbar(
         'Error',
-        'Failed to create product',
-        snackPosition: SnackPosition.BOTTOM,
+        'Failed to create product.',
+        snackPosition:
+            SnackPosition.BOTTOM,
       );
     } finally {
       isLoading.value = false;
-      print('🏁 createProduct() FINISHED');
     }
   }
+
+  // ============================================================
+  // CLOSE
+  // ============================================================
 
   @override
   void onClose() {
@@ -440,7 +843,6 @@ class AddProductController extends GetxController {
     nameController.dispose();
     descriptionController.dispose();
     quantityController.dispose();
-    sectionIdController.dispose();
     unitPriceController.dispose();
 
     super.onClose();

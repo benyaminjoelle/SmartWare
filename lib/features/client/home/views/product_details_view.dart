@@ -23,7 +23,7 @@ class ProductDetailsView extends StatelessWidget {
     final colors = theme.colorScheme;
     final controller = Get.find<ProductDetailsController>();
     final product = controller.product;
-    
+
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
@@ -72,7 +72,7 @@ class ProductDetailsView extends StatelessWidget {
 
                       // SKU
                       Text(
-                        'SKU: ${product.sku}',
+                        '${"SKU:".tr} ${product.sku}',
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: colors.onSurfaceVariant,
                         ),
@@ -111,32 +111,32 @@ class ProductDetailsView extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
-                    // DESCRIPTION
-                    if (product.description.isNotEmpty) ...[
-                      Text(
-                        'Description',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
+                      // DESCRIPTION
+                      if (product.description.isNotEmpty) ...[
+                        Text(
+                          'Description'.tr,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
-                      Text(
-                        product.description,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colors.onSurfaceVariant,
-                          height: 1.5,
+                        Text(
+                          product.description,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: colors.onSurfaceVariant,
+                            height: 1.5,
+                          ),
                         ),
-                      ),
 
-                      const SizedBox(height: 24),
-                    ],
+                        const SizedBox(height: 24),
+                      ],
 
                       // CONTAINER TYPE
                       InfoRow(
                         icon: Icons.inventory_2_outlined,
-                        title: 'Container',
+                        title: 'Container'.tr,
                         value: product.unit,
                       ),
 
@@ -146,11 +146,15 @@ class ProductDetailsView extends StatelessWidget {
                         title: 'Quantity',
                         subtitle: 'Choose how much you need',
                       ),
-                
+
                       const SizedBox(height: 12),
+
                       QuantitySelector(
-                        controller: controller,),
+                        controller: controller,
+                      ),
+
                       const SizedBox(height: 28),
+
                       WarehouseAvailabilityButton(
                         controller: controller,
                       ),
@@ -177,12 +181,13 @@ class ProductDetailsView extends StatelessWidget {
                 ),
               ],
             ),
+
             Positioned(
               top: 14,
               left: 16,
-              child: CustomBackButton(),               
-              ),
-            
+              child: CustomBackButton(),
+            ),
+
             Positioned(
               top: 14,
               right: 16,
@@ -193,6 +198,7 @@ class ProductDetailsView extends StatelessWidget {
                 },
               ),
             ),
+
             Positioned(
               left: 0,
               right: 0,
@@ -208,4 +214,3 @@ class ProductDetailsView extends StatelessWidget {
     );
   }
 }
-
