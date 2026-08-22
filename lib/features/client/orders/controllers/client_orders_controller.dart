@@ -1,71 +1,144 @@
 import 'package:get/get.dart';
+import 'package:smartware/core/network/api_service.dart';
 
 enum OrderTab {
-  recent,
+  pending,
+  accepted,
   previous,
-  cancelled,
 }
 
 class OrdersController extends GetxController {
-  final selectedTab = OrderTab.recent.obs;
+  final ApiService apiService = ApiService();
+
+  final selectedTab = OrderTab.pending.obs;
+
+  final pendingOrders = <Map<String, dynamic>>[].obs;
+  final acceptedOrders = <Map<String, dynamic>>[].obs;
+  final previousOrders = <Map<String, dynamic>>[].obs;
+
+  final isLoading = false.obs;
+  final isCancelling = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadPendingOrders();
+  }
 
   void changeTab(OrderTab tab) {
     selectedTab.value = tab;
+
+    switch (tab) {
+      case OrderTab.pending:
+        loadPendingOrders();
+        break;
+      case OrderTab.accepted:
+        loadAcceptedOrders();
+        break;
+      case OrderTab.previous:
+        loadPreviousOrders();
+        break;
+    }
   }
 
-  // Temporary dummy data
-  final recentOrders = [
-    {
-      "id": "#ORD-1201",
-      "date": "15 Jun 2026",
-      "items": 4,
-      "price": "\$84.50",
-      "status": "Processing",
-    },
-    {
-      "id": "#ORD-1198",
-      "date": "13 Jun 2026",
-      "items": 2,
-      "price": "\$42.00",
-      "status": "Pending",
-    },
-  ];
+  Future<void> loadPendingOrders() async {
+    await _loadOrders('/orders/pending', pendingOrders);
+  }
 
-  final previousOrders = [
-    {
-      "id": "#ORD-1155",
-      "date": "28 May 2026",
-      "items": 6,
-      "price": "\$170.00",
-      "status": "Delivered",
-    },
-    {
-      "id": "#ORD-1130",
-      "date": "20 May 2026",
-      "items": 1,
-      "price": "\$12.50",
-      "status": "Delivered",
-    },
-  ];
+  Future<void> loadAcceptedOrders() async {
+    await _loadOrders('/orders/approved', acceptedOrders);
+  }
 
-  final cancelledOrders = [
-    {
-      "id": "#ORD-1110",
-      "date": "14 May 2026",
-      "items": 3,
-      "price": "\$50.00",
-      "status": "Cancelled",
-    },
-  ];
+  Future<void> loadPreviousOrders() async {
+    await _loadOrders('/orders/delivered', previousOrders);
+  }
+
+  Future<void> _loadOrders(
+    String endpoint,
+    RxList<Map<String, dynamic>> target,
+  ) async {
+    try {
+      isLoading.value = true;
+
+      final response = await apiService.get(endpoint);
+
+      if (response is Map && response['success'] == true) {
+        final data = response['data'];
+
+        if (data is List) {
+          target.assignAll(
+            data.map(
+              (e) => Map<String, dynamic>.from(e),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('Failed to load orders: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> cancelOrder(int orderId) async {
+    try {
+      isCancelling.value = true;
+
+      final response = await apiService.post(
+        '/orders/$orderId/cancel',
+        {},
+      );
+
+      if (response is Map && response['success'] == true) {
+        pendingOrders.removeWhere(
+          (order) => order['id'] == orderId,
+        );
+
+        return true;
+      }
+
+      Get.snackbar(
+        'Error',
+        response is Map
+            ? response['message']?.toString() ?? 'Failed to cancel order'
+            : 'Failed to cancel order',
+      );
+
+      return false;
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to cancel order',
+      );
+      return false;
+    } finally {
+      isCancelling.value = false;
+    }
+  }
+  Future<void> refreshOrders() async {
+  switch (selectedTab.value) {
+    case OrderTab.pending:
+      await loadPendingOrders();
+      break;
+
+    case OrderTab.accepted:
+      await loadAcceptedOrders();
+      break;
+
+    case OrderTab.previous:
+      await loadPreviousOrders();
+      break;
+  }
+}
 
   List<Map<String, dynamic>> get currentOrders {
     switch (selectedTab.value) {
-      case OrderTab.recent:
-        return recentOrders;
+      case OrderTab.pending:
+        return pendingOrders;
+      case OrderTab.accepted:
+        return acceptedOrders;
       case OrderTab.previous:
         return previousOrders;
-      case OrderTab.cancelled:
-        return cancelledOrders;
     }
   }
 }

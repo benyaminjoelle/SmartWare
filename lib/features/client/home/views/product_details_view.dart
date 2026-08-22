@@ -25,7 +25,7 @@ class ProductDetailsView extends StatelessWidget {
     final product = controller.product;
     
     return Scaffold(
-      backgroundColor: colors.surface,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: [
@@ -111,6 +111,28 @@ class ProductDetailsView extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
+                    // DESCRIPTION
+                    if (product.description.isNotEmpty) ...[
+                      Text(
+                        'Description',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Text(
+                        product.description,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colors.onSurfaceVariant,
+                          height: 1.5,
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+                    ],
+
                       // CONTAINER TYPE
                       InfoRow(
                         icon: Icons.inventory_2_outlined,
@@ -167,7 +189,7 @@ class ProductDetailsView extends StatelessWidget {
               child: FloatingButton(
                 icon: Icons.shopping_bag_outlined,
                 onTap: () {
-                  Get.toNamed('/cart');
+                  Get.toNamed('/clientCart');
                 },
               ),
             ),

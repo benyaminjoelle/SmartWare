@@ -746,7 +746,7 @@ class ClientLocationController extends GetxController {
     );
     await PrefHelper.setClientProfileCompleted(true);
     await PrefHelper.saveClientProfileCompletion(100);
-    await PrefHelper.saveClientOnboardingStep(2);
+    await PrefHelper.saveClientOnboardingStep(3);
 
     AppSnackbar.show(
       title: 'Location Saved',
@@ -763,27 +763,12 @@ class ClientLocationController extends GetxController {
       message: e.toString(),
       position: SnackPosition.TOP,
     );
+    Get.offAndToNamed('/clientProfile');
   } finally {
     isSaving.value = false;
   }
 }
-      // ========================================================
-      // SEND TO LARAVEL HERE
-      // ========================================================
-      //
-      // Example:
-      //
-      // await repository.saveLocation(
-      //   latitude: latitude,
-      //   longitude: longitude,
-      //   address: address,
-      // );
-      //
-      // ========================================================
-
-  
   // CLOSE
-
   @override
   void onClose() {
     debugPrint(

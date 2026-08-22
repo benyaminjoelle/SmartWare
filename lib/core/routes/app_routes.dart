@@ -20,6 +20,7 @@ class AppRoutes {
   static const clientEditPofile = '/clientEditProfile';
   static const clientCompletion = '/clientCompletion';
   static const clientOrders = '/clientOrders';
+  static const clientOrderDetails = '/clientOrderDetails';
   static const clientCart = '/clientCart';
   static const checkout = '/checkout';
   static const productDetails = '/productDetails';

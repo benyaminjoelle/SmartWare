@@ -133,24 +133,27 @@ class CartController extends GetxController {
     cartItems.clear();
   }
 
-  Future<void> _saveCartToStorage() async {
-    final prefs = await SharedPreferences.getInstance();
+ Future<void> _saveCartToStorage() async {
+  final prefs = await SharedPreferences.getInstance();
 
-    final Map<String, dynamic> rawMap = cartItems.map(
-      (key, value) => MapEntry(
-        key,
-        value.toJson(),
-      ),
-    );
+  final rawMap = cartItems.map(
+    (key, value) => MapEntry(
+      key,
+      value.toJson(),
+    ),
+  );
 
-    final String encodedString = jsonEncode(rawMap);
+  await prefs.setString(
+    _cartKey,
+    jsonEncode(rawMap),
+  );
 
-    await prefs.setString(_cartKey, encodedString);
-  }
+  print('✅ CART SAVED: ${cartItems.length} items');
+}
 
   Future<void> _loadCartFromStorage() async {
     final prefs = await SharedPreferences.getInstance();
-
+  
     final String? encodedString = prefs.getString(_cartKey);
 
     if (encodedString != null && encodedString.isNotEmpty) {
