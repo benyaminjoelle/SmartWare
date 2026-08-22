@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrefHelper {
@@ -176,6 +178,32 @@ class PrefHelper {
 
     print('💾 Business name saved: $name');
   }
+  static const String _userDataKey = 'user_data';
+
+static Future<void> saveUserData(Map<String, dynamic> userData) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  await prefs.setString(
+    _userDataKey,
+    jsonEncode(userData),
+  );
+
+  print('💾 Full user data saved');
+}
+
+static Future<Map<String, dynamic>?> getUserData() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  final data = prefs.getString(_userDataKey);
+
+  if (data == null) {
+    return null;
+  }
+
+  return Map<String, dynamic>.from(
+    jsonDecode(data),
+  );
+}
 
   // ============================================================
   // USER PHOTO

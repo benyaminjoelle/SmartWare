@@ -20,7 +20,7 @@ class OwnerRootView extends GetView<OwnerRootController> {
 
     final pages = [
        OwnerHomeView(),
-      OwnerOrdersView(),
+      // OwnerOrdersView(),
       OwnerProductsView(),
     OwnerAnalyticsView(),
        OwnerProfileView(),

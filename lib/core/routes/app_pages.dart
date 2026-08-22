@@ -181,10 +181,10 @@ class AppPages {
       name: AppRoutes.onwerNotifications,
       page: () => OwnerNotificationsView(),
       binding: OwnerRootBinding(),
-    ), GetPage(
-      name: AppRoutes.onwerOrders,
-      page: () => OwnerOrdersView(),
-      binding: OwnerRootBinding(),
+    // ), GetPage(
+      // name: AppRoutes.onwerOrders,
+      // page: () => OwnerOrdersView(),
+      // binding: OwnerRootBinding(),
     ), GetPage(
       name: AppRoutes.onwerProfile,
       page: () => OwnerProfileView(),

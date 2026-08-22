@@ -175,10 +175,10 @@ class ClientHomeView extends StatelessWidget {
                      child: Padding(
                        padding: const EdgeInsets.only(top: 16.0),
                        child: SpecialSalesRow(
-              title: "Special Sales".tr,
-              onSeeAllPressed: () {},
-              items: productController.specialSaleItems,
-                       ),
+                        title: "Special Sales".tr,
+                        onSeeAllPressed: () {},
+                        items: productController.specialSaleItems,
+                          ),
                      ),
                    )),
                        
@@ -186,14 +186,14 @@ class ClientHomeView extends StatelessWidget {
                      //========= Section Header for All Products ==========
                      SliverToBoxAdapter(
                        child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: media.width * 0.05, vertical: 16),
-              child: Text(
-                "All Products".tr,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
+                      padding: EdgeInsets.symmetric(horizontal: media.width * 0.05, vertical: 16),
+                      child: Text(
+                        "All Products".tr,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
                        ),
                      ),
              
