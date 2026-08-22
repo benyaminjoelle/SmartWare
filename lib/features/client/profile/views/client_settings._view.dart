@@ -74,7 +74,9 @@ class ClientSettings extends StatelessWidget {
                               value: controller.isDarkMode.value,
                               onChanged: (value) {
                                 controller.changeTheme(
-                                  value ? ThemeMode.dark : ThemeMode.light,
+                                  value
+                                      ? ThemeMode.dark
+                                      : ThemeMode.light,
                                 );
                               },
                             ),
@@ -85,7 +87,6 @@ class ClientSettings extends StatelessWidget {
                           onTap: () {},
                           icon: Icons.language_rounded,
                           title: "Language".tr,
-
                           isLast: true,
                           trailing: PopupMenuButton<String>(
                             icon: Icon(
@@ -128,10 +129,13 @@ class ClientSettings extends StatelessWidget {
                             onTap: () {},
                             icon: Icons.notifications_active_rounded,
                             title: "Notifications".tr,
-                            subtitle: "Enable or disable app notifications".tr,
+                            subtitle:
+                                "Enable or disable app notifications".tr,
                             isLast: true,
                             trailing: Switch.adaptive(
-                              value: controller.isNotificationsEnabled.value,
+                              value: controller
+                                  .isNotificationsEnabled
+                                  .value,
                               onChanged: (value) {
                                 // controller.changeNotifications(value);
                               },
@@ -162,6 +166,7 @@ class ClientSettings extends StatelessWidget {
                             showAboutsmartware(context);
                           },
                         ),
+
                         ActionTile(
                           icon: Icons.support_agent_rounded,
                           title: "Contact Us".tr,
@@ -170,6 +175,7 @@ class ClientSettings extends StatelessWidget {
                             SupportOptionsTile.show(context);
                           },
                         ),
+
                         ActionTile(
                           icon: Icons.privacy_tip_outlined,
                           title: "Privacy Policy".tr,
@@ -183,35 +189,38 @@ class ClientSettings extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 24),
- // ===================================================
-                        // DELETE ACCOUNT
-                        // ===================================================
 
-                      ActionTile(
-  icon: Icons.delete_forever_outlined,
-  title: "Delete Account".tr,
-  subtitle: "Delete your account permanently".tr,
-  iconColor: Colors.red,
- 
-  onTap: () async {
-    final confirmed = await AppDialogs.showConfirmDialog(
-      title: "Delete Account",
-      message:
-          "Are you sure you want to delete your account? "
-          "This action is permanent and your account will be deleted forever.",
-      confirmText: "Delete Forever",
-      cancelText: "Cancel",
-      confirmColor: Colors.red,
-      cancelColor: Theme.of(context).colorScheme.primary,
-    );
+                  // ===================================================
+                  // DELETE ACCOUNT
+                  // ===================================================
 
-    if (confirmed == true) {
-      // Backend will be connected here later.
-      //
-      // controller.deleteAccount();
-    }
-  },
-),
+                  ActionTile(
+                    icon: Icons.delete_forever_outlined,
+                    title: "Delete Account".tr,
+                    subtitle: "Delete your account permanently".tr,
+                    iconColor: Colors.red,
+                    onTap: () async {
+                      final confirmed =
+                          await AppDialogs.showConfirmDialog(
+                        title: "Delete Account".tr,
+                        message:
+                            "Are you sure you want to delete your account? "
+                            "This action is permanent and your account will be deleted forever."
+                                .tr,
+                        confirmText: "Delete Forever".tr,
+                        cancelText: "Cancel".tr,
+                        confirmColor: Colors.red,
+                        cancelColor:
+                            Theme.of(context).colorScheme.primary,
+                      );
+
+                      if (confirmed == true) {
+                        // Backend will be connected here later.
+                        //
+                        // controller.deleteAccount();
+                      }
+                    },
+                  ),
 
                   /// =========================
                   /// APP INFO
