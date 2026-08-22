@@ -12,16 +12,17 @@ class HorizontalProductRow extends StatelessWidget {
     super.key,
     required this.title,
     this.onSeeAllPressed,
-    required this.products // Default empty list
+    required this.products,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final media = MediaQuery.of(context).size;
+
     return Obx(() {
       if (products.isEmpty) {
-        return const SizedBox.shrink(); 
+        return const SizedBox.shrink();
       }
 
       return Column(
@@ -29,7 +30,10 @@ class HorizontalProductRow extends StatelessWidget {
         children: [
           // Section Header Row
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: media.width * 0.05, vertical: 4),
+            padding: EdgeInsets.symmetric(
+              horizontal: media.width * 0.05,
+              vertical: 4,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -53,20 +57,28 @@ class HorizontalProductRow extends StatelessWidget {
           SizedBox(
             height: 240,
             child: products.isEmpty
-            ?Center(child: Text("No items available".tr))
-            : ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: products.length,
-              padding: EdgeInsets.only(left: media.width * 0.05, right: media.width * 0.03),
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return ProductCard(product: product);
-              },
-            ),
+                ? Center(
+                    child: Text("No items available".tr),
+                  )
+                : ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: products.length,
+                    padding: EdgeInsets.only(
+                      left: media.width * 0.05,
+                      right: media.width * 0.03,
+                    ),
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+
+                      return ProductCard(
+                        product: product,
+                      );
+                    },
+                  ),
           ),
         ],
       );
-  });
+    });
   }
-  }
+}
