@@ -119,7 +119,7 @@ class SpecialSaleProductCard extends StatelessWidget {
                         color: colors.error,
                       ),
                       child: Text(
-                        '${discount.percentage.toStringAsFixed(0)}% OFF',
+                        '${discount.percentage.toStringAsFixed(0)}% ${'OFF'.tr}',
                         style: TextStyle(
                           color: colors.onError,
                           fontWeight: FontWeight.bold,
