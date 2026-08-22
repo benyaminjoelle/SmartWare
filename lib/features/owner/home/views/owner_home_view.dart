@@ -35,20 +35,12 @@ class OwnerHomeView extends StatelessWidget {
               ),
               padding: const EdgeInsets.fromLTRB(20, 18, 20, 35),
               children: [
-                // ===========================================================
-                // HEADER
-                // ===========================================================
-
                 _Header(
                   controller: controller,
                   colors: colors,
                 ),
 
                 const SizedBox(height: 18),
-
-                // ===========================================================
-                // CURRENT WAREHOUSE
-                // ===========================================================
 
                 _WarehouseSwitcherButton(
                   controller: controller,
@@ -57,10 +49,6 @@ class OwnerHomeView extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                // ===========================================================
-                // OVERVIEW
-                // ===========================================================
-
                 _OverviewCard(
                   controller: controller,
                   colors: colors,
@@ -68,12 +56,8 @@ class OwnerHomeView extends StatelessWidget {
 
                 const SizedBox(height: 28),
 
-                // ===========================================================
-                // QUICK ACCESS
-                // ===========================================================
-
                 _SectionTitle(
-                  title: 'Quick access',
+                  title: 'quick_access'.tr,
                   colors: colors,
                 ),
 
@@ -86,13 +70,9 @@ class OwnerHomeView extends StatelessWidget {
 
                 const SizedBox(height: 30),
 
-                // ===========================================================
-                // WAREHOUSES
-                // ===========================================================
-
                 _SectionHeader(
-                  title: 'Your warehouses',
-                  action: 'View all',
+                  title: 'your_warehouses'.tr,
+                  action: 'view_all'.tr,
                   colors: colors,
                   onTap: controller.openWarehouses,
                 ),
@@ -120,13 +100,9 @@ class OwnerHomeView extends StatelessWidget {
 
                 const SizedBox(height: 18),
 
-                // ===========================================================
-                // INVENTORY STATUS
-                // ===========================================================
-
                 _SectionHeader(
-                  title: 'Inventory status',
-                  action: 'See products',
+                  title: 'inventory_status'.tr,
+                  action: 'see_products'.tr,
                   colors: colors,
                   onTap: controller.openProducts,
                 ),
@@ -139,10 +115,6 @@ class OwnerHomeView extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 18),
-
-                // ===========================================================
-                // ADD FACILITY
-                // ===========================================================
 
                 _AddFacilityCard(
                   controller: controller,
@@ -202,7 +174,7 @@ class _Header extends StatelessWidget {
         const SizedBox(height: 5),
 
         Text(
-          'Manage your warehouse operations.',
+          'manage_warehouse_operations'.tr,
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w500,
@@ -270,7 +242,7 @@ class _WarehouseSwitcherButton extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'CURRENT WAREHOUSE',
+                      'current_warehouse'.tr,
                       style: TextStyle(
                         fontSize: 8,
                         fontWeight: FontWeight.w800,
@@ -282,7 +254,7 @@ class _WarehouseSwitcherButton extends StatelessWidget {
                     const SizedBox(height: 4),
 
                     Text(
-                      warehouse?.nameEn ?? 'Select warehouse',
+                      warehouse?.nameEn ?? 'select_warehouse'.tr,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -346,10 +318,6 @@ class _OverviewCard extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // =============================================================
-            // BACKGROUND CIRCLES
-            // =============================================================
-
             Positioned(
               right: -55,
               top: -60,
@@ -402,10 +370,6 @@ class _OverviewCard extends StatelessWidget {
               ),
             ),
 
-            // =============================================================
-            // TRIANGLES
-            // =============================================================
-
             Positioned(
               right: -15,
               top: 30,
@@ -448,10 +412,6 @@ class _OverviewCard extends StatelessWidget {
               ),
             ),
 
-            // =============================================================
-            // DIAGONAL LINES
-            // =============================================================
-
             Positioned(
               right: 40,
               top: 38,
@@ -478,10 +438,6 @@ class _OverviewCard extends StatelessWidget {
               ),
             ),
 
-            // =============================================================
-            // CONTENT
-            // =============================================================
-
             Padding(
               padding: const EdgeInsets.all(22),
               child: Column(
@@ -501,7 +457,7 @@ class _OverviewCard extends StatelessWidget {
                       const SizedBox(width: 8),
 
                       Text(
-                        'SMARTWARE',
+                        'smartware'.tr,
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
@@ -515,7 +471,7 @@ class _OverviewCard extends StatelessWidget {
                   const SizedBox(height: 18),
 
                   Text(
-                    'Warehouse\noverview.',
+                    'warehouse_overview'.tr,
                     style: TextStyle(
                       fontSize: 25,
                       height: 1.05,
@@ -530,9 +486,8 @@ class _OverviewCard extends StatelessWidget {
                   Row(
                     children: [
                       _OverviewMetric(
-                        value:
-                            controller.warehouseCount.value.toString(),
-                        label: 'WAREHOUSES',
+                        value: controller.warehouseCount.value.toString(),
+                        label: 'warehouses'.tr.toUpperCase(),
                         colors: colors,
                       ),
 
@@ -541,9 +496,8 @@ class _OverviewCard extends StatelessWidget {
                       ),
 
                       _OverviewMetric(
-                        value:
-                            controller.productCount.value.toString(),
-                        label: 'PRODUCTS',
+                        value: controller.productCount.value.toString(),
+                        label: 'products'.tr.toUpperCase(),
                         colors: colors,
                       ),
 
@@ -552,9 +506,8 @@ class _OverviewCard extends StatelessWidget {
                       ),
 
                       _OverviewMetric(
-                        value:
-                            controller.lowStockCount.value.toString(),
-                        label: 'LOW STOCK',
+                        value: controller.lowStockCount.value.toString(),
+                        label: 'low_stock'.tr.toUpperCase(),
                         colors: colors,
                       ),
                     ],
@@ -586,8 +539,10 @@ class _OverviewCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           controller.hasAlerts
-                              ? '${controller.lowStockCount.value} item(s) need attention'
-                              : 'Inventory is looking healthy',
+                              ? 'low_stock_items_need_attention'.trParams({
+                                  'count': controller.lowStockCount.value.toString(),
+                                })
+                              : 'inventory_is_looking_healthy'.tr,
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
@@ -746,8 +701,8 @@ class _QuickAccess extends StatelessWidget {
         Expanded(
           child: _QuickButton(
             icon: Icons.inventory_2_rounded,
-            title: 'Add product',
-            subtitle: 'Inventory',
+            title: 'add_product'.tr,
+            subtitle: 'inventory'.tr,
             color: colors.primary,
             colors: colors,
             onTap: controller.addProduct,
@@ -759,8 +714,8 @@ class _QuickAccess extends StatelessWidget {
         Expanded(
           child: _QuickButton(
             icon: Icons.person_add_alt_1_rounded,
-            title: 'Add worker',
-            subtitle: 'Team',
+            title: 'add_worker'.tr,
+            subtitle: 'team'.tr,
             color: colors.primary,
             colors: colors,
             onTap: controller.addWorker,
@@ -772,8 +727,8 @@ class _QuickAccess extends StatelessWidget {
         Expanded(
           child: _QuickButton(
             icon: Icons.receipt_long_rounded,
-            title: 'Orders',
-            subtitle: 'Requests',
+            title: 'orders'.tr,
+            subtitle: 'requests'.tr,
             color: colors.tertiary,
             colors: colors,
             onTap: controller.openOrders,
@@ -1037,7 +992,7 @@ class _WarehouseCard extends StatelessWidget {
                           child: Text(
                             warehouse.location.isNotEmpty
                                 ? warehouse.location
-                                : 'Location unavailable',
+                                : 'location_unavailable'.tr,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -1053,7 +1008,9 @@ class _WarehouseCard extends StatelessWidget {
                     const SizedBox(height: 8),
 
                     Text(
-                      '${warehouse.productCount} products',
+                      'products_count'.trParams({
+                        'count': warehouse.productCount.toString(),
+                      }),
                       style: TextStyle(
                         fontSize: 9,
                         fontWeight: FontWeight.w700,
@@ -1131,7 +1088,7 @@ class _EmptyWarehouseState extends StatelessWidget {
           const SizedBox(height: 11),
 
           Text(
-            'No warehouses yet',
+            'no_warehouses_yet'.tr,
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w900,
@@ -1142,7 +1099,7 @@ class _EmptyWarehouseState extends StatelessWidget {
           const SizedBox(height: 5),
 
           Text(
-            'Create your first facility to start managing your warehouse.',
+            'create_first_facility'.tr,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 10,
@@ -1161,8 +1118,8 @@ class _EmptyWarehouseState extends StatelessWidget {
                 Icons.add_rounded,
                 size: 18,
               ),
-              label: const Text(
-                'Add Facility',
+              label: Text(
+                'add_facility'.tr,
               ),
               style: ElevatedButton.styleFrom(
                 elevation: 0,
@@ -1239,8 +1196,8 @@ class _InventoryStatusCard extends StatelessWidget {
               children: [
                 Text(
                   hasAlerts
-                      ? 'Inventory needs attention'
-                      : 'Inventory looks healthy',
+                      ? 'inventory_needs_attention'.tr
+                      : 'inventory_looks_healthy'.tr,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w900,
@@ -1252,8 +1209,10 @@ class _InventoryStatusCard extends StatelessWidget {
 
                 Text(
                   hasAlerts
-                      ? '${controller.lowStockCount.value} product(s) have a stock risk.'
-                      : 'No stock-out risks detected.',
+                      ? 'products_have_stock_risk'.trParams({
+                          'count': controller.lowStockCount.value.toString(),
+                        })
+                      : 'no_stock_out_risks'.tr,
                   style: TextStyle(
                     fontSize: 10,
                     color: colors.onSurface.withOpacity(.55),
@@ -1327,7 +1286,7 @@ class _AddFacilityCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Add another facility',
+                      'add_another_facility'.tr,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w900,
@@ -1338,7 +1297,7 @@ class _AddFacilityCard extends StatelessWidget {
                     const SizedBox(height: 3),
 
                     Text(
-                      'Expand your warehouse space.',
+                      'expand_warehouse_space'.tr,
                       style: TextStyle(
                         fontSize: 9,
                         fontWeight: FontWeight.w500,
