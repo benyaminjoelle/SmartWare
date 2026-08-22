@@ -396,4 +396,37 @@ const Map<String, String> ar = {
 'SKU': 'رمز المنتج',
 'sold': 'مباع',
 'in stock': 'في المخزون',
+  
+  'no_inventory_trend_data': 'لا توجد بيانات لاتجاه المخزون',
+  'inventory_trend_no_data_subtitle':
+      'لا توجد بيانات مخزون كافية لعرض الاتجاه.',
+  'products': 'المنتجات',
+  'no_stock_movement_data': 'لا توجد بيانات لحركة المخزون',
+  'stock_movement_no_data_subtitle':
+      'لا توجد بيانات لحركة المخزون لعرضها.',
+  'product_fallback': 'المنتج @id',
+  'outgoing': 'الصادر',
+  'no_category_data': 'لا توجد بيانات للفئات',
+  'category_no_data_subtitle':
+      'لا توجد معلومات عن الفئات لعرضها.',
+  'unknown': 'غير معروف',
+  'no_product_movement_data': 'لا توجد بيانات لحركة المنتجات',
+  'product_movement_no_data_subtitle':
+      'لا توجد بيانات لحركة المنتجات لعرضها.',
+  'sold': 'المباع',
+'products': 'المنتجات',
+  'low_stock': 'مخزون منخفض',
+  'pending_orders': 'الطلبات المعلقة',
+    'low_stock': 'مخزون منخفض',
+  'products_need_attention': 'منتجات تحتاج إلى انتباه',
+  'stock_needs_attention': 'المخزون يحتاج إلى انتباه',
+  'low_stock_description':
+      'هذه المنتجات تحتوي حاليًا على 10 وحدات أو أقل في هذا المستودع.',
+  'units_left': 'متبقي @count @unit',
+  'all_stock_levels_good': 'جميع مستويات المخزون جيدة',
+  'no_products_need_attention': 'لا توجد منتجات تحتاج إلى انتباه حاليًا.',
+   'products': 'المنتجات',
+  'low_stock': 'مخزون منخفض',
+  'status': 'الحالة',
+  'location_not_available': 'الموقع غير متوفر',
 };
