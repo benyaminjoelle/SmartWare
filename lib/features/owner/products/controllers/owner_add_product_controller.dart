@@ -56,28 +56,12 @@ class AddProductController extends GetxController {
   // OWNER CATEGORIES
   // ============================================================
 
-  /// Category names shown by the UI.
   final RxList<String> availableCategories =
       <String>[].obs;
 
-  /// Category names selected by the user.
   final RxList<String> selectedCategories =
       <String>[].obs;
 
-  /// REAL owner categories.
-  ///
-  /// Example:
-  ///
-  /// [
-  ///   {
-  ///     'id': 1,
-  ///     'name': 'Canned Foods',
-  ///   },
-  ///   {
-  ///     'id': 2,
-  ///     'name': 'Frozen Foods',
-  ///   },
-  /// ]
   final RxList<Map<String, dynamic>> ownerCategories =
       <Map<String, dynamic>>[].obs;
 
@@ -117,12 +101,6 @@ class AddProductController extends GetxController {
       debugPrint(
         '════════ LOAD OWNER PRODUCT CATEGORIES ════════',
       );
-
-      // ----------------------------------------------------------
-      // THIS IS THE IMPORTANT PART
-      //
-      // We read the REAL category objects saved after onboarding.
-      // ----------------------------------------------------------
 
       final storedCategories =
           await PrefHelper.getOwnerProductCategories();
@@ -263,10 +241,6 @@ class AddProductController extends GetxController {
       return;
     }
 
-    // ----------------------------------------------------------
-    // FIND REAL CATEGORY OBJECT
-    // ----------------------------------------------------------
-
     final category =
         ownerCategories.firstWhereOrNull(
       (item) {
@@ -288,10 +262,6 @@ class AddProductController extends GetxController {
 
       return;
     }
-
-    // ----------------------------------------------------------
-    // TOGGLE
-    // ----------------------------------------------------------
 
     if (selectedCategories.contains(cleanName)) {
       selectedCategories.remove(cleanName);
@@ -404,7 +374,7 @@ class AddProductController extends GetxController {
         category.trim();
 
     return clean.isEmpty
-        ? 'Category'
+        ? 'Category'.tr
         : clean;
   }
 
@@ -472,8 +442,8 @@ class AddProductController extends GetxController {
           File(image.path);
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'Failed to select image',
+        'Error'.tr,
+        'Failed to select image'.tr,
         snackPosition:
             SnackPosition.BOTTOM,
       );
@@ -511,17 +481,17 @@ class AddProductController extends GetxController {
         value?.trim() ?? '';
 
     if (sku.isEmpty) {
-      return 'SKU is required';
+      return 'SKU is required'.tr;
     }
 
     if (!RegExp(
       r'^[A-Za-z0-9_-]+$',
     ).hasMatch(sku)) {
-      return 'Use only letters, numbers, _ or -';
+      return 'Use only letters, numbers, _ or -'.tr;
     }
 
     if (sku.length > 100) {
-      return 'SKU must not exceed 100 characters';
+      return 'SKU must not exceed 100 characters'.tr;
     }
 
     return null;
@@ -534,11 +504,11 @@ class AddProductController extends GetxController {
         value?.trim() ?? '';
 
     if (name.isEmpty) {
-      return 'Product name is required';
+      return 'Product name is required'.tr;
     }
 
     if (name.length > 255) {
-      return 'Product name is too long';
+      return 'Product name is too long'.tr;
     }
 
     return null;
@@ -551,7 +521,7 @@ class AddProductController extends GetxController {
         value?.trim() ?? '';
 
     if (description.isEmpty) {
-      return 'Description is required';
+      return 'Description is required'.tr;
     }
 
     return null;
@@ -566,11 +536,11 @@ class AddProductController extends GetxController {
     );
 
     if (quantity == null) {
-      return 'Enter a valid quantity';
+      return 'Enter a valid quantity'.tr;
     }
 
     if (quantity < 0) {
-      return 'Quantity cannot be negative';
+      return 'Quantity cannot be negative'.tr;
     }
 
     return null;
@@ -585,11 +555,11 @@ class AddProductController extends GetxController {
     );
 
     if (price == null) {
-      return 'Enter a valid unit price';
+      return 'Enter a valid unit price'.tr;
     }
 
     if (price < 0) {
-      return 'Unit price cannot be negative';
+      return 'Unit price cannot be negative'.tr;
     }
 
     return null;
@@ -626,8 +596,8 @@ class AddProductController extends GetxController {
         .trim()
         .isEmpty) {
       Get.snackbar(
-        'Missing Unit',
-        'Please select a unit.',
+        'Missing Unit'.tr,
+        'Please select a unit.'.tr,
         snackPosition:
             SnackPosition.BOTTOM,
       );
@@ -640,15 +610,14 @@ class AddProductController extends GetxController {
     // ----------------------------------------------------------
 
     if (ownerCategories.isEmpty) {
-      // Try once more in case categories were loaded after
-      // controller initialization.
       await loadOwnerCategories();
     }
 
     if (ownerCategories.isEmpty) {
       Get.snackbar(
-        'Categories Unavailable',
-        'No product categories are available for this warehouse.',
+        'Categories Unavailable'.tr,
+        'No product categories are available for this warehouse.'
+            .tr,
         snackPosition:
             SnackPosition.BOTTOM,
       );
@@ -658,8 +627,8 @@ class AddProductController extends GetxController {
 
     if (selectedCategories.isEmpty) {
       Get.snackbar(
-        'Missing Categories',
-        'Please select at least one category.',
+        'Missing Categories'.tr,
+        'Please select at least one category.'.tr,
         snackPosition:
             SnackPosition.BOTTOM,
       );
@@ -692,8 +661,8 @@ class AddProductController extends GetxController {
 
     if (categoryIds.isEmpty) {
       Get.snackbar(
-        'Invalid Categories',
-        'The selected categories could not be resolved.',
+        'Invalid Categories'.tr,
+        'The selected categories could not be resolved.'.tr,
         snackPosition:
             SnackPosition.BOTTOM,
       );
@@ -712,8 +681,8 @@ class AddProductController extends GetxController {
 
     if (quantity == null) {
       Get.snackbar(
-        'Invalid Quantity',
-        'Please enter a valid quantity.',
+        'Invalid Quantity'.tr,
+        'Please enter a valid quantity.'.tr,
         snackPosition:
             SnackPosition.BOTTOM,
       );
@@ -732,8 +701,8 @@ class AddProductController extends GetxController {
 
     if (unitPrice == null) {
       Get.snackbar(
-        'Invalid Unit Price',
-        'Please enter a valid unit price.',
+        'Invalid Unit Price'.tr,
+        'Please enter a valid unit price.'.tr,
         snackPosition:
             SnackPosition.BOTTOM,
       );
@@ -806,7 +775,7 @@ class AddProductController extends GetxController {
       _submitted = false;
 
       Get.snackbar(
-        'Error',
+        'Error'.tr,
         e.message,
         snackPosition:
             SnackPosition.BOTTOM,
@@ -823,8 +792,8 @@ class AddProductController extends GetxController {
       );
 
       Get.snackbar(
-        'Error',
-        'Failed to create product.',
+        'Error'.tr,
+        'Failed to create product.'.tr,
         snackPosition:
             SnackPosition.BOTTOM,
       );
