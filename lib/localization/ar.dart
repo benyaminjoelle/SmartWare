@@ -1,4 +1,43 @@
 const Map<String, String> ar = {
+  "Owner facility was not found": "لم يتم العثور على منشأة المالك",
+"Failed to load products": "فشل تحميل المنتجات",
+"Product deleted successfully": "تم حذف المنتج بنجاح",
+  "Please select a unit": "يرجى اختيار الوحدة",
+"Please select at least one category":
+    "يرجى اختيار فئة واحدة على الأقل",
+"Failed to update product": "فشل تحديث المنتج",
+  "Category": "الفئة",
+"Error": "خطأ",
+"Failed to select image": "فشل اختيار الصورة",
+"SKU is required": "الرمز التعريفي SKU مطلوب",
+"Use only letters, numbers, _ or -":
+    "استخدم الأحرف والأرقام و _ أو - فقط",
+"SKU must not exceed 100 characters":
+    "يجب ألا يتجاوز الرمز التعريفي SKU 100 محرف",
+"Product name is required": "اسم المنتج مطلوب",
+"Product name is too long": "اسم المنتج طويل جداً",
+"Description is required": "الوصف مطلوب",
+"Enter a valid quantity": "أدخل كمية صحيحة",
+"Quantity cannot be negative": "لا يمكن أن تكون الكمية سالبة",
+"Enter a valid unit price": "أدخل سعراً صحيحاً للوحدة",
+"Unit price cannot be negative": "لا يمكن أن يكون سعر الوحدة سالباً",
+"Missing Unit": "الوحدة مفقودة",
+"Please select a unit.": "يرجى اختيار الوحدة.",
+"Categories Unavailable": "الفئات غير متاحة",
+"No product categories are available for this warehouse.":
+    "لا توجد فئات منتجات متاحة لهذا المستودع.",
+"Missing Categories": "الفئات مفقودة",
+"Please select at least one category.":
+    "يرجى اختيار فئة واحدة على الأقل.",
+"Invalid Categories": "فئات غير صالحة",
+"The selected categories could not be resolved.":
+    "تعذر تحديد الفئات المحددة.",
+"Invalid Quantity": "كمية غير صالحة",
+"Please enter a valid quantity.": "يرجى إدخال كمية صحيحة.",
+"Invalid Unit Price": "سعر وحدة غير صالح",
+"Please enter a valid unit price.":
+    "يرجى إدخال سعر وحدة صحيح.",
+"Failed to create product.": "فشل إنشاء المنتج.",
   // A
   "About Us": "من نحن",
   "ACCOUNT MANAGEMENT": "إدارة الحساب",
