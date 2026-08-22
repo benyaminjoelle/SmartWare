@@ -236,4 +236,96 @@ const Map<String, String> ar = {
   "Your progress will be lost if you leave now.": 'اذا غادرت الان البيانات التي ادخلتها سوف تضيع.',
 
   // Z
+  "Your Invoices": "فواتيرك",
+"Total to Pay": "الإجمالي المطلوب دفعه",
+"Confirm & Place Order": "تأكيد وإتمام الطلب",
+"Subtotal": "المجموع الفرعي",
+"Discount Savings": "قيمة الخصم",
+"Shipping": "الشحن",
+"Tax (8%)": "الضريبة (8%)",
+"Invoice Total": "إجمالي الفاتورة",
+
+  "My Cart": "سلة مشترياتي",
+"Your Cart is Empty": "سلة مشترياتك فارغة",
+"Looks like you haven't added any items to your inventory cart yet.":
+    "يبدو أنك لم تضف أي منتجات إلى سلة مشترياتك بعد.",
+"Explore Products": "استكشاف المنتجات",
+"Remove": "إزالة",
+"Subtotal:": "المجموع الفرعي:",
+"Discount Savings:": "قيمة الخصم:",
+"Estimated Total:": "الإجمالي التقديري:",
+"Proceed to Checkout": "المتابعة إلى الدفع",
+
+  "Search for products": "ابحث عن المنتجات",
+"Top Selling": "الأكثر مبيعًا",
+"Special Sales": "العروض الخاصة",
+"All Products": "جميع المنتجات",
+"Hello, @userName!": "مرحبًا، @userName!",
+
+  "Filtering": "تصفية المنتجات",
+"Refine your product search": "قم بتضييق نطاق البحث عن المنتجات",
+"Reset": "إعادة تعيين",
+"Business Categories": "فئات الأعمال",
+"Unit": "الوحدة",
+"Price Range": "نطاق السعر",
+"to": "إلى",
+"Apply Filters": "تطبيق الفلاتر",
+
+  "SKU:": "رمز المنتج:",
+"Description": "الوصف",
+"Container": "العبوة",
+"Quantity": "الكمية",
+"Choose how much you need": "اختر الكمية التي تحتاجها",
+
+  "Total": "الإجمالي",
+"Add to cart": "إضافة إلى السلة",
+"Choose warehouse": "اختر المستودع",
+
+  "My Orders": "طلباتي",
+"Pending": "قيد الانتظار",
+"Accepted": "مقبولة",
+"Previous": "السابقة",
+"No orders found": "لم يتم العثور على طلبات",
+"items": "عناصر",
+"Warehouse": "المستودع",
+"Waiting Approval": "بانتظار الموافقة",
+"Approved": "تمت الموافقة",
+"Delivered": "تم التوصيل",
+"Rejected": "مرفوض",
+"Cancelled": "ملغى",
+
+  "Complete Profile": "إكمال الملف الشخصي",
+
+  "Settings": "الإعدادات",
+"Appearance": "المظهر",
+"Dark Theme": "الوضع الداكن",
+"Language": "اللغة",
+"English": "الإنجليزية",
+"Arabic": "العربية",
+"Notifications": "الإشعارات",
+"Enable or disable app notifications":
+    "تفعيل أو تعطيل إشعارات التطبيق",
+"Support": "الدعم",
+"About Us": "من نحن",
+"Learn more about smartware":
+    "تعرّف أكثر على SmartWare",
+"Contact Us": "تواصل معنا",
+"Reach our support team":
+    "تواصل مع فريق الدعم لدينا",
+"Privacy Policy": "سياسة الخصوصية",
+"Review our privacy practices":
+    "اطّلع على ممارسات الخصوصية لدينا",
+"Delete Account": "حذف الحساب",
+"Delete your account permanently":
+    "حذف حسابك نهائيًا",
+"Are you sure you want to delete your account? This action is permanent and your account will be deleted forever.":
+    "هل أنت متأكد من رغبتك في حذف حسابك؟ هذا الإجراء نهائي وسيتم حذف حسابك بشكل دائم.",
+"Delete Forever": "حذف نهائيًا",
+"Cancel": "إلغاء",
+"Application": "التطبيق",
+"Version": "الإصدار",
+  "Home": "الرئيسية",
+"Cart": "السلة",
+"Orders": "الطلبات",
+"Profile": "الملف الشخصي",
 };
