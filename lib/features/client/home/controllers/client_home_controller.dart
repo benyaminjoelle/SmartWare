@@ -29,28 +29,33 @@ class ClientHomeController extends GetxController {
   }
 
   void loadUser() {
-  final data = GetStorage().read('user_data');
+    final data = GetStorage().read('user_data');
 
-  print('👤 USER JSON 👉 $data');
-  if (data == null || data.isEmpty) {
-    print('❌ No user data found');
-    return;
+    print('👤 USER JSON 👉 $data');
+    if (data == null || data.isEmpty) {
+      print('❌ No user data found');
+      return;
+    }
+
+    user = UserModel.fromJson(
+      Map<String, dynamic>.from(data),
+    );
+
+    print('✅ USER NAME 👉 ${user.firstName}');
   }
-  user = UserModel.fromJson(
-    Map<String, dynamic>.from(data),
-  );
 
-  print('✅ USER NAME 👉 ${user.firstName}');
-}
   String get greeting {
     final hour = DateTime.now().hour;
+
     if (hour < 12) {
-      return 'Good morning';
+      return 'Good morning'.tr;
     }
+
     if (hour < 18) {
-      return 'Good afternoon';
+      return 'Good afternoon'.tr;
     }
-    return 'Good evening';
+
+    return 'Good evening'.tr;
   }
 
   Future<void> getPreferences() async {
@@ -79,10 +84,10 @@ class ClientHomeController extends GetxController {
       debugPrint('❌ Get preferences failed: $e');
 
       AppSnackbar.show(
-        title: 'Error',
+        title: 'Error'.tr,
         message: e is ApiError
             ? e.message
-            : 'Failed to load your preferences.',
+            : 'Failed to load your preferences.'.tr,
       );
     } finally {
       isLoadingPreferences.value = false;
