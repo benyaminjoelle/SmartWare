@@ -300,5 +300,11 @@ const Map<String, String> ar = {
 "Are you sure you want to delete your account? This action is permanent and your account will be deleted forever.":
     "هل أنت متأكد من رغبتك في حذف حسابك؟ هذا الإجراء نهائي وسيتم حذف حسابك بشكل دائم.",
 "Delete Forever": "حذف نهائيًا",
-
+'Your Warehouses': 'مستودعاتك',
+'Select a warehouse to view its performance.':
+    'اختر مستودعًا لعرض أدائه.',
+'Add New Facility': 'إضافة منشأة جديدة',
+'No warehouses yet': 'لا توجد مستودعات بعد',
+'Create a warehouse to start viewing analytics.':
+    'أنشئ مستودعًا لبدء عرض التحليلات.',
 };
